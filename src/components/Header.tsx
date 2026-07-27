@@ -89,6 +89,8 @@ export default function Header() {
       )}
 
       <style>{`
+        @keyframes slideDown{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
+        header{animation:slideDown 0.4s ease both}
         @media (max-width: 767px) {
           .d-hide-mobile { display: none !important; }
           .burger-btn { display: flex !important; }

@@ -3,6 +3,8 @@ import Image from "next/image";
 import ConsultForm from "@/components/ConsultForm";
 import ServiceCard from "@/components/ServiceCard";
 import FaqSection from "@/components/FaqSection";
+import AnimatedCounter from "@/components/AnimatedCounter";
+import HeroCursor from "@/components/HeroCursor";
 
 const services = [
   { glyph: "₽", name: "Бухгалтерские услуги", desc: "Полное ведение учёта и отчётности: АУСН, УСН, ОСНО, зарплата и кадры.", slug: "bukhgalterskie-uslugi" },
@@ -49,15 +51,23 @@ export default function HomePage() {
         @keyframes qzBarA{0%,18%{width:11%}30%,100%{width:22%}}
         @keyframes qzBarB{0%,64%{width:22%}78%,100%{width:33%}}
         @keyframes qzFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+        @keyframes markerIn{from{background-size:0% 0.3em}to{background-size:100% 0.3em}}
+        @keyframes ctaPulse{0%,100%{box-shadow:0 0 0 0 rgba(240,120,40,0.45)}55%{box-shadow:0 0 0 10px rgba(240,120,40,0)}}
         .adv-row:hover{background:rgba(255,255,255,0.04)}
+        .marker-anim{background:linear-gradient(#FEC89E,#FEC89E) no-repeat bottom left;background-size:0% 0.3em;animation:markerIn 0.9s 0.55s forwards;padding-bottom:0.05em;display:inline}
+        .btn-pulse{animation:ctaPulse 2.6s ease-in-out infinite}
+        .marquee-track:hover{animation-play-state:paused}
+        .blob-a{transform:translate(calc(var(--bx,0)*30px),calc(var(--by,0)*20px));transition:transform 0.8s ease}
+        .blob-b{transform:translate(calc(var(--bx,0)*-20px),calc(var(--by,0)*28px));transition:transform 0.8s ease}
       `}</style>
 
       {/* Hero */}
       <section style={{ position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: -120, right: -80, pointerEvents: "none" }}>
+        <HeroCursor />
+        <div className="blob-a" style={{ position: "absolute", top: -120, right: -80, pointerEvents: "none" }}>
           <div style={{ width: 520, height: 520, borderRadius: "50%", background: "radial-gradient(circle at 40% 40%, rgba(240,120,40,0.3), transparent 65%)", animation: "blobDrift 14s ease-in-out infinite" }} />
         </div>
-        <div style={{ position: "absolute", bottom: -140, left: -100, pointerEvents: "none" }}>
+        <div className="blob-b" style={{ position: "absolute", bottom: -140, left: -100, pointerEvents: "none" }}>
           <div style={{ width: 460, height: 460, borderRadius: "50%", background: "radial-gradient(circle at 60% 50%, rgba(254,180,120,0.5), transparent 65%)", animation: "blobDrift2 18s ease-in-out infinite" }} />
         </div>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "88px 24px 0", position: "relative" }}>
@@ -66,14 +76,14 @@ export default function HomePage() {
         </div>
         <h1 style={{ margin: "0 0 24px", fontSize: "clamp(44px,6vw,72px)", lineHeight: 1.05, fontWeight: 900, letterSpacing: "-0.03em", maxWidth: 780 }}>
           Ваш бизнес —{" "}
-          <span style={{ boxShadow: "inset 0 -0.28em 0 #FEC89E" }}>наша зона</span>{" "}
+          <span className="marker-anim">наша зона</span>{" "}
           ответственности
         </h1>
         <p style={{ margin: "0 0 36px", fontSize: 18, lineHeight: 1.65, color: "#6B6B6B", maxWidth: 540 }}>
           Настроим и укомплектуем вашу бухгалтерию профессиональными специалистами. Работаем с ИП и ООО удалённо по всей России.
         </p>
         <div style={{ display: "flex", gap: 20, flexWrap: "wrap", alignItems: "center" }}>
-          <Link href="/calculator" className="btn-primary" style={{ height: 52, padding: "0 28px", fontSize: 16 }}>
+          <Link href="/calculator" className="btn-primary btn-pulse" style={{ height: 52, padding: "0 28px", fontSize: 16 }}>
             Рассчитать стоимость
           </Link>
           <Link href="#zapis" style={{ fontSize: 15, fontWeight: 600, color: "#1A1A1A", textDecoration: "underline", textUnderlineOffset: 4 }}>
@@ -84,11 +94,11 @@ export default function HomePage() {
         {/* Stats grid */}
         <div className="m-stats" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 0, marginTop: 56 }}>
           <div style={{ padding: "30px 28px 34px 0", borderRight: "1px solid #E8E8E8" }}>
-            <div style={{ fontSize: 44, fontWeight: 900, letterSpacing: "-0.02em", color: "#F07828", lineHeight: 1 }}>20+</div>
+            <div style={{ fontSize: 44, fontWeight: 900, letterSpacing: "-0.02em", color: "#F07828", lineHeight: 1 }}><AnimatedCounter target={20} suffix="+" /></div>
             <div style={{ fontSize: 14, color: "#6B6B6B", marginTop: 6 }}>лет на рынке</div>
           </div>
           <div style={{ padding: "30px 28px 34px" }}>
-            <div style={{ fontSize: 44, fontWeight: 900, letterSpacing: "-0.02em", color: "#1A1A1A", lineHeight: 1 }}>350+</div>
+            <div style={{ fontSize: 44, fontWeight: 900, letterSpacing: "-0.02em", color: "#1A1A1A", lineHeight: 1 }}><AnimatedCounter target={350} suffix="+" /></div>
             <div style={{ fontSize: 14, color: "#6B6B6B", marginTop: 6 }}>клиентов на сопровождении</div>
           </div>
           <div className="m-hide" style={{ padding: "30px 28px 34px", borderLeft: "1px solid #E8E8E8", borderRight: "1px solid #E8E8E8" }}>
@@ -106,7 +116,7 @@ export default function HomePage() {
       {/* Trust bar — marquee */}
       <section style={{ background: "#F5F5F5", borderTop: "1px solid #E8E8E8", borderBottom: "1px solid #E8E8E8", overflow: "hidden" }}>
         <div style={{ padding: "22px 0", fontSize: 14, color: "#3D3D3D", fontWeight: 500 }}>
-          <div style={{ display: "flex", gap: 48, animation: "marqueeScroll 22s linear infinite", width: "max-content" }}>
+          <div className="marquee-track" style={{ display: "flex", gap: 48, animation: "marqueeScroll 22s linear infinite", width: "max-content" }}>
             {["1С:Партнёр", "Страхование профответственности", "УСН · ОСНО · АУСН · Патент", "НДС и ВЭД", "Работаем удалённо по всей России", "Более 20 лет опыта",
               "1С:Партнёр", "Страхование профответственности", "УСН · ОСНО · АУСН · Патент", "НДС и ВЭД", "Работаем удалённо по всей России", "Более 20 лет опыта"].map((t, i) => (
               <span key={i} style={{ whiteSpace: "nowrap", paddingLeft: i === 0 ? 24 : 0 }}>{t}</span>

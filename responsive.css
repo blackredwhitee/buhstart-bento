@@ -1,0 +1,26 @@
+html,body{overflow-x:hidden}
+img{max-width:100%}
+table{display:block;overflow-x:auto}
+@media(max-width:767px){
+  body{font-size:15px;padding-bottom:64px}
+  h1{font-size:36px !important}
+  h2{font-size:28px !important}
+  .m-hero{display:flex !important;flex-direction:column-reverse;gap:28px;padding-top:32px !important}
+  .m-heroimg{height:280px !important;overflow:hidden}
+  .m-1col{grid-template-columns:1fr !important}
+  .m-2col{grid-template-columns:1fr 1fr !important}
+  .m-btns{flex-direction:column !important;align-items:stretch}
+  .m-btns>a,.m-btns>button{width:100%;justify-content:center;box-sizing:border-box}
+  .m-scroll{display:flex !important;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:8px}
+  .m-scroll>*{flex:0 0 280px;scroll-snap-align:start}
+  .m-hide{display:none !important}
+  .m-sticky{position:sticky;top:0;z-index:30;background:#fff;padding:10px 0}
+  .m-screen{min-height:calc(100vh - 210px)}
+  #blob-a>div,#blob-b>div{width:280px !important;height:280px !important}
+}
+@media(min-width:768px) and (max-width:1279px){
+  .t-2col{grid-template-columns:1fr 1fr !important}
+}
+@media(min-width:768px){
+  .d-hide{display:none !important}
+}

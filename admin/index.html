@@ -11,15 +11,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-s
 /* Login */
 .login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
 .login-card { background: #fff; border-radius: 16px; padding: 40px; width: 100%; max-width: 380px; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
-.login-logo { font-size: 22px; font-weight: 800; color: #1A1A1A; margin-bottom: 8px; }
-.login-logo span { color: #F07828; }
+.login-logo img { height: 48px; display: block; margin-bottom: 8px; }
 .login-sub { color: #888; margin-bottom: 28px; font-size: 13px; }
 
 /* Layout */
 .layout { display: flex; min-height: 100vh; }
 .sidebar { width: 220px; background: #1A1A1A; color: #fff; display: flex; flex-direction: column; padding: 0; flex-shrink: 0; }
-.sidebar-logo { padding: 24px 20px 20px; font-size: 16px; font-weight: 800; border-bottom: 1px solid #333; }
-.sidebar-logo span { color: #F07828; }
+.sidebar-logo { padding: 20px; border-bottom: 1px solid #333; }
+.sidebar-logo img { height: 40px; display: block; }
 .sidebar-nav { flex: 1; padding: 12px 0; }
 .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; color: #aaa; cursor: pointer; font-size: 13px; border: none; background: none; width: 100%; text-align: left; transition: color .15s, background .15s; }
 .nav-item:hover { color: #fff; background: #2a2a2a; }
@@ -212,7 +211,7 @@ function renderLogin() {
   document.getElementById('app').innerHTML = `
     <div class="login-wrap">
       <div class="login-card">
-        <div class="login-logo">Buh<span>start</span> CMS</div>
+        <div class="login-logo"><img src="../uploads/logo-transparent.png" alt="Доверительная Бухгалтерия"></div>
         <div class="login-sub">Управление статьями сайта</div>
         <div class="field"><label>Email</label><input id="l-email" type="email" value="admin@buhstart.ru" autocomplete="email"></div>
         <div class="field"><label>Пароль</label><input id="l-pass" type="password" autocomplete="current-password"></div>
@@ -251,7 +250,7 @@ function shell(activeNav, titleHtml, actionsHtml, bodyHtml) {
   document.getElementById('app').innerHTML = `
     <div class="layout">
       <aside class="sidebar">
-        <div class="sidebar-logo">Buh<span>start</span></div>
+        <div class="sidebar-logo"><img src="../uploads/logo-white.png" alt="Доверительная Бухгалтерия"></div>
         <nav class="sidebar-nav">
           <button class="nav-item${activeNav==='dash'?' active':''}" onclick="goTo('dash')"><span class="nav-icon">📝</span>Статьи</button>
           <button class="nav-item${activeNav==='new'?' active':''}" onclick="newArticle()"><span class="nav-icon">✏️</span>Новая статья</button>
@@ -349,11 +348,11 @@ function renderEditor() {
       <div class="row row-3" style="margin-bottom:18px">
         <div class="field">
           <label>Тег / Категория</label>
-          <select id="e-tag">${TAGS.map(t=>`<option${a.tag===t?' selected':''}>${t}</option>`).join('')}</select>
+          <select id="e-tag" onchange="S.current.tag=this.value">${TAGS.map(t=>`<option${a.tag===t?' selected':''}>${t}</option>`).join('')}</select>
         </div>
         <div class="field">
           <label>Дата публикации</label>
-          <input id="e-date" type="date" value="${a.isoDate||new Date().toISOString().slice(0,10)}">
+          <input id="e-date" type="date" value="${a.isoDate||new Date().toISOString().slice(0,10)}" onchange="S.current.isoDate=this.value">
         </div>
         <div class="field">
           <label>URL (slug)</label>
@@ -363,12 +362,12 @@ function renderEditor() {
 
       <div class="field">
         <label>Заголовок</label>
-        <input id="e-title" type="text" value="${esc(a.title||'')}" placeholder="Заголовок статьи" style="font-size:18px;font-weight:700" oninput="autoSlug()">
+        <input id="e-title" type="text" value="${esc(a.title||'')}" placeholder="Заголовок статьи" style="font-size:18px;font-weight:700" oninput="S.current.title=this.value;autoSlug()">
       </div>
 
       <div class="field">
         <label>Анонс (показывается в карточке на сайте)</label>
-        <textarea id="e-preview" rows="2" placeholder="Краткое описание — 1–2 предложения">${esc(a.preview||'')}</textarea>
+        <textarea id="e-preview" rows="2" placeholder="Краткое описание — 1–2 предложения" oninput="S.current.preview=this.value">${esc(a.preview||'')}</textarea>
       </div>
 
       <div class="field">
@@ -448,7 +447,9 @@ function autoSlug() {
   const a = S.current;
   if (!a._sha) {
     const title = document.getElementById('e-title').value;
-    document.getElementById('e-slug').value = slugify(title);
+    const s = slugify(title);
+    document.getElementById('e-slug').value = s;
+    a.slug = s;
   }
 }
 

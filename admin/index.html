@@ -541,7 +541,15 @@ async function saveArticle() {
       if (oldSha) await ghDelete(S.current._path, 'del: rename ' + S.current.slug, oldSha);
     }
     // always get fresh sha from GitHub (cached _sha can be stale)
-    const sha = await ghGet(path).then(r => r.sha).catch(() => null);
+    let sha = null;
+    try {
+      const existing = await ghGet(path);
+      sha = existing.sha || null;
+    } catch(fetchErr) {
+      // file doesn't exist yet — sha stays null (create new)
+    }
+    toast('sha: ' + (sha ? sha.substring(0,7) : 'null (создание)'));
+    await new Promise(r => setTimeout(r, 1500));
     await ghPut(path, JSON.stringify(article, null, 2), (sha ? 'edit: ' : 'add: ') + title, sha);
     toast('Сохранено! Сайт обновится через ~1 минуту ✓');
     await loadArticles();

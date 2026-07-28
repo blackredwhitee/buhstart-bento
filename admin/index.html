@@ -535,17 +535,13 @@ async function saveArticle() {
 
   try {
     const path = `_articles/${slug}.json`;
-    let sha = S.current._sha;
     // if slug changed on edit, delete old file first
     if (S.current._path && S.current._path !== path) {
-      const oldSha = S.current._sha || (await ghGet(S.current._path).then(r => r.sha).catch(() => null));
+      const oldSha = await ghGet(S.current._path).then(r => r.sha).catch(() => null);
       if (oldSha) await ghDelete(S.current._path, 'del: rename ' + S.current.slug, oldSha);
-      sha = null;
     }
-    // always fetch current sha in case it changed (e.g. after GitHub Actions commit)
-    if (!sha) {
-      sha = await ghGet(path).then(r => r.sha).catch(() => null);
-    }
+    // always get fresh sha from GitHub (cached _sha can be stale)
+    const sha = await ghGet(path).then(r => r.sha).catch(() => null);
     await ghPut(path, JSON.stringify(article, null, 2), (sha ? 'edit: ' : 'add: ') + title, sha);
     toast('Сохранено! Сайт обновится через ~1 минуту ✓');
     await loadArticles();

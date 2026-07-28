@@ -5,6 +5,9 @@ on:
     paths:
       - '_articles/**'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest

@@ -373,7 +373,7 @@ function renderEditor() {
 
       <div class="field">
         <label>Обложка статьи</label>
-        ${coverHtml}
+        <div id="cover-area">${coverHtml}</div>
         <input type="file" id="cover-file" accept="image/*" style="display:none" onchange="handleCoverFile(event)">
       </div>
 
@@ -478,11 +478,21 @@ async function uploadCover(file) {
     await ghPutBinary(path, b64, 'upload: article cover ' + slug, sha);
     S.current.coverImage = path;
     toast('Обложка загружена ✓');
-    renderEditor();
+    updateCoverArea();
   } catch(e) { toast('Ошибка загрузки: ' + e.message, 'err'); }
 }
 
-function clearCover() { S.current.coverImage = ''; renderEditor(); }
+function updateCoverArea() {
+  const area = document.getElementById('cover-area');
+  if (!area) return;
+  if (S.current.coverImage) {
+    area.innerHTML = `<img src="/${S.current.coverImage}" class="img-preview"><br><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="clearCover()">Удалить обложку</button>`;
+  } else {
+    area.innerHTML = `<div class="img-drop" id="cover-drop" onclick="document.getElementById('cover-file').click()" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)">📷 Нажмите или перетащите файл обложки<br><span style="font-size:11px">JPG, PNG, WebP</span></div>`;
+  }
+}
+
+function clearCover() { S.current.coverImage = ''; updateCoverArea(); }
 
 function fileToBase64(file) {
   return new Promise((res,rej) => {

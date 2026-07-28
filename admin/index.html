@@ -564,9 +564,9 @@ async function saveArticle() {
       }
     }
     toast('Сохранено! Сайт обновится через ~1 минуту ✓');
-    await loadArticles();
     S.view = 'dash';
     render();
+    loadArticles().catch(() => {}); // refresh list in background, don't block navigation
   } catch(e) {
     toast('Ошибка: ' + e.message, 'err');
     btn.disabled = false; btn.innerHTML = '💾 Сохранить';

@@ -548,8 +548,6 @@ async function saveArticle() {
     } catch(fetchErr) {
       // file doesn't exist yet — sha stays null (create new)
     }
-    toast('sha: ' + (sha ? sha.substring(0,7) : 'null (создание)'));
-    await new Promise(r => setTimeout(r, 1500));
     await ghPut(path, JSON.stringify(article, null, 2), (sha ? 'edit: ' : 'add: ') + title, sha);
     toast('Сохранено! Сайт обновится через ~1 минуту ✓');
     await loadArticles();

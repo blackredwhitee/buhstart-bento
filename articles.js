@@ -1,6 +1,7 @@
 window.BUHSTART_ARTICLES = {};
 window.BUHSTART_ARTICLES["1111"] = {"tag":"ИП и ООО","title":"1111","date":"28 июля 2026","blocks":[{"t":"p","text":"12222222222"}],"preview":"11111","coverImage":"uploads/articles/1111-cover.png"};
 window.BUHSTART_ARTICLES["111111222"] = {"tag":"Бизнес","title":"111111222","date":"28 июля 2026","blocks":[{"t":"p","text":"11111"}],"preview":"11111","coverImage":"uploads/articles/1111-cover.png"};
+window.BUHSTART_ARTICLES["esche-odin-test"] = {"tag":"Налоги","title":"еще один тест","date":"28 июля 2026","blocks":[{"t":"p","text":"еще один тест"}],"preview":"еще один тест","coverImage":"uploads/articles/esche-odin-test-cover.png"};
 window.BUHSTART_ARTICLES["test-3"] = {"tag":"Финансы","title":"тест 3","date":"28 июля 2026","blocks":[{"t":"p","text":"тестовая статья"}],"preview":"тест","coverImage":"uploads/articles/test-3-cover.png"};
 window.BUHSTART_ARTICLES["test"] = {"tag":"Налоги","title":"тест","date":"28 июля 2026","blocks":[{"t":"p","text":"тест"}],"preview":"тест","coverImage":"uploads/articles/test-cover.png"};
 window.BUHSTART_ARTICLES["uaoschtsoa"] = {"tag":"Налоги","title":"уаощцоа","date":"28 июля 2026","blocks":[{"t":"p","text":"fdsknglkdngklde"}],"preview":"daeFIJIOJoesw","coverImage":"uploads/articles/uaoschtsoa-cover.png"};

@@ -1,0 +1,15 @@
+{
+  "slug": "esche-odin-test",
+  "tag": "Налоги",
+  "title": "еще один тест",
+  "date": "28 июля 2026",
+  "isoDate": "2026-07-28",
+  "preview": "еще один тест",
+  "coverImage": "uploads/articles/esche-odin-test-cover.png",
+  "blocks": [
+    {
+      "t": "p",
+      "text": "еще один тест"
+    }
+  ]
+}

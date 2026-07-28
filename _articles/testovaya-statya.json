@@ -1,0 +1,15 @@
+{
+  "slug": "testovaya-statya",
+  "tag": "Финансы",
+  "title": "ТЕСТОВАЯ СТАТЬЯ",
+  "date": "28 июля 2026",
+  "isoDate": "2026-07-28",
+  "preview": "1233",
+  "coverImage": "uploads/articles/testovaya-statya-cover.png",
+  "blocks": [
+    {
+      "t": "p",
+      "text": "1234"
+    }
+  ]
+}

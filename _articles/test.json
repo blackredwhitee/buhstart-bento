@@ -1,0 +1,15 @@
+{
+  "slug": "test",
+  "tag": "Налоги",
+  "title": "тест",
+  "date": "28 июля 2026",
+  "isoDate": "2026-07-28",
+  "preview": "тест",
+  "coverImage": "uploads/articles/test-cover.png",
+  "blocks": [
+    {
+      "t": "p",
+      "text": "тест"
+    }
+  ]
+}

@@ -24,3 +24,9 @@ table{display:block;overflow-x:auto}
 @media(min-width:768px){
   .d-hide{display:none !important}
 }
+
+@media (max-width: 1130px){
+  .hdr-phone{display:none !important}
+  header nav.m-hide{gap:18px !important}
+  header nav.m-hide a{font-size:14px !important}
+}

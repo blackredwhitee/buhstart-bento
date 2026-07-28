@@ -293,8 +293,8 @@ function renderDash() {
           <span class="article-row-title">${a.title}</span>
           <span class="article-row-date">${a.date||''}</span>
           <div class="article-row-actions">
-            <button class="btn btn-ghost btn-sm" onclick="editArticle(${JSON.stringify(a.slug)})">Изменить</button>
-            <button class="btn btn-danger btn-sm" onclick="confirmDelete(${JSON.stringify(a.slug)})">Удалить</button>
+            <button class="btn btn-ghost btn-sm" onclick="editArticle('${a.slug}')">Изменить</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmDelete('${a.slug}')">Удалить</button>
           </div>
         </div>`).join('')
     : '<div class="empty-state">Статей пока нет. Создайте первую!</div>';

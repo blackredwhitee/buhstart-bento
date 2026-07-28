@@ -16,7 +16,13 @@ table{display:block;overflow-x:auto}
   .m-hide{display:none !important}
   .m-sticky{position:sticky;top:0;z-index:30;background:#fff;padding:10px 0}
   .m-screen{min-height:calc(100vh - 210px)}
-  #blob-a>div,#blob-b>div{width:280px !important;height:280px !important}
+  #blob-a>div,#blob-b>div{width:240px !important;height:240px !important}
+  section>div{padding-left:20px !important;padding-right:20px !important;padding-top:52px !important;padding-bottom:52px !important}
+  section>#blob-a,section>#blob-b{padding:0 !important}
+  section>div.marquee{padding:16px 0 !important}
+  .plx-down{padding:24px !important}
+  .m-scroll{margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px}
+  .m-1col{gap:28px !important}
 }
 @media(min-width:768px) and (max-width:1279px){
   .t-2col{grid-template-columns:1fr 1fr !important}

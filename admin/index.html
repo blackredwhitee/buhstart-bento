@@ -540,15 +540,29 @@ async function saveArticle() {
       const oldSha = await ghGet(S.current._path).then(r => r.sha).catch(() => null);
       if (oldSha) await ghDelete(S.current._path, 'del: rename ' + S.current.slug, oldSha);
     }
-    // always get fresh sha from GitHub (cached _sha can be stale)
-    let sha = null;
-    try {
-      const existing = await ghGet(path);
-      sha = existing.sha || null;
-    } catch(fetchErr) {
-      // file doesn't exist yet — sha stays null (create new)
+    // get sha: use cached first, refresh if not available
+    let sha = S.current._sha || null;
+    if (!sha) {
+      try {
+        const existing = await ghGet(path);
+        sha = existing.sha || null;
+      } catch(fetchErr) {
+        sha = null; // file doesn't exist yet — will create
+      }
     }
-    await ghPut(path, JSON.stringify(article, null, 2), (sha ? 'edit: ' : 'add: ') + title, sha);
+    let putResult;
+    try {
+      putResult = await ghPut(path, JSON.stringify(article, null, 2), (sha ? 'edit: ' : 'add: ') + title, sha);
+    } catch(putErr) {
+      // if sha was wrong/missing, fetch fresh and retry once
+      if (putErr.message && putErr.message.includes('sha')) {
+        const retry = await ghGet(path).catch(() => null);
+        const retrySha = retry ? retry.sha : null;
+        putResult = await ghPut(path, JSON.stringify(article, null, 2), (retrySha ? 'edit: ' : 'add: ') + title, retrySha);
+      } else {
+        throw putErr;
+      }
+    }
     toast('Сохранено! Сайт обновится через ~1 минуту ✓');
     await loadArticles();
     S.view = 'dash';

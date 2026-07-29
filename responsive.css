@@ -21,8 +21,11 @@ p,li{hyphens:none}
   .m-2col{grid-template-columns:1fr 1fr !important}
   .m-btns{flex-direction:column !important;align-items:stretch !important;text-align:left}
   .m-btns>a,.m-btns>button{width:100%;justify-content:center;box-sizing:border-box}
-  .m-scroll{display:flex !important;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:8px}
+  .m-scroll{display:flex !important;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:8px;margin-right:-20px !important;padding-right:20px !important;scroll-padding-left:0}
   .m-scroll>*{flex:0 0 280px;scroll-snap-align:start}
+  .m-scroll>*:last-child{margin-right:20px}
+  /* ответы FAQ со сдвигом относительно вопроса */
+  .faq-a{padding-left:16px !important;border-left:2px solid #FEC89E}
   .m-hide{display:none !important}
   .m-sticky{position:sticky;top:0;z-index:30;background:#fff;padding:10px 0}
   .m-screen{min-height:calc(100vh - 210px)}
@@ -39,6 +42,8 @@ p,li{hyphens:none}
   .qz-card{padding:22px 20px !important}
   .m-1col{gap:28px !important}
   .m-nowrap{white-space:nowrap}
+  .m-bar{height:3px !important;max-height:3px !important;flex:none !important}
+  .marker{white-space:nowrap}
   .m-outline{border:1.5px solid #3D3D3D !important;border-radius:6px;min-height:52px;justify-content:center;padding:0 20px !important;box-sizing:border-box}
   .m-full{max-width:none !important}
   /* цифры: 2 строки по 2, без вертикальных линий и с общим левым краем */

@@ -1,11 +1,8 @@
 (function () {
   var HDR_H = 73;
+  var hdrObs = null; // observer на сам header
 
-  // ── 1. Фиксируем шапку ──────────────────────────────────────────────────
-  function fixHeader() {
-    var hdr = document.querySelector('#dc-root header');
-    if (!hdr) return;
-    if (window.getComputedStyle(hdr).position === 'fixed') return;
+  function fixHeader(hdr) {
     hdr.style.setProperty('position', 'fixed', 'important');
     hdr.style.setProperty('top', '0', 'important');
     hdr.style.setProperty('left', '0', 'important');
@@ -20,16 +17,32 @@
     }
   }
 
-  // Только childList — НЕ слушаем атрибуты (иначе мешает DC при вводе текста)
-  var timer = null;
-  var obs = new MutationObserver(function () {
-    clearTimeout(timer);
-    timer = setTimeout(fixHeader, 50);
-  });
-  obs.observe(document.documentElement, { childList: true, subtree: true });
-  fixHeader();
+  function attachToHeader(hdr) {
+    fixHeader(hdr);
+    // Следим только за этим элементом — если DC меняет его style, сразу фиксим
+    if (hdrObs) hdrObs.disconnect();
+    hdrObs = new MutationObserver(function () {
+      if (window.getComputedStyle(hdr).position !== 'fixed') {
+        fixHeader(hdr);
+      }
+    });
+    hdrObs.observe(hdr, { attributes: true, attributeFilter: ['style'] });
+  }
 
-  // ── 2. Кнопка «Наверх» ──────────────────────────────────────────────────
+  // Ждём появления header в DOM (DC рендерит асинхронно)
+  var domObs = new MutationObserver(function () {
+    var hdr = document.querySelector('#dc-root header');
+    if (hdr) {
+      domObs.disconnect();
+      attachToHeader(hdr);
+    }
+  });
+  domObs.observe(document.documentElement, { childList: true, subtree: true });
+  // Попытка сразу
+  var hdr0 = document.querySelector('#dc-root header');
+  if (hdr0) { domObs.disconnect(); attachToHeader(hdr0); }
+
+  // ── Кнопка «Наверх» ─────────────────────────────────────────────────────
   var bs = document.createElement('style');
   bs.textContent =
     '#btt-btn{position:fixed;right:20px;bottom:24px;z-index:160;' +

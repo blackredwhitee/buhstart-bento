@@ -1,4 +1,5 @@
 window.BUHSTART_ARTICLES = {};
+window.BUHSTART_ARTICLES["ku"] = {"tag":"Налоги","title":"ку","date":"29 июля 2026","blocks":[{"t":"p","text":"ку"}],"preview":"ку","coverImage":"uploads/articles/ku-cover.png"};
 window.BUHSTART_ARTICLES["statya-2"] = {"tag":"Налоги","title":"статья 2","date":"29 июля 2026","blocks":[{"t":"p","text":"статья"}],"preview":"статья","coverImage":"uploads/articles/statya-2-cover.jpeg"};
 window.BUHSTART_ARTICLES["statya-3"] = {"tag":"Финансы","title":"статья 3","date":"29 июля 2026","blocks":[{"t":"p","text":"статья ц"}],"preview":"статья 3","coverImage":"uploads/articles/statya-3-cover.svg"};
 window.BUHSTART_ARTICLES["statya-o-dengah"] = {"tag":"Бизнес","title":"статья о деньгах","date":"29 июля 2026","blocks":[],"preview":"1","coverImage":"uploads/articles/statya-o-dengah-cover.jpeg"};

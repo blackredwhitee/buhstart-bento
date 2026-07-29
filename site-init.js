@@ -1,14 +1,49 @@
 (function () {
-  var HDR_H = 73; // px — реальная высота шапки
+  var HDR_H = 73;
 
-  // ── 1. CSS: переопределяем inline position:sticky на шапке ──────────────
-  var s = document.createElement('style');
-  s.textContent =
-    '#dc-root header{' +
-      'position:fixed!important;top:0!important;left:0!important;' +
-      'right:0!important;width:100%!important;z-index:100!important;' +
-    '}' +
-    // Кнопка «Наверх»
+  // ── 1. Фиксируем шапку ──────────────────────────────────────────────────
+  // DC перетирает <head> через <helmet>, поэтому <style>-инъекция не держится.
+  // Ставим fixed через element.style.setProperty напрямую после рендера.
+
+  function fixHeader() {
+    var hdr = document.querySelector('#dc-root header');
+    if (!hdr) return false;
+
+    // Перебиваем inline-стиль DC через !important
+    hdr.style.setProperty('position', 'fixed', 'important');
+    hdr.style.setProperty('top', '0', 'important');
+    hdr.style.setProperty('left', '0', 'important');
+    hdr.style.setProperty('right', '0', 'important');
+    hdr.style.setProperty('width', '100%', 'important');
+    hdr.style.setProperty('z-index', '100', 'important');
+
+    // Распорка — вставляем только один раз
+    if (!document.querySelector('[data-hdr-spacer]')) {
+      var sp = document.createElement('div');
+      sp.setAttribute('data-hdr-spacer', '1');
+      sp.style.cssText = 'height:' + HDR_H + 'px;flex-shrink:0;';
+      hdr.parentNode.insertBefore(sp, hdr.nextSibling);
+    }
+    return true;
+  }
+
+  // Наблюдаем за DOM — DC рендерит асинхронно
+  var done = false;
+  var obs = new MutationObserver(function () {
+    if (done) return;
+    if (fixHeader()) {
+      done = true;
+      obs.disconnect();
+    }
+  });
+  obs.observe(document.documentElement, { childList: true, subtree: true });
+  // Попытка сразу — если DC уже отрендерил
+  if (fixHeader()) done = true;
+
+  // ── 2. Кнопка «Наверх» ──────────────────────────────────────────────────
+  // Стили кладём в <body> — он не перетирается DC
+  var bs = document.createElement('style');
+  bs.textContent =
     '#btt-btn{' +
       'position:fixed;right:20px;bottom:24px;z-index:160;' +
       'width:52px;height:52px;border-radius:50%;' +
@@ -19,38 +54,16 @@
       'transition:opacity .25s ease,transform .25s ease,background .15s ease;' +
       'transform:translateY(10px);' +
     '}' +
-    '#btt-btn.btt-visible{opacity:1;pointer-events:auto;transform:translateY(0);}' +
+    '#btt-btn.btt-on{opacity:1;pointer-events:auto;transform:translateY(0);}' +
     '#btt-btn:hover{background:#F07828;}' +
     '#btt-btn:hover svg path{stroke:#fff;}' +
-    '@media(max-width:767px){#btt-btn{width:48px;height:48px;bottom:72px;}}';
-  (document.head || document.documentElement).appendChild(s);
+    '@media(max-width:767px){#btt-btn{width:48px;height:48px;bottom:72px;right:16px;}}';
 
-  // ── 2. JS: вставляем распорку сразу после <header> ──────────────────────
-  var spacerDone = false;
-  function insertSpacer() {
-    if (spacerDone) return;
-    var hdr = document.querySelector('#dc-root header');
-    if (!hdr || !hdr.nextSibling) return;
-    // Не вставлять если распорка уже есть
-    var next = hdr.nextElementSibling;
-    if (next && next.dataset && next.dataset.spacer) return;
-    var div = document.createElement('div');
-    div.dataset.spacer = '1';
-    div.style.cssText = 'height:' + HDR_H + 'px;flex-shrink:0;';
-    hdr.parentNode.insertBefore(div, hdr.nextSibling);
-    spacerDone = true;
-  }
-
-  var obs = new MutationObserver(function () {
-    insertSpacer();
-    if (spacerDone) obs.disconnect();
-  });
-  obs.observe(document.documentElement, { childList: true, subtree: true });
-  insertSpacer(); // на случай если уже отрендерено
-
-  // ── 3. Кнопка «Наверх» ──────────────────────────────────────────────────
   function initBackToTop() {
     if (document.getElementById('btt-btn')) return;
+
+    document.body.appendChild(bs); // в body — не трогается DC
+
     var btn = document.createElement('button');
     btn.id = 'btt-btn';
     btn.setAttribute('aria-label', 'Наверх');
@@ -73,8 +86,7 @@
       var scrolled = sc.scrollTop;
       var total = sc.scrollHeight - sc.clientHeight;
       var show = total > 0 && scrolled / total > 0.72;
-      if (show) btn.classList.add('btt-visible');
-      else btn.classList.remove('btt-visible');
+      btn.classList.toggle('btt-on', show);
     }, { passive: true, capture: true });
   }
 

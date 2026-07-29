@@ -1,0 +1,15 @@
+{
+  "slug": "statya-3",
+  "tag": "Финансы",
+  "title": "статья 3",
+  "date": "29 июля 2026",
+  "isoDate": "2026-07-29",
+  "preview": "статья 3",
+  "coverImage": "uploads/articles/statya-3-cover.svg",
+  "blocks": [
+    {
+      "t": "p",
+      "text": "статья ц"
+    }
+  ]
+}

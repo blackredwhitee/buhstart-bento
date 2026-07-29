@@ -2,21 +2,16 @@
   var HDR_H = 73;
 
   // ── 1. Фиксируем шапку ──────────────────────────────────────────────────
-  // DC перерендеривает header после того как observer отработал — сбрасывает
-  // стиль обратно на sticky. Решение: observer не отключаем, применяем fix
-  // при каждом изменении DOM с дебаунсом.
-
   function fixHeader() {
     var hdr = document.querySelector('#dc-root header');
     if (!hdr) return;
-    if (window.getComputedStyle(hdr).position === 'fixed') return; // уже ок
+    if (window.getComputedStyle(hdr).position === 'fixed') return;
     hdr.style.setProperty('position', 'fixed', 'important');
     hdr.style.setProperty('top', '0', 'important');
     hdr.style.setProperty('left', '0', 'important');
     hdr.style.setProperty('right', '0', 'important');
     hdr.style.setProperty('width', '100%', 'important');
     hdr.style.setProperty('z-index', '100', 'important');
-    // Распорка
     if (!document.querySelector('[data-hdr-spacer]')) {
       var sp = document.createElement('div');
       sp.setAttribute('data-hdr-spacer', '1');
@@ -25,12 +20,13 @@
     }
   }
 
+  // Только childList — НЕ слушаем атрибуты (иначе мешает DC при вводе текста)
   var timer = null;
   var obs = new MutationObserver(function () {
     clearTimeout(timer);
     timer = setTimeout(fixHeader, 50);
   });
-  obs.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+  obs.observe(document.documentElement, { childList: true, subtree: true });
   fixHeader();
 
   // ── 2. Кнопка «Наверх» ──────────────────────────────────────────────────

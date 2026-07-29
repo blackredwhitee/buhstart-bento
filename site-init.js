@@ -1,6 +1,7 @@
 (function () {
   var HDR_H = 73;
-  var hdrObs = null; // observer на сам header
+  var hdrObs = null;
+  var currentHdr = null;
 
   function fixHeader(hdr) {
     hdr.style.setProperty('position', 'fixed', 'important');
@@ -18,8 +19,9 @@
   }
 
   function attachToHeader(hdr) {
+    if (currentHdr === hdr) return; // уже следим за этим элементом
+    currentHdr = hdr;
     fixHeader(hdr);
-    // Следим только за этим элементом — если DC меняет его style, сразу фиксим
     if (hdrObs) hdrObs.disconnect();
     hdrObs = new MutationObserver(function () {
       if (window.getComputedStyle(hdr).position !== 'fixed') {
@@ -29,18 +31,15 @@
     hdrObs.observe(hdr, { attributes: true, attributeFilter: ['style'] });
   }
 
-  // Ждём появления header в DOM (DC рендерит асинхронно)
+  // domObs НЕ отключается — DC может заменить header новым элементом в любой момент
   var domObs = new MutationObserver(function () {
     var hdr = document.querySelector('#dc-root header');
-    if (hdr) {
-      domObs.disconnect();
-      attachToHeader(hdr);
-    }
+    if (hdr) attachToHeader(hdr);
   });
   domObs.observe(document.documentElement, { childList: true, subtree: true });
-  // Попытка сразу
+
   var hdr0 = document.querySelector('#dc-root header');
-  if (hdr0) { domObs.disconnect(); attachToHeader(hdr0); }
+  if (hdr0) attachToHeader(hdr0);
 
   // ── Кнопка «Наверх» ─────────────────────────────────────────────────────
   var bs = document.createElement('style');

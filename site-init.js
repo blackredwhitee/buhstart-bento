@@ -1,4 +1,5 @@
 (function () {
+  console.log('[site-init] script running, dcRoot:', !!document.getElementById('dc-root'), 'header:', !!document.querySelector('#dc-root header'));
   var HDR_H = 73;
   var hdrObs = null;
   var currentHdr = null;

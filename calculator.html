@@ -111,6 +111,10 @@ a{color:#F07828}
 .sum-services-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--or);margin-bottom:8px}
 .sum-service-line{display:flex;gap:8px;font-size:13px;color:var(--g700);padding:3px 0}
 .sum-service-dot{color:var(--green);flex-shrink:0}
+.sum-svc-item{padding:8px 0;border-bottom:1px solid var(--g100)}
+.sum-svc-item:last-child{border-bottom:none}
+.sum-svc-name{font-size:14px;font-weight:600;color:var(--g800)}
+.sum-svc-desc{font-size:12px;color:var(--g500);margin-top:2px;line-height:1.5}
 .tariff-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
 .tariff-card{border:1.5px solid var(--g200);border-radius:var(--r10);padding:18px 14px;display:flex;flex-direction:column;gap:4px}
 .tariff-card.featured{border-color:var(--or);box-shadow:0 0 0 3px rgba(240,120,40,.1)}
@@ -537,6 +541,56 @@ a{color:#F07828}
 
 <script>
 const BITRIX_WEBHOOK = '';
+const SHEETS_WEBHOOK = ''; // URL из Google Apps Script (Веб-приложение)
+
+const DESC = {
+  'Нулевая отчётность':'Подготовка и сдача отчётности без оборотов, контроль оплаты фиксированных взносов',
+  'ООО':'Подготовка и сдача бухгалтерского баланса с отчётом о финансовых результатах, учёт ОС, НМА, расчётов с контрагентами',
+  'Патент':'Учёт доходов, подготовка книги учёта доходов, контроль оплаты налогов и взносов ИП',
+  'Патент (доп.)':'Учёт доходов, подготовка книги учёта доходов',
+  'УСН 6%':'Учёт доходов, подготовка и сдача уведомлений по УСН и декларации при УСН',
+  'УСН 15%':'Учёт доходов и расходов, ввод первичной документации, подготовка и сдача уведомлений по УСН и декларации при УСН',
+  'АУСН Доходы':'Учёт доходов, контроль правильности отображения в ЛК АУСН начисления налога',
+  'АУСН Доходы-Расходы':'Учёт доходов и расходов, контроль корректности отражения операций в ЛК АУСН',
+  'ОСНО':'Учёт списаний и поступлений, ввод первичной документации, подготовка и сдача деклараций по налогу на прибыль и по НДС',
+  'НДС 5%':'Подготовка и сдача декларации по НДС',
+  'НДС 7%':'Подготовка и сдача декларации по НДС',
+  'НДС 10%':'Подготовка и сдача декларации по НДС',
+  'НДС 22%':'Подготовка и сдача декларации по НДС',
+  'НДС 0%':'Подготовка и сдача декларации по НДС',
+  'НДС не облагается':'',
+  'Освобождение от НДС (ст.145)':'Подготовка заявления об освобождении и сдача уведомления',
+  'Wildberries':'Бухгалтерский учёт операций по маркетплейсам: выручка, комиссии, возвраты, эквайринг, расходы на логистику',
+  'Ozon':'Бухгалтерский учёт операций по маркетплейсам: выручка, комиссии, возвраты, эквайринг, расходы на логистику',
+  'Яндекс Маркет':'Бухгалтерский учёт операций по маркетплейсам: выручка, комиссии, возвраты, эквайринг, расходы на логистику',
+  'Маркетплейс':'Бухгалтерский учёт операций по маркетплейсам: выручка, комиссии, возвраты, эквайринг, расходы на логистику',
+  'Товарный учёт (маркетплейс)':'Загрузка документов из ЛК маркетплейсов',
+  'Услуги прочие':'Создание и сбор счетов, договоров, актов выполненных услуг, УПД',
+  'Оптовая торговля':'Большой документооборот, ЭДО, сверки, валютный контроль, контроль дебиторской задолженности',
+  'Товарный учёт (опт)':'Товарно-складской учёт',
+  'Розничная торговля':'Ежедневная выручка по кассе (Z-отчёты), эквайринг, учёт розничных товаров, маркировка',
+  'Товарный учёт (розница)':'Товарно-складской учёт',
+  'Строительство':'Учёт материалов и спецодежды, формы КС-2 и КС-3, учёт выполненных строительно-монтажных работ',
+  'Общепит':'Калькуляционный учёт (рецепты, техкарты), работа с ЕГАИС, «Меркурий» и «Честный ЗНАК»',
+  'Медицина':'Учёт МПЗ и медоборудования, учёт расчётов с фондами ДМС, ОМС и пациентами',
+  'Производство':'Расчёт себестоимости, учёт сырья и НЗП, распределение прямых и косвенных расходов',
+  'Работа с расчётным счётом':'Загрузка выписок, обработка и разноска банковских операций, подготовка платёжных поручений',
+  'Приоритетный ответ менеджера':'Индивидуальный бухгалтер, отвечающий руководителю в течение рабочего дня',
+  'Налоговый менеджмент':'Проведение консультаций по налогообложению, оптимизация налоговой нагрузки',
+  'Расширенное сопровождение р/с':'Обработка и разноска банковских операций, подготовка платёжных поручений',
+  'Управленческий учёт':'Построение ОДДС и ОПиУ, расчёт и анализ ключевых показателей прибыльности компании',
+  'Полное сопровождение р/с и платёжного поручения':'Загрузка выписок, обработка операций, подготовка и отправка платёжных поручений',
+  'ВЭД / Валютные расчёты':'Учёт экспортных и импортных операций',
+  'Сверки с контрагентами':'Подготовка и подписание актов сверки с поставщиками, подрядчиками, покупателями и заказчиками',
+  'Касса (ККМ)':'Сверка поступлений с ОФД, учёт наличных денежных средств, контроль кассового остатка',
+  'Авансовые отчёты':'Подготовка и загрузка авансовых отчётов от подотчётных лиц',
+  'ВЭД / Валютные расчёты':'Учёт экспортных и импортных операций',
+};
+function getDesc(name){
+  if(DESC[name]) return DESC[name];
+  for(const k of Object.keys(DESC)){if(name.startsWith(k.replace(/\(.*\)/,'').trim())) return DESC[k];}
+  return '';
+}
 
 const P = {
   null_ip:2000,null_ooo:3000,entity_ooo:10000,
@@ -761,7 +815,7 @@ function buildSummary(){
   G('sum-params').innerHTML=
     '<div class="sum-param"><span class="sum-param-k">Форма</span><span class="sum-param-v">'+esc(A.entity)+'</span></div>'+
     (!A.isNull?'<div class="sum-param"><span class="sum-param-k">Налогообложение</span><span class="sum-param-v">'+esc(taxN[A.tax]||A.tax)+'</span></div>':'<div class="sum-param"><span class="sum-param-k">Отчётность</span><span class="sum-param-v">Нулевая</span></div>');
-  G('sum-services').innerHTML=r.lines.map(l=>'<div class="kp-service-row"><span class="kp-service-name">'+esc(l.name)+'</span><span class="kp-service-price">'+(l.price>0?fmt(l.price):'—')+'</span></div>').join('');
+  G('sum-services').innerHTML=r.lines.map(l=>{const d=getDesc(l.name);return'<div class="sum-svc-item"><div class="sum-svc-name">'+esc(l.name)+'</div>'+(d?'<div class="sum-svc-desc">'+esc(d)+'</div>':'')+'</div>';}).join('');
   G('tariff-cards').innerHTML=
     '<div class="tariff-card"><div class="tariff-name">Базовая</div><div class="tariff-price">'+fmt(r.baseTotal)+'<span>/мес</span></div><div class="tariff-desc">Бухгалтерский учёт, налоговая отчётность, р/с</div></div>'+
     '<div class="tariff-card featured"><div class="tariff-badge">Популярный</div><div class="tariff-name">Стандарт</div><div class="tariff-price">'+fmt(r.stdTotal)+'<span>/мес</span></div><div class="tariff-desc">Базовая + приоритетный ответ, офисный бухгалтер'+(taxQ()&&A.taxMgmt?', нал. менеджмент':'')+'</div></div>'+
@@ -775,36 +829,92 @@ function generateKP(){
   const num=lastKP?lastKP.num:kpNum();
   lastKP={num,r};
 
-  G('kp-num').textContent='№ '+num+' · '+toDay();
-  G('kp-date').textContent=toDayLong();
-  G('kp-client').textContent='Для: '+clientFull()+(A.director?' | '+A.director:'');
-  G('kp-valid').textContent=kpValid();
-
-  G('kp-services').innerHTML=r.lines.map(l=>
-    '<div class="kp-service-row"><span class="kp-service-name">'+esc(l.name)+'</span><span class="kp-service-price">'+(l.price>0?fmt(l.price):'—')+'</span></div>'
-  ).join('');
-
-  G('kp-tariffs').innerHTML=
-    '<div class="kp-tariff"><div class="kp-tariff-badge">Базовая</div><div class="kp-tariff-name">Стандартный учёт</div><div class="kp-tariff-price">'+fmt(r.baseTotal)+'<span>/мес</span></div><div class="kp-tariff-extras">Бухгалтерский учёт, налоговая отчётность, работа с расчётным счётом</div></div>'+
-    '<div class="kp-tariff featured"><div class="kp-tariff-badge">Стандарт — рекомендуем</div><div class="kp-tariff-name">Расширенное сопровождение</div><div class="kp-tariff-price">'+fmt(r.stdTotal)+'<span>/мес</span></div><div class="kp-tariff-extras">Всё из Базовой +<br>'+r.stdLines.map(l=>'• '+esc(l.name)).join('<br>')+'</div></div>'+
-    '<div class="kp-tariff"><div class="kp-tariff-badge">Оптима</div><div class="kp-tariff-name">Полный пакет</div><div class="kp-tariff-price">'+fmt(r.optTotal)+'<span>/мес</span></div><div class="kp-tariff-extras">Всё из Стандарт +<br>'+r.optLines.map(l=>'• '+esc(l.name)).join('<br>')+'</div></div>';
-
-  function bdBlock(title,rows){
-    let h='<div class="bd-block"><div class="bd-block-title">'+esc(title)+'</div>';
-    rows.forEach(([nm,pr])=>{h+='<div class="bd-row"><span class="bd-name">'+esc(nm)+'</span><span class="bd-price">'+fmt(pr)+'</span></div>'});
-    const tot=rows.reduce((s,[,p])=>s+p,0);
-    h+='<div class="bd-divider"></div><div class="bd-row bd-final"><span class="bd-name">Итого</span><span class="bd-price">'+fmt(tot)+'</span></div></div>';
-    return h;
+  // --- Генерация HTML для .doc ---
+  function row(nm,pr){return'<tr><td style="padding:6px 12px 6px 0;border-bottom:1px solid #eee;font-size:13px;color:#444">'+nm+'</td><td style="padding:6px 0 6px 12px;border-bottom:1px solid #eee;font-size:13px;font-weight:600;text-align:right;white-space:nowrap">'+pr+'</td></tr>';}
+  function tariffCol(badge,name,price,extras,highlight){
+    const bg=highlight?'#FFF3EE':'#fff';
+    const border=highlight?'2px solid #F07828':'1px solid #E8E8E8';
+    return'<td style="width:33%;padding:16px;background:'+bg+';border:'+border+';border-radius:8px;vertical-align:top">'+
+      '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#F07828;margin-bottom:4px">'+badge+'</div>'+
+      '<div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:6px">'+name+'</div>'+
+      '<div style="font-size:20px;font-weight:800;color:#F07828;margin-bottom:8px">'+price+' <span style="font-size:12px;font-weight:400;color:#888">/мес</span></div>'+
+      '<div style="font-size:12px;color:#666;line-height:1.5">'+extras+'</div></td>';
   }
-  G('kp-breakdown').innerHTML=
-    bdBlock('Базовая',r.lines.map(l=>[l.name,l.price]))+
-    bdBlock('Стандарт',[['Базовая',r.baseTotal],...r.stdLines.map(l=>[l.name,l.price])])+
-    bdBlock('Оптима',[['Стандарт',r.stdTotal],...r.optLines.map(l=>[l.name,l.price])]);
 
-  G('quiz-wrap').style.display='none';
-  G('kp-sec').style.display='block';
-  G('kp-sec').scrollIntoView({behavior:'smooth',block:'start'});
-  showToast('КП сформировано');
+  const taxN={patent:'Патент',ausn_d:'АУСН Доходы',ausn_dr:'АУСН Доходы-Расходы',usn6:'УСН 6%',usn15:'УСН 15%',osno:'ОСНО'};
+  const html=`<html><head><meta charset="utf-8">
+<style>
+  body{font-family:'Calibri',Arial,sans-serif;margin:0;padding:40px;color:#1A1A1A}
+  h1{font-size:24px;font-weight:800;margin:0 0 4px}
+  table{border-collapse:collapse;width:100%}
+  .section-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#F07828;margin:24px 0 8px}
+</style></head><body>
+<table style="margin-bottom:24px"><tr>
+  <td><div style="font-size:22px;font-weight:800;color:#F07828;letter-spacing:-.01em">Доверительная Бухгалтерия</div>
+  <div style="font-size:12px;color:#888;margin-top:2px">ООО «Профит-Консалт» · ИНН 7709792856 · Москва, Денежный пер., д. 4</div>
+  <div style="font-size:12px;color:#888">+7 (495) 778-81-68 · info@buhstart.ru</div></td>
+  <td style="text-align:right;vertical-align:top">
+  <div style="font-size:12px;color:#888">№ ${num} от ${toDay()}</div>
+  <div style="font-size:14px;font-weight:700;margin-top:4px">${esc(clientFull())}</div>
+  ${A.phone?'<div style="font-size:13px;color:#555">'+esc(A.phone)+'</div>':''}
+  ${A.director?'<div style="font-size:12px;color:#888">'+esc(A.director)+'</div>':''}
+  </td>
+</tr></table>
+
+<h1>Коммерческое предложение</h1>
+<div style="font-size:13px;color:#888;margin-bottom:24px">Бухгалтерское обслуживание · ${A.isNull?'Нулевая отчётность':(taxN[A.tax]||A.tax)} · ${A.entity}</div>
+
+<div class="section-title">Состав услуг</div>
+<table style="margin-bottom:8px">
+${r.lines.map(l=>{
+  const d=getDesc(l.name);
+  return'<tr><td style="padding:8px 12px 8px 0;border-bottom:1px solid #f0f0f0;width:60%"><div style="font-size:13px;font-weight:600;color:#1A1A1A">'+esc(l.name)+'</div>'+(d?'<div style="font-size:11px;color:#888;margin-top:2px">'+esc(d)+'</div>':'')+'</td><td style="padding:8px 0 8px 12px;border-bottom:1px solid #f0f0f0;text-align:right;font-size:13px;font-weight:600;white-space:nowrap">'+(l.price>0?fmt(l.price):'—')+'</td></tr>';
+}).join('')}
+</table>
+
+<div class="section-title">Тарифы</div>
+<table style="margin-bottom:24px;border-spacing:12px;border-collapse:separate"><tr>
+${tariffCol('Базовая','Стандартный учёт',fmt(r.baseTotal),'Бухгалтерский учёт, налоговая отчётность, работа с расчётным счётом',false)}
+<td style="width:4px"></td>
+${tariffCol('Стандарт — рекомендуем','Расширенное сопровождение',fmt(r.stdTotal),'Всё из Базовой +<br>'+r.stdLines.map(l=>'• '+esc(l.name)).join('<br>'),true)}
+<td style="width:4px"></td>
+${tariffCol('Оптима','Полный пакет',fmt(r.optTotal),'Всё из Стандарт +<br>'+r.optLines.map(l=>'• '+esc(l.name)).join('<br>'),false)}
+</tr></table>
+
+<div style="background:#F5F5F5;border-radius:6px;padding:16px 20px;font-size:12px;color:#666;line-height:1.6">
+<strong>Условия сотрудничества:</strong><br>
+Оплата: 50% предоплата до начала работы, 50% — по итогам периода.<br>
+Срок начала: 1–3 рабочих дня после подписания договора.<br>
+КП действительно до: ${kpValid()}.
+</div>
+</body></html>`;
+
+  const blob=new Blob(['﻿'+html],{type:'application/msword'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='КП_'+num+'_'+A.name.replace(/[^а-яёА-ЯЁa-zA-Z0-9]/g,'_')+'.doc';
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},1000);
+
+  // --- Сохранение в Google Таблицу ---
+  saveToSheets(r, num);
+
+  showToast('КП скачивается…');
+}
+
+async function saveToSheets(r, num){
+  if(!SHEETS_WEBHOOK) return;
+  const taxN={patent:'Патент',ausn_d:'АУСН Доходы',ausn_dr:'АУСН Доходы-Расходы',usn6:'УСН 6%',usn15:'УСН 15%',osno:'ОСНО'};
+  try{
+    await fetch(SHEETS_WEBHOOK,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      num, date: toDay(),
+      name: A.name, phone: A.phone, director: A.director||'',
+      entity: A.entity,
+      tax: A.isNull?'Нулевая':(taxN[A.tax]||A.tax),
+      services: r.lines.map(l=>l.name).join(', '),
+      base: r.baseTotal, std: r.stdTotal, opt: r.optTotal,
+    })});
+  }catch(e){}
 }
 
 async function sendLead(){

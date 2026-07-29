@@ -1,15 +1,25 @@
 html,body{overflow-x:hidden}
 img{max-width:100%}
 table{display:block;overflow-x:auto}
+h1{font-size:clamp(32px,5.2vw,72px) !important;line-height:1.07 !important}
+h2{font-size:clamp(26px,3.3vw,36px) !important;line-height:1.15 !important}
+h1,h2,h3,p,li,figcaption{text-wrap:pretty}
+p,li{hyphens:none}
+/* планшет: две колонки становятся тесными раньше мобильного */
+@media(max-width:1023px){
+  .m-1col{grid-template-columns:1fr !important;gap:36px !important}
+  .t-2col{grid-template-columns:1fr 1fr !important}
+}
+@media(min-width:768px) and (max-width:1023px){
+  section>div{padding-left:32px !important;padding-right:32px !important}
+}
 @media(max-width:767px){
   body{font-size:15px;padding-bottom:64px}
-  h1{font-size:36px !important}
-  h2{font-size:28px !important}
   .m-hero{display:flex !important;flex-direction:column-reverse;gap:28px;padding-top:32px !important}
   .m-heroimg{height:280px !important;overflow:hidden}
   .m-1col{grid-template-columns:1fr !important}
   .m-2col{grid-template-columns:1fr 1fr !important}
-  .m-btns{flex-direction:column !important;align-items:stretch}
+  .m-btns{flex-direction:column !important;align-items:stretch !important;text-align:left}
   .m-btns>a,.m-btns>button{width:100%;justify-content:center;box-sizing:border-box}
   .m-scroll{display:flex !important;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:8px}
   .m-scroll>*{flex:0 0 280px;scroll-snap-align:start}
@@ -17,12 +27,25 @@ table{display:block;overflow-x:auto}
   .m-sticky{position:sticky;top:0;z-index:30;background:#fff;padding:10px 0}
   .m-screen{min-height:calc(100vh - 210px)}
   #blob-a>div,#blob-b>div{width:240px !important;height:240px !important}
-  section>div{padding-left:20px !important;padding-right:20px !important;padding-top:52px !important;padding-bottom:52px !important}
-  section>#blob-a,section>#blob-b{padding:0 !important}
+  /* единая вертикальная линия: горизонтальный отступ живёт только на section */
+  section{padding-left:20px !important;padding-right:20px !important;padding-top:52px !important;padding-bottom:52px !important;box-sizing:border-box}
+  section>div{padding-left:0 !important;padding-right:0 !important}
+  section>div{padding-top:0 !important;padding-bottom:0 !important}
+  section:has(>div.marquee){padding-top:0 !important;padding-bottom:0 !important}
   section>div.marquee{padding:16px 0 !important}
-  .plx-down{padding:24px !important}
-  .m-scroll{margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px}
+  section>#blob-a,section>#blob-b{padding:0 !important}
+  .plx-down{margin-left:-20px !important;margin-right:-20px !important;padding:28px 20px !important;border-radius:0 !important}
+  .qz-stage{height:330px !important}
+  .qz-card{padding:22px 20px !important}
   .m-1col{gap:28px !important}
+  .m-nowrap{white-space:nowrap}
+  .m-outline{border:1.5px solid #3D3D3D !important;border-radius:6px;min-height:52px;justify-content:center;padding:0 20px !important;box-sizing:border-box}
+  .m-full{max-width:none !important}
+  /* цифры: 2 строки по 2, без вертикальных линий и с общим левым краем */
+  .m-2col>div{padding-left:0 !important;padding-right:14px !important;border-left:none !important;border-right:none !important}
+  .m-2col>div{padding-top:26px !important;padding-bottom:26px !important}
+  .m-2col .m-hide{display:block !important}
+  .m-2col>div>div:first-child{font-size:32px !important;font-weight:700 !important;letter-spacing:-0.01em !important;white-space:nowrap}
 }
 @media(min-width:768px) and (max-width:1279px){
   .t-2col{grid-template-columns:1fr 1fr !important}
@@ -35,4 +58,8 @@ table{display:block;overflow-x:auto}
   .hdr-phone{display:none !important}
   header nav.m-hide{gap:18px !important}
   header nav.m-hide a{font-size:14px !important}
+}
+
+@media(max-width:767px){
+  .m-bleed{overflow-x:auto;-webkit-overflow-scrolling:touch}
 }

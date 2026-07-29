@@ -19,17 +19,18 @@
 .hdr{animation:slideDown .5s ease both}
 @keyframes quoteIn{from{opacity:0;transform:scale(0.4)}to{opacity:0.35;transform:scale(1)}}
 
-/* Hover lift для карточек */
-section a[style*="border-radius:10px"],
-section a[style*="border-radius:16px"] {
-  transition: transform .2s ease, box-shadow .2s ease !important;
+#om-progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,#F07828,#FEC89E);z-index:9999;pointer-events:none}
+[data-tilt]{transition:transform .3s cubic-bezier(.2,.7,.3,1);transform-style:preserve-3d}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(240,120,40,0)}50%{box-shadow:0 0 32px 0 rgba(240,120,40,0.22)}}
+@supports (animation-timeline: view()){
+  @keyframes wipeIn{from{clip-path:inset(0 100% 0 0);opacity:.4}to{clip-path:inset(0 0 0 0);opacity:1}}
+  [data-wipe]{animation:wipeIn .9s cubic-bezier(.2,.7,.3,1) both;animation-timeline:view();animation-range:entry 8% entry 45%}
+  @keyframes cellIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  [data-cell]{animation:cellIn .55s cubic-bezier(.2,.7,.3,1) both;animation-timeline:view();animation-range:entry 2% entry 32%}
+  @keyframes barGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  [data-bar]{transform-origin:left;animation:barGrow .8s cubic-bezier(.2,.7,.3,1) both;animation-timeline:view();animation-range:entry 10% entry 45%}
 }
-section a[style*="border-radius:10px"]:hover,
-section a[style*="border-radius:16px"]:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 8px 28px rgba(0,0,0,.09) !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .anim-reveal { transition: none !important; opacity: 1 !important; transform: none !important; }
+@media (prefers-reduced-motion: reduce){
+  #om-progress{display:none}
+  [data-wipe],[data-cell],[data-bar],[data-tilt]{animation:none !important;transform:none !important;clip-path:none !important}
 }

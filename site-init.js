@@ -1,23 +1,28 @@
 (function () {
-  function stickyHeader() {
-    var HDR_H = 72;
-    var done = false;
-    var obs = new MutationObserver(function () {
-      if (done) return;
-      var frames = document.querySelectorAll('body iframe');
-      if (frames.length > 0) {
-        var hdr = frames[0];
-        hdr.style.cssText += ';position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:200!important;width:100%!important;display:block!important;';
-        // push page content below fixed header
-        document.body.style.paddingTop = (document.body.style.paddingTop ? '' : HDR_H + 'px');
-        done = true;
-        obs.disconnect();
-      }
-    });
-    obs.observe(document.body || document.documentElement, { childList: true, subtree: true });
+  // Sticky header: CSS injection survives DC framework iframe recreation
+  var s = document.createElement('style');
+  s.textContent = [
+    'body>iframe:first-of-type{',
+    'position:fixed!important;',
+    'top:0!important;left:0!important;',
+    'width:100vw!important;height:72px!important;',
+    'z-index:200!important;',
+    '}'
+  ].join('');
+  (document.head || document.documentElement).appendChild(s);
+
+  function applyPadding() {
+    if (document.body) document.body.style.paddingTop = '72px';
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyPadding);
+  } else {
+    applyPadding();
   }
 
+  // Back-to-top button
   function backToTop() {
+    if (document.getElementById('btt-btn')) return;
     var btn = document.createElement('button');
     btn.id = 'btt-btn';
     btn.innerHTML = '&#8679;';
@@ -30,7 +35,7 @@
       'font-size:26px', 'line-height:1', 'cursor:pointer',
       'box-shadow:0 4px 16px rgba(240,120,40,0.35)',
       'opacity:0', 'pointer-events:none',
-      'transition:opacity 0.25s ease, transform 0.25s ease',
+      'transition:opacity 0.25s ease,transform 0.25s ease',
       'transform:translateY(12px)',
       'display:flex', 'align-items:center', 'justify-content:center',
       'font-family:sans-serif'
@@ -42,20 +47,20 @@
     });
 
     var visible = false;
-    function onScroll() {
-      var scrolled = window.scrollY || document.documentElement.scrollTop;
-      var shouldShow = scrolled > 400;
-      if (shouldShow !== visible) {
-        visible = shouldShow;
+    window.addEventListener('scroll', function () {
+      var should = (window.scrollY || document.documentElement.scrollTop) > 400;
+      if (should !== visible) {
+        visible = should;
         btn.style.opacity = visible ? '1' : '0';
         btn.style.transform = visible ? 'translateY(0)' : 'translateY(12px)';
         btn.style.pointerEvents = visible ? 'auto' : 'none';
       }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
+    }, { passive: true });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { stickyHeader(); backToTop(); });
-  } else { stickyHeader(); backToTop(); }
+    document.addEventListener('DOMContentLoaded', backToTop);
+  } else {
+    backToTop();
+  }
 })();

@@ -18,3 +18,40 @@
 @keyframes slideDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
 .hdr{animation:slideDown .5s ease both}
 @keyframes quoteIn{from{opacity:0;transform:scale(0.4)}to{opacity:0.35;transform:scale(1)}}
+
+/* Scroll-reveal (JS-driven) */
+.anim-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .6s cubic-bezier(.2,.7,.3,1), transform .6s cubic-bezier(.2,.7,.3,1);
+  transition-delay: var(--anim-delay, 0ms);
+}
+.anim-reveal.anim-visible {
+  opacity: 1;
+  transform: none;
+}
+.anim-heading {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1);
+}
+.anim-heading.anim-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hover lift for cards */
+section div[style*="border-radius:16px"],
+section div[style*="border-radius:10px"],
+section a[style*="border-radius:10px"] {
+  transition: transform .2s ease, box-shadow .2s ease !important;
+}
+section div[style*="border-radius:16px"]:hover,
+section a[style*="border-radius:10px"]:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.1) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-reveal, .anim-heading { transition: none !important; opacity: 1 !important; transform: none !important; }
+}

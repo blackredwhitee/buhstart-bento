@@ -66,17 +66,20 @@ textarea { resize: vertical; }
 .article-row-actions { display: flex; gap: 6px; }
 .empty-state { text-align: center; color: #aaa; padding: 60px 20px; font-size: 14px; }
 
-/* Block editor */
-.blocks-wrap { border: 1.5px solid #E0DDD8; border-radius: 10px; overflow: hidden; }
-.block-item { display: flex; gap: 0; align-items: stretch; border-bottom: 1px solid #F0EDE8; }
-.block-item:last-child { border-bottom: none; }
-.block-type { padding: 10px 10px; background: #F9F7F4; border-right: 1px solid #F0EDE8; display: flex; align-items: center; }
-.block-type select { width: 100px; border: none; background: transparent; font-size: 12px; color: #666; cursor: pointer; padding: 4px 2px; }
-.block-content { flex: 1; padding: 8px 12px; }
-.block-content input, .block-content textarea { border: none; padding: 4px 0; font-size: 14px; background: transparent; resize: none; min-height: 36px; }
-.block-content input:focus, .block-content textarea:focus { outline: none; }
-.block-actions { padding: 6px 8px; display: flex; flex-direction: column; gap: 4px; align-items: center; justify-content: center; }
-.add-block-bar { padding: 10px 14px; background: #F9F7F4; display: flex; gap: 8px; border-top: 1px solid #F0EDE8; }
+/* WYSIWYG editor */
+.wysiwyg-wrap { border: 1.5px solid #E0DDD8; border-radius: 10px; overflow: hidden; }
+.wysiwyg-toolbar { display: flex; flex-wrap: wrap; gap: 2px; padding: 8px 10px; background: #F9F7F4; border-bottom: 1px solid #E0DDD8; }
+.tb-btn { padding: 5px 10px; border: 1px solid transparent; border-radius: 6px; background: transparent; font-size: 13px; font-weight: 600; cursor: pointer; color: #444; font-family: inherit; transition: all .12s; line-height: 1; }
+.tb-btn:hover { background: #fff; border-color: #D0CCC7; }
+.tb-btn.active { background: #F07828; color: #fff; border-color: #F07828; }
+.tb-sep { width: 1px; background: #D0CCC7; margin: 4px 4px; align-self: stretch; }
+.wysiwyg-body { padding: 16px 20px; min-height: 260px; font-size: 15px; line-height: 1.7; outline: none; color: #1A1A1A; }
+.wysiwyg-body:empty::before { content: 'Начните печатать или вставьте текст…'; color: #bbb; pointer-events: none; }
+.wysiwyg-body h2 { font-size: 20px; font-weight: 700; margin: 20px 0 6px; line-height: 1.3; }
+.wysiwyg-body h3 { font-size: 16px; font-weight: 700; margin: 16px 0 4px; line-height: 1.3; }
+.wysiwyg-body p { margin: 0 0 10px; }
+.wysiwyg-body ul { padding-left: 20px; margin: 0 0 10px; }
+.wysiwyg-body li { margin-bottom: 4px; }
 
 /* Image upload */
 .img-drop { border: 2px dashed #E0DDD8; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; color: #aaa; font-size: 13px; transition: border .15s; }
@@ -331,7 +334,7 @@ async function confirmDelete(slug) {
 
 // ── Editor ──────────────────────────────────────────────────────────────
 function newArticle() {
-  S.current = { slug:'', tag:'Налоги', title:'', date: isoToRu(new Date().toISOString().slice(0,10)), isoDate: new Date().toISOString().slice(0,10), preview:'', coverImage:'', blocks:[{t:'p',text:''}], _sha: null, _path: null };
+  S.current = { slug:'', tag:'Налоги', title:'', date: isoToRu(new Date().toISOString().slice(0,10)), isoDate: new Date().toISOString().slice(0,10), preview:'', coverImage:'', blocks:[{t:'p',text:''}], _wsHtml:'', _sha: null, _path: null };
   S.view = 'editor';
   render();
 }
@@ -345,7 +348,6 @@ function editArticle(slug) {
 function renderEditor() {
   const a = S.current;
   const isNew = !a._sha;
-  const blocksHtml = (a.blocks||[]).map((b,i) => blockRow(b,i)).join('');
   const coverHtml = a.coverImage
     ? `<img src="/${a.coverImage}" class="img-preview" id="cover-preview"><br><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="clearCover()">Удалить обложку</button>`
     : `<div class="img-drop" id="cover-drop" onclick="document.getElementById('cover-file').click()" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)">
@@ -391,13 +393,17 @@ function renderEditor() {
 
       <div class="field">
         <label>Содержимое статьи</label>
-        <div class="blocks-wrap">
-          <div id="blocks-list">${blocksHtml}</div>
-          <div class="add-block-bar">
-            <button class="btn btn-ghost btn-sm" onclick="addBlock('p')">+ Текст</button>
-            <button class="btn btn-ghost btn-sm" onclick="addBlock('h')">+ Заголовок</button>
-            <button class="btn btn-ghost btn-sm" onclick="addBlock('li')">+ Пункт списка</button>
+        <div class="wysiwyg-wrap">
+          <div class="wysiwyg-toolbar" id="wysiwyg-toolbar">
+            <button class="tb-btn" data-cmd="formatBlock" data-val="p" title="Обычный текст" onmousedown="event.preventDefault();wsFmt('formatBlock','<p>')">Текст</button>
+            <button class="tb-btn" data-cmd="formatBlock" data-val="h2" title="Заголовок раздела" onmousedown="event.preventDefault();wsFmt('formatBlock','<h2>')">Заголовок</button>
+            <button class="tb-btn" data-cmd="formatBlock" data-val="h3" title="Подзаголовок" onmousedown="event.preventDefault();wsFmt('formatBlock','<h3>')">Подзаголовок</button>
+            <button class="tb-btn" data-cmd="insertUnorderedList" title="Список" onmousedown="event.preventDefault();wsFmt('insertUnorderedList')">Список</button>
+            <div class="tb-sep"></div>
+            <button class="tb-btn" data-cmd="bold" title="Жирный" onmousedown="event.preventDefault();wsFmt('bold')"><b>Ж</b></button>
+            <button class="tb-btn" data-cmd="italic" title="Курсив" onmousedown="event.preventDefault();wsFmt('italic')"><i>К</i></button>
           </div>
+          <div class="wysiwyg-body" id="wysiwyg-body" contenteditable="true" onkeyup="wsSync();wsUpdateToolbar()" onmouseup="wsUpdateToolbar()" onpaste="wsPaste(event)">${blocksToHtml(a.blocks||[])}</div>
         </div>
       </div>
     </div>`);
@@ -405,55 +411,80 @@ function renderEditor() {
 
 function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-function blockTypeLabel(t) { return t==='p'?'Текст':t==='h'?'Заголовок':t==='li'?'Список':'Текст'; }
-
-function blockRow(b, i) {
-  const types = ['p','h','li'].map(t => `<option value="${t}"${b.t===t?' selected':''}>${blockTypeLabel(t)}</option>`).join('');
-  const rows = b.t === 'p' ? 3 : 1;
-  return `<div class="block-item" id="block-${i}">
-    <div class="block-type">
-      <select onchange="changeBlockType(${i},this.value)">${types}</select>
-    </div>
-    <div class="block-content">
-      <textarea rows="${rows}" placeholder="${b.t==='h'?'Заголовок раздела':b.t==='li'?'Пункт списка':'Текст абзаца'}" oninput="updateBlock(${i},this.value)">${esc(b.text||'')}</textarea>
-    </div>
-    <div class="block-actions">
-      <button class="btn-icon" title="Вверх" onclick="moveBlock(${i},-1)">↑</button>
-      <button class="btn-icon" title="Вниз" onclick="moveBlock(${i},1)">↓</button>
-      <button class="btn-icon" title="Удалить" style="color:#e53e3e" onclick="removeBlock(${i})">×</button>
-    </div>
-  </div>`;
+// ── WYSIWYG helpers ────────────────────────────────────────────────────
+function blocksToHtml(blocks) {
+  let html = '', inList = false;
+  for (const b of blocks) {
+    if (b.t === 'li') {
+      if (!inList) { html += '<ul>'; inList = true; }
+      html += `<li>${b.text||''}</li>`;
+    } else {
+      if (inList) { html += '</ul>'; inList = false; }
+      if (b.t === 'h') html += `<h2>${b.text||''}</h2>`;
+      else html += `<p>${b.text||''}</p>`;
+    }
+  }
+  if (inList) html += '</ul>';
+  return html || '<p></p>';
 }
 
-function refreshBlocks() {
-  document.getElementById('blocks-list').innerHTML = S.current.blocks.map((b,i) => blockRow(b,i)).join('');
+function htmlToBlocks(html) {
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  const blocks = [];
+  div.childNodes.forEach(node => {
+    if (node.nodeType === 3) {
+      const t = node.textContent.trim();
+      if (t) blocks.push({t:'p', text:t});
+      return;
+    }
+    const tag = (node.tagName||'').toLowerCase();
+    if (tag === 'ul' || tag === 'ol') {
+      node.querySelectorAll('li').forEach(li => {
+        const t = li.textContent.trim();
+        if (t) blocks.push({t:'li', text:t});
+      });
+    } else if (tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'h4') {
+      const t = node.textContent.trim();
+      if (t) blocks.push({t:'h', text:t});
+    } else {
+      const t = node.textContent.trim();
+      if (t) blocks.push({t:'p', text:t});
+    }
+  });
+  return blocks.length ? blocks : [{t:'p', text:''}];
 }
 
-function addBlock(type) {
-  S.current.blocks.push({t:type,text:''});
-  refreshBlocks();
+function wsFmt(cmd, val) {
+  document.execCommand(cmd, false, val || null);
+  wsSync();
+  wsUpdateToolbar();
+  document.getElementById('wysiwyg-body').focus();
 }
 
-function removeBlock(i) {
-  S.current.blocks.splice(i,1);
-  refreshBlocks();
+function wsPaste(e) {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+  document.execCommand('insertText', false, text);
 }
 
-function moveBlock(i, dir) {
-  const b = S.current.blocks;
-  const j = i + dir;
-  if (j < 0 || j >= b.length) return;
-  [b[i],b[j]] = [b[j],b[i]];
-  refreshBlocks();
+function wsSync() {
+  const body = document.getElementById('wysiwyg-body');
+  if (body) S.current._wsHtml = body.innerHTML;
 }
 
-function updateBlock(i, val) {
-  S.current.blocks[i].text = val;
-}
-
-function changeBlockType(i, type) {
-  S.current.blocks[i].t = type;
-  refreshBlocks();
+function wsUpdateToolbar() {
+  const toolbar = document.getElementById('wysiwyg-toolbar');
+  if (!toolbar) return;
+  const tag = (document.queryCommandValue('formatBlock')||'').toLowerCase().replace(/[<>]/g,'');
+  toolbar.querySelectorAll('.tb-btn[data-cmd]').forEach(btn => {
+    const cmd = btn.dataset.cmd;
+    const val = (btn.dataset.val||'').toLowerCase();
+    let active = false;
+    if (cmd === 'formatBlock') active = (tag === val);
+    else try { active = document.queryCommandState(cmd); } catch(_) {}
+    btn.classList.toggle('active', active);
+  });
 }
 
 function autoSlug() {
@@ -532,7 +563,9 @@ async function saveArticle() {
   if (!slug)    { toast('Не удалось сформировать URL', 'err'); return; }
   if (!isoDate) { toast('Введите дату', 'err'); return; }
 
-  const blocks = S.current.blocks.filter(b => (b.text||'').trim());
+  const wsBody = document.getElementById('wysiwyg-body');
+  if (wsBody) S.current._wsHtml = wsBody.innerHTML;
+  const blocks = htmlToBlocks(S.current._wsHtml || blocksToHtml(S.current.blocks)).filter(b => (b.text||'').trim());
 
   const article = {
     slug, tag, title,

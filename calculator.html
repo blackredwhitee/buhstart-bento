@@ -761,7 +761,7 @@ function buildSummary(){
   G('sum-params').innerHTML=
     '<div class="sum-param"><span class="sum-param-k">Форма</span><span class="sum-param-v">'+esc(A.entity)+'</span></div>'+
     (!A.isNull?'<div class="sum-param"><span class="sum-param-k">Налогообложение</span><span class="sum-param-v">'+esc(taxN[A.tax]||A.tax)+'</span></div>':'<div class="sum-param"><span class="sum-param-k">Отчётность</span><span class="sum-param-v">Нулевая</span></div>');
-  G('sum-services').innerHTML=r.lines.map(l=>'<div class="sum-service-line"><span class="sum-service-dot">✓</span><span>'+esc(l.name)+'</span></div>').join('');
+  G('sum-services').innerHTML=r.lines.map(l=>'<div class="kp-service-row"><span class="kp-service-name">'+esc(l.name)+'</span><span class="kp-service-price">'+(l.price>0?fmt(l.price):'—')+'</span></div>').join('');
   G('tariff-cards').innerHTML=
     '<div class="tariff-card"><div class="tariff-name">Базовая</div><div class="tariff-price">'+fmt(r.baseTotal)+'<span>/мес</span></div><div class="tariff-desc">Бухгалтерский учёт, налоговая отчётность, р/с</div></div>'+
     '<div class="tariff-card featured"><div class="tariff-badge">Популярный</div><div class="tariff-name">Стандарт</div><div class="tariff-price">'+fmt(r.stdTotal)+'<span>/мес</span></div><div class="tariff-desc">Базовая + приоритетный ответ, офисный бухгалтер'+(taxQ()&&A.taxMgmt?', нал. менеджмент':'')+'</div></div>'+

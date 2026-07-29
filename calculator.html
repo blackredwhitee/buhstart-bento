@@ -906,7 +906,7 @@ async function saveToSheets(r, num){
   if(!SHEETS_WEBHOOK) return;
   const taxN={patent:'Патент',ausn_d:'АУСН Доходы',ausn_dr:'АУСН Доходы-Расходы',usn6:'УСН 6%',usn15:'УСН 15%',osno:'ОСНО'};
   try{
-    await fetch(SHEETS_WEBHOOK,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    await fetch(SHEETS_WEBHOOK,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
       num, date: toDay(),
       name: A.name, phone: A.phone, director: A.director||'',
       entity: A.entity,

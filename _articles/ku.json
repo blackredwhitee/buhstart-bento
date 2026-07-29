@@ -1,0 +1,15 @@
+{
+  "slug": "ku",
+  "tag": "Налоги",
+  "title": "ку",
+  "date": "29 июля 2026",
+  "isoDate": "2026-07-29",
+  "preview": "ку",
+  "coverImage": "uploads/articles/ku-cover.png",
+  "blocks": [
+    {
+      "t": "p",
+      "text": "ку"
+    }
+  ]
+}

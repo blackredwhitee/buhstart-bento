@@ -1,14 +1,15 @@
-// Sticky header + back-to-top button for all pages
 (function () {
-  // Make SiteHeader iframe sticky after DC renders it
   function stickyHeader() {
+    var HDR_H = 72;
     var done = false;
     var obs = new MutationObserver(function () {
       if (done) return;
       var frames = document.querySelectorAll('body iframe');
       if (frames.length > 0) {
         var hdr = frames[0];
-        hdr.style.cssText += ';position:sticky!important;top:0!important;z-index:200!important;width:100%!important;display:block!important;';
+        hdr.style.cssText += ';position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:200!important;width:100%!important;display:block!important;';
+        // push page content below fixed header
+        document.body.style.paddingTop = (document.body.style.paddingTop ? '' : HDR_H + 'px');
         done = true;
         obs.disconnect();
       }
@@ -16,7 +17,6 @@
     obs.observe(document.body || document.documentElement, { childList: true, subtree: true });
   }
 
-  // Back-to-top button
   function backToTop() {
     var btn = document.createElement('button');
     btn.id = 'btt-btn';
@@ -56,12 +56,6 @@
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () {
-      stickyHeader();
-      backToTop();
-    });
-  } else {
-    stickyHeader();
-    backToTop();
-  }
+    document.addEventListener('DOMContentLoaded', function () { stickyHeader(); backToTop(); });
+  } else { stickyHeader(); backToTop(); }
 })();

@@ -1,8 +1,12 @@
 (function () {
   console.log('[site-init] script running, dcRoot:', !!document.getElementById('dc-root'), 'header:', !!document.querySelector('#dc-root header'));
-  var HDR_H = 96;
   var hdrObs = null;
   var currentHdr = null;
+
+  function getSpacerH(hdr) {
+    var h = hdr.getBoundingClientRect().height || 72;
+    return Math.round(h + 32); // высота шапки + 32px воздуха
+  }
 
   function fixHeader(hdr) {
     hdr.style.setProperty('position', 'fixed', 'important');
@@ -11,12 +15,14 @@
     hdr.style.setProperty('right', '0', 'important');
     hdr.style.setProperty('width', '100%', 'important');
     hdr.style.setProperty('z-index', '100', 'important');
-    if (!document.querySelector('[data-hdr-spacer]')) {
-      var sp = document.createElement('div');
+    var sp = document.querySelector('[data-hdr-spacer]');
+    if (!sp) {
+      sp = document.createElement('div');
       sp.setAttribute('data-hdr-spacer', '1');
-      sp.style.cssText = 'height:' + HDR_H + 'px;flex-shrink:0;';
+      sp.style.cssText = 'flex-shrink:0;';
       hdr.parentNode.insertBefore(sp, hdr.nextSibling);
     }
+    sp.style.height = getSpacerH(hdr) + 'px';
   }
 
   function attachToHeader(hdr) {

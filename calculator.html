@@ -828,89 +828,85 @@ function generateKP(){
   const num=lastKP?lastKP.num:kpNum();
   lastKP={num,r};
 
-  // --- Генерация HTML для .doc ---
-  function row(nm,pr){return'<tr><td style="padding:6px 12px 6px 0;border-bottom:1px solid #eee;font-size:13px;color:#444">'+nm+'</td><td style="padding:6px 0 6px 12px;border-bottom:1px solid #eee;font-size:13px;font-weight:600;text-align:right;white-space:nowrap">'+pr+'</td></tr>';}
-  function tariffCol(badge,name,price,extras,highlight){
-    const bg=highlight?'#FFF3EE':'#fff';
-    const border=highlight?'2px solid #F07828':'1px solid #E8E8E8';
-    return'<td style="width:33%;padding:16px;background:'+bg+';border:'+border+';border-radius:8px;vertical-align:top">'+
-      '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#F07828;margin-bottom:4px">'+badge+'</div>'+
-      '<div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:6px">'+name+'</div>'+
-      '<div style="font-size:20px;font-weight:800;color:#F07828;margin-bottom:8px">'+price+' <span style="font-size:12px;font-weight:400;color:#888">/мес</span></div>'+
-      '<div style="font-size:12px;color:#666;line-height:1.5">'+extras+'</div></td>';
-  }
-
   const taxN={patent:'Патент',ausn_d:'АУСН Доходы',ausn_dr:'АУСН Доходы-Расходы',usn6:'УСН 6%',usn15:'УСН 15%',osno:'ОСНО'};
-  const html=`<html lang="ru"><head><meta charset="utf-8">
-<title>Калькулятор стоимости бухгалтерского обслуживания онлайн</title>
-<meta name="description" content="9 коротких вопросов о вашем бизнесе — и вы узнаете ориентировочную стоимость бухгалтерского обслуживания. Две минуты, без заявки и звонков.">
-<link rel="canonical" href="https://buhstart.ru/calculator">
-<meta property="og:title" content="Калькулятор стоимости бухгалтерского обслуживания онлайн">
-<meta property="og:description" content="9 коротких вопросов о вашем бизнесе — и вы узнаете ориентировочную стоимость бухгалтерского обслуживания. Две минуты, без заявки и звонков.">
-<meta property="og:url" content="https://buhstart.ru/calculator">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://buhstart.ru/uploads/logo-transparent.png">
-<meta property="og:site_name" content="Доверительная Бухгалтерия">
-<meta name="robots" content="index, follow">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"AccountingService","@id":"https://buhstart.ru/#organization","name":"Доверительная Бухгалтерия","legalName":"ООО «Профит-консалт»","url":"https://buhstart.ru/","logo":"https://buhstart.ru/uploads/logo-transparent.png","image":"https://buhstart.ru/uploads/logo-transparent.png","description":"Комплексное бухгалтерское обслуживание для ИП и ООО. Работаем удалённо по всей России с 2003 года.","telephone":"+7-495-778-81-68","email":"info@buhstart.ru","foundingDate":"2003","taxID":"7709792856","identifier":[{"@type":"PropertyValue","propertyID":"ИНН","value":"7709792856"},{"@type":"PropertyValue","propertyID":"ОГРН","value":"1087746623095"}],"address":{"@type":"PostalAddress","streetAddress":"ул. Краснопрудная, 12/1, стр. 1","addressLocality":"Москва","postalCode":"107140","addressCountry":"RU"},"openingHoursSpecification":{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"09:00","closes":"19:00"},"areaServed":{"@type":"Country","name":"Россия"},"priceRange":"от 10 000 ₽"}<\/script>
-<style>
-  body{font-family:'Calibri',Arial,sans-serif;margin:0;padding:40px;color:#1A1A1A}
-  h1{font-size:24px;font-weight:800;margin:0 0 4px}
-  table{border-collapse:collapse;width:100%}
-  .section-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#F07828;margin:24px 0 8px}
-</style></head><body>
-<table style="margin-bottom:24px"><tr>
-  <td><div style="font-size:22px;font-weight:800;color:#F07828;letter-spacing:-.01em">Доверительная Бухгалтерия</div>
-  <div style="font-size:12px;color:#888;margin-top:2px">ООО «Профит-Консалт» · ИНН 7709792856 · Москва, Денежный пер., д. 4</div>
-  <div style="font-size:12px;color:#888">+7 (495) 778-81-68 · info@buhstart.ru</div></td>
-  <td style="text-align:right;vertical-align:top">
-  <div style="font-size:12px;color:#888">№ ${num} от ${toDay()}</div>
-  <div style="font-size:14px;font-weight:700;margin-top:4px">${esc(clientFull())}</div>
-  ${A.phone?'<div style="font-size:13px;color:#555">'+esc(A.phone)+'</div>':''}
-  ${A.director?'<div style="font-size:12px;color:#888">'+esc(A.director)+'</div>':''}
-  </td>
-</tr></table>
 
-<h1>Коммерческое предложение</h1>
-<div style="font-size:13px;color:#888;margin-bottom:24px">Бухгалтерское обслуживание · ${A.isNull?'Нулевая отчётность':(taxN[A.tax]||A.tax)} · ${A.entity}</div>
+  // --- Заполнение on-page КП ---
+  G('kp-num').textContent='№ '+num;
+  G('kp-client').textContent=clientFull();
+  G('kp-date').textContent=toDay();
+  G('kp-valid').textContent=kpValid();
+  G('kp-services').innerHTML=r.lines.map(l=>{
+    const d=getDesc(l.name);
+    return'<div class="kp-service-row"><span class="kp-service-name">'+esc(l.name)+(d?'<br><small style="font-weight:400;color:#999">'+esc(d)+'</small>':'')+'</span><span class="kp-service-price">'+(l.price>0?fmt(l.price)+' ₽':'—')+'</span></div>';
+  }).join('');
+  G('kp-tariffs').innerHTML=
+    '<div class="kp-tariff"><div class="kp-tariff-name">Базовая</div><div class="kp-tariff-price">'+fmt(r.baseTotal)+'<span>/мес</span></div><div class="kp-tariff-extras">Бухгалтерский учёт, налоговая отчётность, р/с</div></div>'+
+    '<div class="kp-tariff featured"><div class="kp-tariff-badge">рекомендуем</div><div class="kp-tariff-name">Стандарт</div><div class="kp-tariff-price">'+fmt(r.stdTotal)+'<span>/мес</span></div><div class="kp-tariff-extras">Всё из Базовой +<br>'+r.stdLines.map(l=>'• '+esc(l.name)).join('<br>')+'</div></div>'+
+    '<div class="kp-tariff"><div class="kp-tariff-name">Оптима</div><div class="kp-tariff-price">'+fmt(r.optTotal)+'<span>/мес</span></div><div class="kp-tariff-extras">Всё из Стандарт +<br>'+r.optLines.map(l=>'• '+esc(l.name)).join('<br>')+'</div></div>';
+  G('kp-breakdown').innerHTML='';
+  G('quiz-wrap').style.display='none';
+  G('kp-sec').style.display='block';
+  G('kp-sec').scrollIntoView({behavior:'smooth',block:'start'});
 
-<div class="section-title">Состав услуг</div>
-<table style="margin-bottom:8px">
-${r.lines.map(l=>{
-  const d=getDesc(l.name);
-  return'<tr><td style="padding:8px 12px 8px 0;border-bottom:1px solid #f0f0f0;width:60%"><div style="font-size:13px;font-weight:600;color:#1A1A1A">'+esc(l.name)+'</div>'+(d?'<div style="font-size:11px;color:#888;margin-top:2px">'+esc(d)+'</div>':'')+'</td><td style="padding:8px 0 8px 12px;border-bottom:1px solid #f0f0f0;text-align:right;font-size:13px;font-weight:600;white-space:nowrap">'+(l.price>0?fmt(l.price):'—')+'</td></tr>';
-}).join('')}
-</table>
-
-<div class="section-title">Тарифы</div>
-<table style="margin-bottom:24px;border-spacing:12px;border-collapse:separate"><tr>
-${tariffCol('Базовая','Стандартный учёт',fmt(r.baseTotal),'Бухгалтерский учёт, налоговая отчётность, работа с расчётным счётом',false)}
-<td style="width:4px"></td>
-${tariffCol('Стандарт — рекомендуем','Расширенное сопровождение',fmt(r.stdTotal),'Всё из Базовой +<br>'+r.stdLines.map(l=>'• '+esc(l.name)).join('<br>'),true)}
-<td style="width:4px"></td>
-${tariffCol('Оптима','Полный пакет',fmt(r.optTotal),'Всё из Стандарт +<br>'+r.optLines.map(l=>'• '+esc(l.name)).join('<br>'),false)}
-</tr></table>
-
-<div style="background:#F5F5F5;border-radius:6px;padding:16px 20px;font-size:12px;color:#666;line-height:1.6">
-<strong>Условия сотрудничества:</strong><br>
-Оплата: 50% предоплата до начала работы, 50% — по итогам периода.<br>
-Срок начала: 1–3 рабочих дня после подписания договора.<br>
-КП действительно до: ${kpValid()}.
-</div>
-<\/script>
-</body></html>`;
-
-  const blob=new Blob(['﻿'+html],{type:'application/msword'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download='КП_'+num+'_'+A.name.replace(/[^а-яёА-ЯЁa-zA-Z0-9]/g,'_')+'.doc';
-  document.body.appendChild(a);a.click();
-  setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},1000);
+  // --- Версия для печати в новом окне ---
+  const svcRows=r.lines.map(l=>{
+    const d=getDesc(l.name);
+    return'<tr><td style="padding:6px 10px 6px 0;border-bottom:1px solid #f0f0f0;font-size:11pt">'+esc(l.name)+(d?'<br><span style="font-size:9pt;color:#888">'+esc(d)+'</span>':'')+'</td>'
+      +'<td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td>'
+      +'<td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td>'
+      +'<td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td></tr>';
+  }).join('')
+  +r.stdLines.map(l=>'<tr><td style="padding:6px 10px 6px 0;border-bottom:1px solid #f0f0f0;font-size:11pt">'+esc(l.name)+'</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#ccc">—</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td></tr>').join('')
+  +r.optLines.map(l=>'<tr><td style="padding:6px 10px 6px 0;border-bottom:1px solid #f0f0f0;font-size:11pt">'+esc(l.name)+'</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#ccc">—</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#ccc">—</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td></tr>').join('');
+  const printHtml='<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><title>КП '+num+' — Доверительная Бухгалтерия</title>'
+    +'<style>*{box-sizing:border-box}body{font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#1A1A1A;margin:0;padding:56px 32px 32px}table{border-collapse:collapse;width:100%}.print-bar{position:fixed;top:0;left:0;right:0;background:#fff;border-bottom:1px solid #eee;padding:10px 24px;display:flex;gap:10px;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.08);z-index:9}.btn{padding:7px 18px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:none}.btn-or{background:#F07828;color:#fff}.btn-wh{background:#fff;color:#444;border:1px solid #ddd!important}.hint{font-size:12px;color:#aaa;margin-left:4px}@media print{.print-bar{display:none!important}body{padding:0}}</style>'
+    +'</head><body>'
+    +'<div class="print-bar"><button class="btn btn-or" onclick="window.print()">Распечатать / Сохранить PDF</button><button class="btn btn-wh" onclick="window.close()">Закрыть</button><span class="hint">В диалоге печати выберите «Сохранить как PDF»</span></div>'
+    +'<table style="margin-bottom:20px"><tr>'
+    +'<td><div style="font-size:20pt;font-weight:800;color:#F07828">Доверительная Бухгалтерия</div>'
+    +'<div style="font-size:9pt;color:#888;margin-top:3px">ООО «Профит-Консалт» · ИНН 7709792856 · Москва, Денежный пер., д. 4</div>'
+    +'<div style="font-size:9pt;color:#888">+7 (495) 778-81-68 · info@buhstart.ru · buhstart.ru</div></td>'
+    +'<td style="text-align:right;vertical-align:top"><div style="font-size:9pt;color:#888">'+num+' от '+toDay()+'</div>'
+    +'<div style="font-size:14pt;font-weight:700;margin-top:4px">'+esc(clientFull())+'</div>'
+    +(A.phone?'<div style="font-size:9pt;color:#888">'+esc(A.phone)+'</div>':'')
+    +(A.director?'<div style="font-size:9pt;color:#888">'+esc(A.director)+'</div>':'')
+    +'</td></tr></table>'
+    +'<div style="font-size:16pt;font-weight:800;margin:0 0 4px">Коммерческое предложение</div>'
+    +'<div style="font-size:9pt;color:#888;margin-bottom:12px">Бухгалтерское обслуживание · '+(A.isNull?'Нулевая отчётность':(taxN[A.tax]||A.tax))+' · '+A.entity+'</div>'
+    +'<p style="font-size:10pt;color:#444;line-height:1.5;margin-bottom:16px">В продолжение нашего разговора высылаем коммерческое предложение на бухгалтерское обслуживание вашей организации. Ниже представлены три варианта сопровождения — от базового пакета до полного сопровождения с управленческим учётом.</p>'
+    +'<div style="font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#F07828;margin:16px 0 8px">Состав услуг</div>'
+    +'<table style="margin-bottom:16px"><thead><tr style="background:#F07828;color:#fff">'
+    +'<th style="padding:8px 10px;text-align:left;width:55%;font-weight:700">Наименование услуги</th>'
+    +'<th style="padding:8px 10px;text-align:center;font-weight:700">Базовая</th>'
+    +'<th style="padding:8px 10px;text-align:center;font-weight:700;background:#E35611">Стандарт</th>'
+    +'<th style="padding:8px 10px;text-align:center;font-weight:700">Оптима</th>'
+    +'</tr></thead><tbody>'+svcRows+'</tbody></table>'
+    +'<div style="font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#F07828;margin:16px 0 8px">Стоимость в месяц</div>'
+    +'<table style="margin-bottom:16px"><thead><tr>'
+    +'<th style="text-align:left;padding:8px 10px"></th>'
+    +'<th style="text-align:center;padding:8px 10px;font-weight:700">Базовая</th>'
+    +'<th style="text-align:center;padding:8px 10px;font-weight:700;background:#FFF3EE;border-top:2px solid #F07828">Стандарт ★</th>'
+    +'<th style="text-align:center;padding:8px 10px;font-weight:700">Оптима</th>'
+    +'</tr></thead><tbody><tr>'
+    +'<td style="padding:10px 10px;font-size:11pt">Стоимость</td>'
+    +'<td style="padding:10px 10px;text-align:center"><span style="font-size:15pt;font-weight:800;color:#F07828">'+fmt(r.baseTotal)+'</span> ₽/мес</td>'
+    +'<td style="padding:10px 10px;text-align:center;background:#FFF3EE"><span style="font-size:15pt;font-weight:800;color:#F07828">'+fmt(r.stdTotal)+'</span> ₽/мес</td>'
+    +'<td style="padding:10px 10px;text-align:center"><span style="font-size:15pt;font-weight:800;color:#F07828">'+fmt(r.optTotal)+'</span> ₽/мес</td>'
+    +'</tr></tbody></table>'
+    +'<div style="background:#F5F5F5;border-radius:4px;padding:10px 16px;font-size:10pt;color:#555;margin-bottom:16px">Предложение действует до: <strong>'+kpValid()+'</strong></div>'
+    +'<div style="font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#F07828;margin:16px 0 6px">О компании</div>'
+    +'<p style="font-size:10pt;color:#444;line-height:1.6;margin-bottom:12px">Доверительная Бухгалтерия (ООО «Профит-Консалт») успешно работает с 2003 года. За более чем 20 лет мы накопили экспертизу в налоговом и бухгалтерском сопровождении ИП и ООО. Работаем удалённо по всей России на любых системах налогообложения.</p>'
+    +'<div style="font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#F07828;margin:16px 0 6px">Условия сотрудничества</div>'
+    +'<p style="font-size:10pt;color:#444;line-height:1.6;margin-bottom:20px">Оплата: 50% предоплата до начала работы, 50% — по итогам периода.<br>Срок начала: 1–3 рабочих дня после подписания договора.<br>Подробнее на сайте: <strong>buhstart.ru</strong></p>'
+    +'<div style="margin-top:24px;font-size:10pt"><span style="border-top:1px solid #999;padding-top:4px;display:inline-block;min-width:220px">Руководитель _______________&nbsp; Горелкина Г.В.</span></div>'
+    +'</body></html>';
+  const win=window.open('','_blank','width=960,height=850,scrollbars=yes');
+  if(win){win.document.write(printHtml);win.document.close();}
 
   // --- Сохранение в Google Таблицу ---
   saveToSheets(r, num);
 
-  showToast('КП скачивается…');
+  showToast('КП сформировано — проверьте новое окно');
 }
 
 async function saveToSheets(r, num){

@@ -900,11 +900,10 @@ function generateKP(){
     +'<p style="font-size:10pt;color:#444;line-height:1.6;margin-bottom:20px">Оплата: 50% предоплата до начала работы, 50% — по итогам периода.<br>Срок начала: 1–3 рабочих дня после подписания договора.<br>Подробнее на сайте: <strong>buhstart.ru</strong></p>'
     +'<div style="margin-top:24px;font-size:10pt"><span style="border-top:1px solid #999;padding-top:4px;display:inline-block;min-width:220px">Руководитель _______________&nbsp; Горелкина Г.В.</span></div>'
     +'</body></html>';
-  // --- Скачивание КП (.docx) ---
-  generateDocx(r, num);
+  // --- Скачивание КП (.docx) + отправка в Drive ---
+  generateDocx(r, num).then(function(kpB64){ saveToSheets(r, num, kpB64); });
 
   // --- Автоотправка заявки ---
-  saveToSheets(r, num);
   sendLeadAuto(r, num);
 
   // --- Экран «Ваш расчёт готов» ---
@@ -914,7 +913,7 @@ function generateKP(){
   G('success-sec').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-async function saveToSheets(r, num){
+async function saveToSheets(r, num, kpB64){
   if(!SHEETS_WEBHOOK) return;
   const taxN={patent:'Патент',ausn_d:'АУСН Доходы',ausn_dr:'АУСН Доходы-Расходы',usn6:'УСН 6%',usn15:'УСН 15%',osno:'ОСНО'};
   const staffParts=[];
@@ -928,6 +927,9 @@ async function saveToSheets(r, num){
       tariff: 'Базовая: '+fmt(r.baseTotal)+' | Стандарт: '+fmt(r.stdTotal)+' | Оптима: '+fmt(r.optTotal),
       employees: staffParts.join(', ')||'—',
       system: A.isNull?'Нулевая':(taxN[A.tax]||A.tax||''),
+      kpBase64: kpB64||'',
+      kpName: 'КП_'+num+'_'+(A.name||'').replace(/[^а-яёА-ЯЁa-zA-Z0-9]/g,'_')+'.docx',
+      kpMime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     })});
   }catch(e){}
 }
@@ -1043,10 +1045,14 @@ async function generateDocx(r, num){
     a.download='КП_'+num+'_'+A.name.replace(/[^а-яёА-ЯЁa-zA-Z0-9]/g,'_')+'.docx';
     document.body.appendChild(a);a.click();
     setTimeout(function(){URL.revokeObjectURL(url);a.remove();},1000);
-    return true;
+    // return base64 for Drive upload
+    var b64=await new Promise(function(res){
+      var rd=new FileReader();rd.onload=function(){res(rd.result.split(',')[1])};rd.readAsDataURL(out);
+    });
+    return b64;
   }catch(e){
     console.error('generateDocx error:',e);
-    return false;
+    return null;
   }
 }
 </script>

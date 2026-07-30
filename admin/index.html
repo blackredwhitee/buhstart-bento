@@ -370,14 +370,17 @@ function renderEditor() {
         📷 Нажмите или перетащите файл обложки<br><span style="font-size:11px">JPG, PNG, WebP</span>
        </div>`;
 
+  // parse existing range "13.07 — 19.07.2026" into two ISO dates
+  const rangeParsed = parseRange(a.range || '', a.isoDate || '');
   const topRowFields = isNews
-    ? `<div class="field">
-          <label>Период</label>
-          <input id="e-range" type="text" value="${esc(a.range||'')}" placeholder="01.01 — 07.01.2026" oninput="S.current.range=this.value">
-        </div>
-        <div class="field">
-          <label>Дата публикации</label>
-          <input id="e-date" type="date" value="${a.isoDate||new Date().toISOString().slice(0,10)}" onchange="S.current.isoDate=this.value">
+    ? `<div class="field" style="grid-column:span 2">
+          <label>Период — выберите начало и конец недели</label>
+          <div style="display:flex;align-items:center;gap:10px">
+            <input id="e-range-from" type="date" value="${rangeParsed.from}" onchange="updateRange()" style="flex:1">
+            <span style="color:#888;font-size:13px;white-space:nowrap">—</span>
+            <input id="e-range-to" type="date" value="${rangeParsed.to}" onchange="updateRange();S.current.isoDate=this.value" style="flex:1">
+          </div>
+          <div id="e-range-preview" style="margin-top:6px;font-size:12px;color:#888">${esc(a.range||'')}</div>
         </div>
         <div class="field">
           <label>URL (slug)</label>
@@ -518,6 +521,30 @@ function wsUpdateToolbar() {
   });
 }
 
+function parseRange(range, isoDate) {
+  // "13.07 — 19.07.2026" → {from:'2026-07-13', to:'2026-07-19'}
+  const m = range.match(/(\d{2})\.(\d{2})\s*[—–-]\s*(\d{2})\.(\d{2})\.(\d{4})/);
+  if (m) return { from: `${m[5]}-${m[2]}-${m[1]}`, to: `${m[5]}-${m[4]}-${m[3]}` };
+  const fallback = isoDate || new Date().toISOString().slice(0,10);
+  return { from: fallback, to: fallback };
+}
+
+function updateRange() {
+  const fromEl = document.getElementById('e-range-from');
+  const toEl   = document.getElementById('e-range-to');
+  const prev   = document.getElementById('e-range-preview');
+  if (!fromEl || !toEl) return;
+  const from = fromEl.value; // YYYY-MM-DD
+  const to   = toEl.value;
+  if (!from || !to) return;
+  const [fy,fm,fd] = from.split('-');
+  const [ty,tm,td] = to.split('-');
+  const range = `${fd}.${fm} — ${td}.${tm}.${ty}`;
+  S.current.range   = range;
+  S.current.isoDate = to;
+  if (prev) prev.textContent = range;
+}
+
 function autoSlug() {
   const a = S.current;
   if (!a._sha) {
@@ -587,10 +614,12 @@ async function saveArticle() {
   const isNews  = S.current.section === 'news';
   const title   = document.getElementById('e-title').value.trim();
   const tag     = isNews ? 'Новости законодательства' : document.getElementById('e-tag').value;
-  const isoDate = document.getElementById('e-date').value;
+  const isoDate = isNews
+    ? (document.getElementById('e-range-to')?.value || S.current.isoDate || new Date().toISOString().slice(0,10))
+    : document.getElementById('e-date').value;
   const slug    = document.getElementById('e-slug').value.trim() || slugify(title);
   const preview = document.getElementById('e-preview').value.trim();
-  const range   = isNews ? (document.getElementById('e-range').value.trim()) : '';
+  const range   = isNews ? (S.current.range || '') : '';
 
   if (!title)   { toast('Введите заголовок', 'err'); return; }
   if (!slug)    { toast('Не удалось сформировать URL', 'err'); return; }

@@ -501,9 +501,9 @@ a{color:#F07828}
 </div>
 
 <div class="success-sec" id="success-sec">
-  <div class="success-icon">✅</div>
-  <h2 class="success-title">Заявка отправлена!</h2>
-  <p class="success-sub">Наш менеджер изучит коммерческое предложение и свяжется с вами в течение рабочего дня.</p>
+  <div class="success-icon">📄</div>
+  <h2 class="success-title">Ваш расчёт готов!</h2>
+  <p class="success-sub">КП скачалось на ваш компьютер — откройте файл в браузере, чтобы распечатать или сохранить как PDF.<br>Заявка уже отправлена менеджеру — он свяжется с вами в течение рабочего дня.</p>
   <button class="btn btn-primary btn-xl" onclick="restartQuiz()">Рассчитать ещё раз</button>
 </div>
 
@@ -900,13 +900,24 @@ function generateKP(){
     +'<p style="font-size:10pt;color:#444;line-height:1.6;margin-bottom:20px">Оплата: 50% предоплата до начала работы, 50% — по итогам периода.<br>Срок начала: 1–3 рабочих дня после подписания договора.<br>Подробнее на сайте: <strong>buhstart.ru</strong></p>'
     +'<div style="margin-top:24px;font-size:10pt"><span style="border-top:1px solid #999;padding-top:4px;display:inline-block;min-width:220px">Руководитель _______________&nbsp; Горелкина Г.В.</span></div>'
     +'</body></html>';
-  const win=window.open('','_blank','width=960,height=850,scrollbars=yes');
-  if(win){win.document.write(printHtml);win.document.close();}
+  // --- Скачивание КП ---
+  const blob=new Blob([printHtml],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='КП_'+num+'_'+A.name.replace(/[^а-яёА-ЯЁa-zA-Z0-9]/g,'_')+'.html';
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},1000);
 
-  // --- Сохранение в Google Таблицу ---
+  // --- Автоотправка заявки ---
   saveToSheets(r, num);
+  sendLeadAuto(r, num);
 
-  showToast('КП сформировано — проверьте новое окно');
+  // --- Экран «Ваш расчёт готов» ---
+  G('quiz-wrap').style.display='none';
+  G('kp-sec').style.display='none';
+  G('success-sec').style.display='block';
+  G('success-sec').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 async function saveToSheets(r, num){
@@ -924,15 +935,10 @@ async function saveToSheets(r, num){
   }catch(e){}
 }
 
-async function sendLead(){
-  if(!lastKP){showToast('Сначала сформируйте КП');return}
-  const btn=G('btn-send-lead');
-  if(btn){btn.disabled=true;btn.textContent='Отправляем…'}
-
+async function sendLeadAuto(r, num){
   const taxN={patent:'Патент',ausn_d:'АУСН Доходы',ausn_dr:'АУСН Доходы-Расходы',usn6:'УСН 6%',usn15:'УСН 15%',osno:'ОСНО'};
-  const r=lastKP.r;
   const details=[
-    'КП: '+lastKP.num,
+    'КП: '+num,
     'Форма: '+A.entity,
     A.isNull?'Нулевая отчётность':'Налогообложение: '+(taxN[A.tax]||A.tax),
     'Базовая: '+fmt(r.baseTotal)+'/мес',
@@ -940,7 +946,6 @@ async function sendLead(){
     'Оптима: '+fmt(r.optTotal)+'/мес',
     A.director?'Директор: '+A.director:'',
   ].filter(Boolean).join('\n');
-
   if(BITRIX_WEBHOOK){
     try{
       const p=new URLSearchParams();
@@ -953,7 +958,11 @@ async function sendLead(){
       await fetch(BITRIX_WEBHOOK,{method:'POST',body:p});
     }catch(e){}
   }
+}
 
+async function sendLead(){
+  if(!lastKP){showToast('Сначала сформируйте КП');return}
+  await sendLeadAuto(lastKP.r, lastKP.num);
   G('kp-sec').style.display='none';
   G('success-sec').style.display='block';
   G('success-sec').scrollIntoView({behavior:'smooth',block:'start'});

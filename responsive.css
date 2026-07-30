@@ -11,7 +11,9 @@ p,li{hyphens:none}
   .t-2col{grid-template-columns:1fr 1fr !important}
 }
 @media(min-width:768px) and (max-width:1023px){
-  section>div{padding-left:32px !important;padding-right:32px !important}
+  /* единая вертикальная линия: горизонтальный отступ живёт только на section */
+  section{padding-left:32px !important;padding-right:32px !important;box-sizing:border-box}
+  section>div{padding-left:0 !important;padding-right:0 !important}
 }
 @media(max-width:767px){
   body{font-size:15px;padding-bottom:64px}
@@ -43,6 +45,7 @@ p,li{hyphens:none}
   .m-1col{gap:28px !important}
   .m-nowrap{white-space:nowrap}
   .m-bar{height:3px !important;max-height:3px !important;flex:none !important}
+  .to-top{bottom:72px !important;width:48px !important;height:48px !important}
   .marker{white-space:nowrap}
   .m-outline{border:1.5px solid #3D3D3D !important;border-radius:6px;min-height:52px;justify-content:center;padding:0 20px !important;box-sizing:border-box}
   .m-full{max-width:none !important}
@@ -67,4 +70,9 @@ p,li{hyphens:none}
 
 @media(max-width:767px){
   .m-bleed{overflow-x:auto;-webkit-overflow-scrolling:touch}
+}
+
+@media(max-width:767px){
+  .n-row{flex-direction:column !important;gap:6px !important;align-items:flex-start !important;padding:18px 0 !important}
+  .n-row>span:first-child{min-width:0 !important}
 }

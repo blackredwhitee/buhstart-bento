@@ -425,18 +425,14 @@ a{color:#F07828}
         <p class="slide-sub">Для подготовки коммерческого предложения</p>
         <div class="fields-list">
           <div class="field-row">
-            <label class="q-label">Название компании / ФИО <span class="req">*</span></label>
-            <input class="q-input" type="text" id="f-name" placeholder="Для ООО: Ромашка, для ИП: Иванов Иван Иванович"/>
+            <label class="q-label">Ваше имя <span class="req">*</span></label>
+            <input class="q-input" type="text" id="f-name" placeholder="Иванов Иван Иванович"/>
             <span class="q-err" id="err-name"></span>
           </div>
           <div class="field-row">
             <label class="q-label">Телефон <span class="req">*</span></label>
             <input class="q-input" type="tel" id="f-phone" placeholder="+7 (999) 000-00-00" autocomplete="tel"/>
             <span class="q-err" id="err-phone"></span>
-          </div>
-          <div class="field-row">
-            <label class="q-label">ФИО руководителя / директора</label>
-            <input class="q-input" type="text" id="f-director" placeholder="Иванов Иван Иванович"/>
           </div>
         </div>
         <p style="font-size:11px;color:var(--g400);margin-top:14px;line-height:1.5">Нажимая «Посмотреть расчёт», вы соглашаетесь на <a href="soglasie.html">обработку персональных данных</a></p>
@@ -540,7 +536,7 @@ a{color:#F07828}
 
 <script>
 const BITRIX_WEBHOOK = '';
-const SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwQvpGvPu6AYJ2B-EyXEMEbbWb_hH2EWUoDnHyrYmK1SpcYffCKWKiBRFPJ788DkqFYfg/exec';
+const SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbxLWOlaftsjU3tG0r3q95i5zaj20uvtmTru9ZIHisSUIj5FTvn2oYAJKz3e4N2SDQa7jQ/exec';
 
 const DESC = {
   'Нулевая отчётность':'Подготовка и сдача отчётности без оборотов, контроль оплаты фиксированных взносов',
@@ -628,7 +624,7 @@ const toDay=()=>new Date().toLocaleDateString('ru-RU',{day:'2-digit',month:'2-di
 const toDayLong=()=>new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
 const kpValid=()=>{const d=new Date();d.setDate(d.getDate()+10);return d.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})};
 function kpNum(){const y=new Date().getFullYear(),k='kp_p_'+y,n=parseInt(localStorage.getItem(k)||'0',10)+1;localStorage.setItem(k,String(n));return 'КП-'+y+'-'+String(n).padStart(4,'0')}
-function clientFull(){const n=(A.name||'').trim();if(!n)return '';if(A.entity==='ООО')return n.match(/^ООО/i)?n:'ООО «'+n+'»';if(A.entity==='ИП')return n.match(/^ИП\s/i)?n:'ИП '+n;return n}
+function clientFull(){return (A.name||'').trim();}
 function showToast(m){const t=G('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
 function taxQ(){return['ausn_dr','usn15','osno'].includes(A.tax)}
 
@@ -718,7 +714,7 @@ function collect(n){
   if(n===13)A.taxMgmt=pv('g-taxmgmt')==='yes';
   if(n===14){A.officeBuhPresence=pv('g-office-buh')==='yes';A.officeBuhVisits=parseInt(G('ob-visits')?.value||'4',10)}
   if(n===15)A.mgmtAcc=pv('g-mgmt-acc')==='yes';
-  if(n===11){A.name=(G('f-name')?.value||'').trim();A.phone=(G('f-phone')?.value||'').trim();A.director=(G('f-director')?.value||'').trim()}
+  if(n===11){A.name=(G('f-name')?.value||'').trim();A.phone=(G('f-phone')?.value||'').trim();}
 }
 
 function restore(n){
@@ -736,7 +732,7 @@ function restore(n){
   if(n===13)rp('g-taxmgmt',A.taxMgmt?'yes':'no');
   if(n===14){rp('g-office-buh',A.officeBuhPresence?'yes':'no');G('ob-visits-row').style.display=A.officeBuhPresence?'flex':'none';const ov=G('ob-visits');if(ov)ov.value=A.officeBuhVisits}
   if(n===15)rp('g-mgmt-acc',A.mgmtAcc?'yes':'no');
-  if(n===11){const fn=G('f-name');if(fn)fn.value=A.name;const fp=G('f-phone');if(fp)fp.value=A.phone;const fd=G('f-director');if(fd)fd.value=A.director}
+  if(n===11){const fn=G('f-name');if(fn)fn.value=A.name;const fp=G('f-phone');if(fp)fp.value=A.phone;}
 }
 
 function pick(btn,gid){document.querySelectorAll('#'+gid+' button').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected')}
@@ -923,7 +919,7 @@ async function saveToSheets(r, num, kpB64){
     await fetch(SHEETS_WEBHOOK,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
       type:'calculator',
       name: A.name, phone: A.phone, email: '',
-      company: (A.entity||'')+(A.director?' / '+A.director:''),
+      company: A.entity||'',
       tariff: 'Базовая: '+fmt(r.baseTotal)+' | Стандарт: '+fmt(r.stdTotal)+' | Оптима: '+fmt(r.optTotal),
       employees: staffParts.join(', ')||'—',
       system: A.isNull?'Нулевая':(taxN[A.tax]||A.tax||''),
@@ -943,7 +939,6 @@ async function sendLeadAuto(r, num){
     'Базовая: '+fmt(r.baseTotal)+'/мес',
     'Стандарт: '+fmt(r.stdTotal)+'/мес',
     'Оптима: '+fmt(r.optTotal)+'/мес',
-    A.director?'Директор: '+A.director:'',
   ].filter(Boolean).join('\n');
   if(BITRIX_WEBHOOK){
     try{

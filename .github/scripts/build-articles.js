@@ -12,8 +12,10 @@ const articles = files
 
 let lines = ['window.BUHSTART_ARTICLES = {};'];
 for (const a of articles) {
-  const { slug, isoDate, preview, coverImage, ...rest } = a;
+  const { slug, isoDate, section, range, preview, coverImage, ...rest } = a;
   const entry = { ...rest };
+  if (section) entry.section = section;
+  if (range) entry.range = range;
   if (preview) entry.preview = preview;
   if (coverImage) entry.coverImage = coverImage;
   lines.push(`window.BUHSTART_ARTICLES[${JSON.stringify(slug)}] = ${JSON.stringify(entry)};`);

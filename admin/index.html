@@ -125,6 +125,7 @@ const TAGS = ['Налоги','Налоговая','Финансы','Бизнес
 // ── State ─────────────────────────────────────────────────────────────
 const S = {
   view: 'login',   // login | dash | editor | settings
+  section: 'articles', // articles | news
   articles: [],
   current: null,   // article being edited (null = new)
   loading: false,
@@ -268,8 +269,9 @@ function shell(activeNav, titleHtml, actionsHtml, bodyHtml) {
       <aside class="sidebar">
         <div class="sidebar-logo"><img src="../uploads/logo-white.png" alt="Доверительная Бухгалтерия"></div>
         <nav class="sidebar-nav">
-          <button class="nav-item${activeNav==='dash'?' active':''}" onclick="goTo('dash')"><span class="nav-icon">📝</span>Статьи</button>
-          <button class="nav-item${activeNav==='new'?' active':''}" onclick="newArticle()"><span class="nav-icon">✏️</span>Новая статья</button>
+          <button class="nav-item${activeNav==='articles'?' active':''}" onclick="goSection('articles')"><span class="nav-icon">📝</span>Статьи</button>
+          <button class="nav-item${activeNav==='news'?' active':''}" onclick="goSection('news')"><span class="nav-icon">📰</span>Новости</button>
+          <button class="nav-item${activeNav==='new'?' active':''}" onclick="newArticle()"><span class="nav-icon">✏️</span>Новая запись</button>
         </nav>
         <div class="sidebar-bottom">
           <button class="nav-item${activeNav==='settings'?' active':''}" onclick="goTo('settings')"><span class="nav-icon">⚙️</span>Настройки</button>
@@ -287,6 +289,7 @@ function shell(activeNav, titleHtml, actionsHtml, bodyHtml) {
 }
 
 function goTo(view) { S.view = view; render(); }
+function goSection(section) { S.section = section; S.view = 'dash'; render(); }
 function logout() { sessionStorage.removeItem('bhs_user'); S.loggedIn = false; render(); }
 
 // ── Dashboard ──────────────────────────────────────────────────────────
@@ -302,10 +305,14 @@ async function loadArticles() {
 }
 
 function renderDash() {
-  const rows = S.articles.length
-    ? S.articles.map(a => `
+  const isNews = S.section === 'news';
+  const filtered = S.articles.filter(a => isNews ? a.section === 'news' : a.section !== 'news');
+  const sectionTitle = isNews ? 'Новости законодательства' : 'Статьи';
+  const emptyMsg = isNews ? 'Новостей пока нет. Создайте первую!' : 'Статей пока нет. Создайте первую!';
+  const rows = filtered.length
+    ? filtered.map(a => `
         <div class="article-row">
-          <span class="article-row-tag">${a.tag||'—'}</span>
+          <span class="article-row-tag">${isNews ? (a.range||a.date||'—') : (a.tag||'—')}</span>
           <span class="article-row-title">${a.title}</span>
           <span class="article-row-date">${a.date||''}</span>
           <div class="article-row-actions">
@@ -313,10 +320,10 @@ function renderDash() {
             <button class="btn btn-danger btn-sm" onclick="confirmDelete('${a.slug}')">Удалить</button>
           </div>
         </div>`).join('')
-    : '<div class="empty-state">Статей пока нет. Создайте первую!</div>';
+    : `<div class="empty-state">${emptyMsg}</div>`;
 
-  shell('dash','Статьи <span class="badge">'+S.articles.length+'</span>',
-    '<button class="btn btn-primary" onclick="newArticle()">+ Новая статья</button>',
+  shell(isNews?'news':'articles', sectionTitle + ' <span class="badge">'+filtered.length+'</span>',
+    `<button class="btn btn-primary" onclick="newArticle()">+ Новая запись</button>`,
     `<div class="article-list">${rows}</div>`);
 }
 
@@ -334,7 +341,15 @@ async function confirmDelete(slug) {
 
 // ── Editor ──────────────────────────────────────────────────────────────
 function newArticle() {
-  S.current = { slug:'', tag:'Налоги', title:'', date: isoToRu(new Date().toISOString().slice(0,10)), isoDate: new Date().toISOString().slice(0,10), preview:'', coverImage:'', blocks:[{t:'p',text:''}], _wsHtml:'', _sha: null, _path: null };
+  const isNews = S.section === 'news';
+  S.current = {
+    slug:'', section: isNews ? 'news' : 'articles',
+    tag: isNews ? 'Новости законодательства' : 'Налоги',
+    title:'', date: isoToRu(new Date().toISOString().slice(0,10)),
+    isoDate: new Date().toISOString().slice(0,10),
+    range: '', preview:'', coverImage:'',
+    blocks:[{t:'p',text:''}], _wsHtml:'', _sha: null, _path: null
+  };
   S.view = 'editor';
   render();
 }
@@ -348,20 +363,27 @@ function editArticle(slug) {
 function renderEditor() {
   const a = S.current;
   const isNew = !a._sha;
+  const isNews = a.section === 'news';
   const coverHtml = a.coverImage
     ? `<img src="/${a.coverImage}" class="img-preview" id="cover-preview"><br><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="clearCover()">Удалить обложку</button>`
     : `<div class="img-drop" id="cover-drop" onclick="document.getElementById('cover-file').click()" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)">
         📷 Нажмите или перетащите файл обложки<br><span style="font-size:11px">JPG, PNG, WebP</span>
        </div>`;
 
-  shell(isNew?'new':'dash', isNew ? 'Новая статья' : 'Редактирование',
-    `<div style="display:flex;gap:10px">
-       <button class="btn btn-ghost" onclick="goTo('dash')">← Назад</button>
-       <button class="btn btn-primary" id="save-btn" onclick="saveArticle()">💾 Сохранить</button>
-     </div>`,
-    `<div style="max-width:760px">
-      <div class="row row-3" style="margin-bottom:18px">
+  const topRowFields = isNews
+    ? `<div class="field">
+          <label>Период</label>
+          <input id="e-range" type="text" value="${esc(a.range||'')}" placeholder="01.01 — 07.01.2026" oninput="S.current.range=this.value">
+        </div>
         <div class="field">
+          <label>Дата публикации</label>
+          <input id="e-date" type="date" value="${a.isoDate||new Date().toISOString().slice(0,10)}" onchange="S.current.isoDate=this.value">
+        </div>
+        <div class="field">
+          <label>URL (slug)</label>
+          <input id="e-slug" type="text" value="${a.slug||''}" placeholder="auto" ${!isNew?'readonly':''}>
+        </div>`
+    : `<div class="field">
           <label>Тег / Категория</label>
           <select id="e-tag" onchange="S.current.tag=this.value">${TAGS.map(t=>`<option${a.tag===t?' selected':''}>${t}</option>`).join('')}</select>
         </div>
@@ -372,7 +394,16 @@ function renderEditor() {
         <div class="field">
           <label>URL (slug)</label>
           <input id="e-slug" type="text" value="${a.slug||''}" placeholder="auto" ${!isNew?'readonly':''}>
-        </div>
+        </div>`;
+
+  shell(isNew?'new':(isNews?'news':'articles'), isNew ? (isNews?'Новая новость':'Новая статья') : 'Редактирование',
+    `<div style="display:flex;gap:10px">
+       <button class="btn btn-ghost" onclick="goTo('dash')">← Назад</button>
+       <button class="btn btn-primary" id="save-btn" onclick="saveArticle()">💾 Сохранить</button>
+     </div>`,
+    `<div style="max-width:760px">
+      <div class="row row-3" style="margin-bottom:18px">
+        ${topRowFields}
       </div>
 
       <div class="field">
@@ -553,11 +584,13 @@ async function saveArticle() {
   if (!S.pat) { toast('Сначала введите GitHub PAT в настройках', 'err'); return; }
 
   // collect values
+  const isNews  = S.current.section === 'news';
   const title   = document.getElementById('e-title').value.trim();
-  const tag     = document.getElementById('e-tag').value;
+  const tag     = isNews ? 'Новости законодательства' : document.getElementById('e-tag').value;
   const isoDate = document.getElementById('e-date').value;
   const slug    = document.getElementById('e-slug').value.trim() || slugify(title);
   const preview = document.getElementById('e-preview').value.trim();
+  const range   = isNews ? (document.getElementById('e-range').value.trim()) : '';
 
   if (!title)   { toast('Введите заголовок', 'err'); return; }
   if (!slug)    { toast('Не удалось сформировать URL', 'err'); return; }
@@ -568,9 +601,10 @@ async function saveArticle() {
   const blocks = htmlToBlocks(S.current._wsHtml || blocksToHtml(S.current.blocks)).filter(b => (b.text||'').trim());
 
   const article = {
-    slug, tag, title,
+    slug, section: S.current.section || 'articles', tag, title,
     date: isoToRu(isoDate),
     isoDate,
+    ...(isNews && range ? { range } : {}),
     preview,
     coverImage: S.current.coverImage || '',
     blocks

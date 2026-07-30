@@ -5,7 +5,7 @@
 
   function getSpacerH(hdr) {
     var h = hdr.getBoundingClientRect().height || 72;
-    return Math.round(h + 16); // высота шапки + 16px воздуха
+    return Math.round(h); // только высота шапки
   }
 
   function fixHeader(hdr) {

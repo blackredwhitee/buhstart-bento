@@ -1,0 +1,5 @@
+1:"$Sreact.fragment"
+2:I[13231,["/buhstart-next/_next/static/chunks/30p236ed1ee7e.js","/buhstart-next/_next/static/chunks/3fsec3_li6_-4.js"],"OutletBoundary"]
+3:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","section",null,{"style":{"padding":"80px 0"},"children":["$","div",null,{"className":"container","children":["$","h1",null,{"children":"Услуга: marketplace"}]}]}],null,["$","$L2",null,{"children":["$","$3",null,{"name":"Next.MetadataOutlet","children":"$@4"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"3l6XGCBpQRvrUS8juWCCN"}
+4:null

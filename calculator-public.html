@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/png" href="favicon.ico"/>
+  <title>Рассчитать стоимость бухгалтерского обслуживания — Доверительная бухгалтерия</title>
+  <meta name="description" content="Узнайте стоимость бухгалтерского обслуживания вашего бизнеса за 2 минуты"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --or-50:#fff3ee;--or-100:#fddccc;
+  --or-500:#f5894f;--or-600:#e35611;--or-700:#c04a0e;
+  --green-50:#f0fdf4;--green-600:#16a34a;--green-700:#15803d;
+  --red-50:#fef2f2;--red-400:#f87171;--red-500:#ef4444;
+  --gray-50:#fbfbf9;--gray-100:#f2f1ef;--gray-200:#e4e2de;
+  --gray-300:#cbc9c4;--gray-400:#9e9b95;--gray-500:#757270;
+  --gray-600:#555250;--gray-700:#383633;--gray-800:#222120;--gray-900:#111110;
+  --white:#fff;
+  --r-sm:6px;--r-md:10px;--r-lg:16px;--r-xl:24px;
+  --sh-sm:0 1px 4px rgba(0,0,0,.07);--sh-md:0 4px 20px rgba(0,0,0,.09);
+  --fd:'Inter',system-ui,sans-serif;--fb:'Inter',system-ui,sans-serif;
+  --t:.16s ease;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:#e8e6e1;color:var(--gray-800);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+.hero{background:#fff;padding:56px 40px 80px;text-align:center;min-height:100vh;display:flex;align-items:center;justify-content:center;margin-bottom:-48px;z-index:1;position:relative;border-bottom:1px solid var(--gray-200)}
+.hero-inner{max-width:640px;margin:0 auto;display:flex;flex-direction:column;align-items:center}
+.hero-logo{height:64px;width:auto;margin-bottom:24px}
+.hero-badge{color:var(--or-600);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px}
+.hero-title{font-size:clamp(26px,4.5vw,44px);font-weight:800;line-height:1.1;letter-spacing:-.02em;margin-bottom:14px;color:var(--gray-900)}
+.hero-sub{font-size:15px;line-height:1.65;color:var(--gray-500);margin-bottom:32px;max-width:480px}
+.btn-hero{background:var(--or-600);color:#fff;font-weight:700;font-size:18px;padding:16px 42px;border-radius:4px;border:none;cursor:pointer;box-shadow:0 4px 18px rgba(227,86,17,.35);transition:transform var(--t),background var(--t)}
+.btn-hero:hover{background:var(--or-700);transform:translateY(-2px)}
+
+.quiz-wrap{max-width:700px;margin:0 auto;padding:40px 20px 80px;position:relative;z-index:2}
+.quiz-progress{background:var(--white);border-radius:var(--r-xl) var(--r-xl) 0 0;padding:24px 28px 0;box-shadow:0 -4px 24px rgba(0,0,0,.08)}
+.quiz-progress-inner{display:flex;flex-direction:column;gap:8px}
+.step-label{font-size:13px;font-weight:600;color:var(--gray-500)}
+.prog-bar{height:3px;background:var(--gray-200);border-radius:100px;overflow:hidden}
+.prog-fill{height:100%;background:var(--or-600);border-radius:100px;transition:width .4s ease}
+.quiz-body{background:var(--white);border-radius:0 0 var(--r-xl) var(--r-xl);padding:0 28px 28px;box-shadow:var(--sh-md);margin-bottom:24px}
+
+.slide{display:none;padding:28px 0 8px;animation:sIn .2s ease forwards}
+.slide.active{display:block}
+.slide.back{animation:sInB .2s ease forwards}
+@keyframes sIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+@keyframes sInB{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+.slide-icon{font-size:34px;margin-bottom:12px;line-height:1}
+.slide-title{font-size:clamp(20px,4vw,26px);font-weight:700;color:var(--gray-900);line-height:1.2;margin-bottom:6px}
+.slide-sub{font-size:14px;color:var(--gray-500);margin-bottom:22px}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+.ccard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:18px 14px;background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--r-md);cursor:pointer;transition:all var(--t);text-align:center;font-family:var(--fb)}
+.ccard:hover{border-color:var(--or-500);background:var(--or-50)}
+.ccard.selected{border-color:var(--or-600);background:var(--or-50);box-shadow:0 0 0 3px rgba(227,86,17,.10)}
+.ccard--lg{padding:22px 16px}
+.cc-icon{font-size:26px;line-height:1}
+.cc-label{font-size:15px;font-weight:600;color:var(--gray-800)}
+.cc-sub{font-size:12px;color:var(--gray-500);font-weight:400}
+
+.niche-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:8px}
+.ncard{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:16px;background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--r-md);cursor:pointer;transition:all var(--t);font-family:var(--fb);text-align:left}
+.ncard:hover{border-color:var(--or-500);background:var(--or-50)}
+.ncard.selected{border-color:var(--or-600);background:var(--or-50);box-shadow:0 0 0 3px rgba(227,86,17,.10)}
+.nc-icon{font-size:22px;line-height:1}
+.nc-name{font-size:14px;font-weight:600;color:var(--gray-800);line-height:1.3}
+
+.checks-list,.fields-list{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
+.chk-label{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;color:var(--gray-700);padding:12px 16px;border:1.5px solid var(--gray-200);border-radius:var(--r-sm);transition:all var(--t)}
+.chk-label:hover{border-color:var(--or-500);background:var(--or-50)}
+.chk-label input{width:17px;height:17px;accent-color:var(--or-600);flex-shrink:0;margin-top:1px}
+.staff-block{margin-bottom:20px}
+.staff-title{font-size:13px;font-weight:600;color:var(--gray-600);margin-bottom:10px}
+.num-row{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.q-label{font-size:13px;font-weight:600;color:var(--gray-600)}
+.q-input{height:44px;padding:0 14px;border:1.5px solid var(--gray-200);border-radius:var(--r-sm);font-family:var(--fb);font-size:15px;color:var(--gray-800);background:var(--white);outline:none;transition:border-color var(--t)}
+.q-input:focus{border-color:var(--or-500);box-shadow:0 0 0 3px rgba(227,86,17,.10)}
+.q-input::placeholder{color:var(--gray-400)}
+.q-input.input-err{border-color:var(--red-400);background:var(--red-50)}
+.num-input{max-width:180px}
+.req{color:var(--or-600)}
+.field-row{display:flex;flex-direction:column;gap:5px}
+.q-err{font-size:12px;color:var(--red-500);min-height:14px;display:block;margin-top:4px}
+.q-err--c{text-align:center;font-size:14px}
+
+/* Итог */
+.summary-card{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--r-lg);padding:22px;margin-bottom:20px;box-shadow:var(--sh-sm)}
+.sum-div{height:1px;background:var(--gray-100);margin:14px 0}
+.sum-params{display:flex;flex-direction:column;gap:5px}
+.sum-param{display:flex;gap:8px;font-size:13px}
+.sum-param-k{color:var(--gray-400);min-width:120px;flex-shrink:0}
+.sum-param-v{font-weight:500;color:var(--gray-700)}
+.sum-tariff-block{margin-top:14px;border-top:1px solid var(--gray-100);padding-top:12px}
+.sum-tariff-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--or-600);margin-bottom:8px}
+
+/* Публичные строки услуг */
+.pub-service-line{display:flex;gap:8px;font-size:13px;color:var(--gray-700);padding:3px 0;align-items:flex-start}
+.pub-service-dot{color:var(--green-600);font-size:13px;flex-shrink:0;margin-top:1px}
+
+/* Тарифные карточки итога */
+.pub-tariff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+.pub-tariff{background:var(--white);border:1.5px solid var(--gray-200);border-radius:var(--r-md);padding:18px 14px;display:flex;flex-direction:column;gap:6px}
+.pub-tariff.featured{border-color:var(--or-600);box-shadow:0 0 0 3px rgba(227,86,17,.10)}
+.pub-tariff-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--or-600);background:var(--or-50);padding:2px 8px;border-radius:100px;display:inline-block;margin-bottom:2px}
+.pub-tariff-name{font-size:13px;font-weight:700;color:var(--gray-900)}
+.pub-tariff-price{font-size:15px;font-weight:700;color:var(--or-600);margin:4px 0}
+.pub-tariff-desc{font-size:12px;color:var(--gray-500);line-height:1.5}
+
+/* Форма лида */
+.lead-form-wrap{background:var(--or-50);border:1.5px solid var(--or-100);border-radius:var(--r-lg);padding:22px;margin-top:20px}
+.lead-form-title{font-size:16px;font-weight:700;color:var(--gray-900);margin-bottom:4px}
+.lead-form-sub{font-size:13px;color:var(--gray-500);margin-bottom:16px}
+.lead-form-fields{display:flex;flex-direction:column;gap:10px}
+
+/* NAV */
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;padding-top:20px;gap:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border-radius:var(--r-sm);font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all var(--t);white-space:nowrap}
+.btn-primary{background:var(--or-600);color:#fff;box-shadow:0 2px 8px rgba(227,86,17,.25)}
+.btn-primary:hover{background:var(--or-700);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-ghost{background:transparent;color:var(--gray-500);border:1.5px solid var(--gray-200)}
+.btn-ghost:hover{border-color:var(--gray-300);color:var(--gray-700);background:var(--gray-100)}
+.btn-xl{padding:14px 30px;font-size:15px}
+.sum-actions{text-align:center;margin-top:8px}
+
+/* Экран успеха */
+.lead-success{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center;background:#fff}
+.success-icon{font-size:64px;margin-bottom:20px}
+.success-title{font-size:28px;font-weight:800;color:var(--gray-900);margin-bottom:10px}
+.success-sub{font-size:15px;color:var(--gray-500);max-width:400px;margin:0 auto 32px}
+
+/* Responsive */
+@media(max-width:600px){
+  .hero{padding:40px 16px 64px;min-height:auto}
+  .pub-tariff-grid{grid-template-columns:1fr}
+  .quiz-wrap{padding:24px 12px 60px}
+  .quiz-body{padding:0 16px 20px}
+  .quiz-progress{padding:18px 16px 0}
+  .grid-2{grid-template-columns:1fr 1fr;gap:8px}
+  .niche-grid{grid-template-columns:1fr 1fr;gap:8px}
+}
+@media(max-width:400px){
+  .niche-grid{grid-template-columns:1fr}
+  .grid-2{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero" id="hero-p">
+  <div class="hero-inner">
+    <img src="img/logo.svg" alt="Доверительная бухгалтерия" class="hero-logo" onerror="this.style.display='none'"/>
+    <div class="hero-badge">Бесплатный расчёт</div>
+    <h1 class="hero-title">Узнайте стоимость<br>бухгалтерского обслуживания</h1>
+    <p class="hero-sub">Ответьте на несколько вопросов о вашем бизнесе — подберём подходящий пакет и свяжемся с вами.</p>
+    <button class="btn-hero" onclick="startQuizP()">Рассчитать стоимость →</button>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<div class="quiz-wrap" id="quiz-wrap-p" style="display:none">
+  <div class="quiz-progress" id="quiz-start-p">
+    <div class="quiz-progress-inner">
+      <span class="step-label" id="step-label-p">Шаг 1 из 10</span>
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill-p"></div></div>
+    </div>
+  </div>
+
+  <div class="quiz-body">
+    <div id="quiz-slides-p">
+
+      <!-- ШАГ 1: ИП или ООО -->
+      <div class="slide" data-step="1">
+        <div class="slide-icon">🏢</div>
+        <h2 class="slide-title">Вы ИП или ООО?</h2>
+        <p class="slide-sub">От этого зависит состав услуг</p>
+        <div class="grid-2" id="g-entity-p">
+          <button class="ccard ccard--lg" data-val="ИП" onclick="pickP(this,'g-entity-p')">
+            <span class="cc-icon">👤</span><span class="cc-label">ИП</span>
+            <span class="cc-sub">Индивидуальный предприниматель</span>
+          </button>
+          <button class="ccard ccard--lg" data-val="ООО" onclick="pickP(this,'g-entity-p')">
+            <span class="cc-icon">🏛</span><span class="cc-label">ООО</span>
+            <span class="cc-sub">Общество с ограниченной ответственностью</span>
+          </button>
+        </div>
+        <span class="q-err" id="err-entity-p"></span>
+      </div>
+
+      <!-- ШАГ 2: Нулёвка -->
+      <div class="slide" data-step="2">
+        <div class="slide-icon">📂</div>
+        <h2 class="slide-title">Вы ведёте деятельность?</h2>
+        <p class="slide-sub">Влияет на состав и объём услуг</p>
+        <div class="grid-2" id="g-null-p">
+          <button class="ccard ccard--lg" data-val="no" onclick="pickP(this,'g-null-p')">
+            <span class="cc-icon">📊</span><span class="cc-label">Да, есть обороты</span>
+            <span class="cc-sub">Бизнес работает</span>
+          </button>
+          <button class="ccard ccard--lg" data-val="yes" onclick="pickP(this,'g-null-p')">
+            <span class="cc-icon">✅</span><span class="cc-label">Нулевая отчётность</span>
+            <span class="cc-sub">Деятельность не велась</span>
+          </button>
+        </div>
+        <span class="q-err" id="err-null-p"></span>
+      </div>
+
+      <!-- ШАГ 3: Система налогообложения -->
+      <div class="slide" data-step="3">
+        <div class="slide-icon">📋</div>
+        <h2 class="slide-title">Система налогообложения</h2>
+        <p class="slide-sub">Если не уверены — выберите предполагаемую или ту, что сейчас</p>
+        <div class="grid-2" id="g-tax-p">
+          <button class="ccard" data-val="usn6" onclick="pickP(this,'g-tax-p')">
+            <span class="cc-label">УСН 6%</span>
+            <span class="cc-sub">Доходы</span>
+          </button>
+          <button class="ccard" data-val="ausn_d" onclick="pickP(this,'g-tax-p')">
+            <span class="cc-label">АУСН Доходы</span>
+            <span class="cc-sub">Автоматизированная УСН</span>
+          </button>
+          <button class="ccard" data-val="ausn_dr" onclick="pickP(this,'g-tax-p')">
+            <span class="cc-label">АУСН Доходы−Расходы</span>
+            <span class="cc-sub">Автоматизированная УСН</span>
+          </button>
+          <button class="ccard" data-val="usn15" onclick="pickP(this,'g-tax-p')">
+            <span class="cc-label">УСН 15%</span>
+            <span class="cc-sub">Доходы минус расходы</span>
+          </button>
+          <button class="ccard" data-val="osno" onclick="pickP(this,'g-tax-p')">
+            <span class="cc-label">ОСНО</span>
+            <span class="cc-sub">Общая система</span>
+          </button>
+          <button class="ccard" data-val="patent" onclick="pickP(this,'g-tax-p')">
+            <span class="cc-label">Патент</span>
+            <span class="cc-sub">Патентная система</span>
+          </button>
+        </div>
+        <span class="q-err" id="err-tax-p"></span>
+      </div>
+
+      <!-- ШАГ 4: Вид деятельности -->
+      <div class="slide" data-step="4">
+        <div class="slide-icon">🏭</div>
+        <h2 class="slide-title">Вид деятельности</h2>
+        <p class="slide-sub">Можно выбрать несколько, если совмещаете</p>
+        <div class="niche-grid" id="g-niche-p">
+          <button class="ncard" data-val="marketplace" onclick="toggleMultiP(this)">
+            <span class="nc-icon">🛒</span>
+            <span class="nc-name">Маркетплейс</span>
+          </button>
+          <button class="ncard" data-val="wholesale" onclick="toggleMultiP(this)">
+            <span class="nc-icon">📦</span>
+            <span class="nc-name">Оптовая торговля</span>
+          </button>
+          <button class="ncard" data-val="retail" onclick="toggleMultiP(this)">
+            <span class="nc-icon">🏪</span>
+            <span class="nc-name">Розничная торговля</span>
+          </button>
+          <button class="ncard" data-val="production" onclick="toggleMultiP(this)">
+            <span class="nc-icon">🏗</span>
+            <span class="nc-name">Производство</span>
+          </button>
+          <button class="ncard" data-val="construction" onclick="toggleMultiP(this)">
+            <span class="nc-icon">🏚</span>
+            <span class="nc-name">Строительство</span>
+          </button>
+          <button class="ncard" data-val="catering" onclick="toggleMultiP(this)">
+            <span class="nc-icon">🍽</span>
+            <span class="nc-name">Общепит</span>
+          </button>
+          <button class="ncard" data-val="medicine" onclick="toggleMultiP(this)">
+            <span class="nc-icon">🏥</span>
+            <span class="nc-name">Медицина / Стоматология</span>
+          </button>
+          <button class="ncard" data-val="services" onclick="toggleMultiP(this)">
+            <span class="nc-icon">💼</span>
+            <span class="nc-name">Услуги / Прочее</span>
+          </button>
+        </div>
+        <span class="q-err" id="err-niche-p"></span>
+        <div id="wh-inventory-block-p" style="display:none;margin-top:12px">
+          <label class="chk-label">
+            <input type="checkbox" id="add-wh-inventory-p"/>
+            <span>Нужен товарный учёт (оптовая торговля)</span>
+          </label>
+        </div>
+        <div id="rt-inventory-block-p" style="display:none;margin-top:8px">
+          <label class="chk-label">
+            <input type="checkbox" id="add-rt-inventory-p"/>
+            <span>Нужен товарный учёт (розничная торговля)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ШАГ 5: Маркетплейсы -->
+      <div class="slide" data-step="5">
+        <div class="slide-icon">🛒</div>
+        <h2 class="slide-title">Какие маркетплейсы?</h2>
+        <p class="slide-sub">Можно выбрать несколько</p>
+        <div class="grid-2" id="g-mp-p">
+          <button class="ccard" data-val="wb" onclick="toggleMultiP(this)">
+            <span class="cc-label">Wildberries</span>
+          </button>
+          <button class="ccard" data-val="ozon" onclick="toggleMultiP(this)">
+            <span class="cc-label">Ozon</span>
+          </button>
+          <button class="ccard" data-val="ya" onclick="toggleMultiP(this)">
+            <span class="cc-label">Яндекс Маркет</span>
+          </button>
+        </div>
+        <div style="margin-top:10px">
+          <label class="chk-label">
+            <input type="checkbox" id="mp-inventory-p"/>
+            <span>Нужен товарный учёт</span>
+          </label>
+        </div>
+        <span class="q-err" id="err-mp-p"></span>
+      </div>
+
+      <!-- ШАГ 6: НДС -->
+      <div class="slide" data-step="6">
+        <div class="slide-icon">🧾</div>
+        <h2 class="slide-title">НДС</h2>
+        <p class="slide-sub">Выберите ставки, которые применяете. Можно несколько</p>
+        <div class="niche-grid" id="g-vat-p">
+          <button class="ncard" data-val="не_облагается" onclick="toggleMultiVatP(this)">
+            <span class="nc-name">Не облагается</span>
+            <span style="font-size:11px;color:var(--gray-400)">ст. 149 НК</span>
+          </button>
+          <button class="ncard" data-val="освобождение" onclick="toggleMultiVatP(this)">
+            <span class="nc-name">Освобождение</span>
+            <span style="font-size:11px;color:var(--gray-400)">ст. 145 НК</span>
+          </button>
+          <button class="ncard" data-val="nds0" onclick="toggleMultiVatP(this)">
+            <span class="nc-name">0%</span>
+            <span style="font-size:11px;color:var(--gray-400)">экспорт</span>
+          </button>
+          <button class="ncard" data-val="nds5" onclick="toggleMultiVatP(this)">
+            <span class="nc-name">5%</span>
+          </button>
+          <button class="ncard" data-val="nds7" onclick="toggleMultiVatP(this)">
+            <span class="nc-name">7%</span>
+          </button>
+          <button class="ncard" data-val="nds10" onclick="toggleMultiVatP(this)">
+            <span class="nc-name">10%</span>
+          </button>
+          <button class="ncard" data-val="nds22" onclick="toggleMultiVatP(this)">
+            <span class="nc-name">22%</span>
+          </button>
+        </div>
+        <span class="q-err" id="err-vat-p"></span>
+      </div>
+
+      <!-- ШАГ 7: Сотрудники -->
+      <div class="slide" data-step="7">
+        <div class="slide-icon">👥</div>
+        <h2 class="slide-title">Сотрудники</h2>
+        <p class="slide-sub">Официально трудоустроенные и по ГПХ</p>
+        <div class="staff-block">
+          <p class="staff-title">Граждане РФ</p>
+          <div class="grid-2" id="g-staff-rf-p">
+            <button class="ccard" data-val="none" onclick="pickP(this,'g-staff-rf-p');document.getElementById('rf-count-row-p').style.display='none'">
+              <span class="cc-label">Нет</span>
+            </button>
+            <button class="ccard" data-val="rf_1_3" onclick="pickP(this,'g-staff-rf-p');document.getElementById('rf-count-row-p').style.display='none'">
+              <span class="cc-label">1–3 человека</span>
+            </button>
+            <button class="ccard" data-val="rf_more" onclick="pickP(this,'g-staff-rf-p');document.getElementById('rf-count-row-p').style.display='flex'">
+              <span class="cc-label">4 и более</span>
+            </button>
+          </div>
+          <div class="num-row" id="rf-count-row-p" style="display:none">
+            <label class="q-label">Количество сотрудников</label>
+            <input class="q-input num-input" type="number" id="rf-count-p" min="4" value="4"/>
+          </div>
+        </div>
+        <div class="staff-block">
+          <p class="staff-title">Иностранные граждане</p>
+          <div class="grid-2" id="g-staff-foreign-p">
+            <button class="ccard" data-val="none" onclick="pickP(this,'g-staff-foreign-p');document.getElementById('foreign-count-row-p').style.display='none'">
+              <span class="cc-label">Нет</span>
+            </button>
+            <button class="ccard" data-val="yes" onclick="pickP(this,'g-staff-foreign-p');document.getElementById('foreign-count-row-p').style.display='flex'">
+              <span class="cc-label">Есть</span>
+            </button>
+          </div>
+          <div class="num-row" id="foreign-count-row-p" style="display:none">
+            <label class="q-label">Количество иностранцев</label>
+            <input class="q-input num-input" type="number" id="foreign-count-p" min="1" value="1"/>
+          </div>
+        </div>
+        <span class="q-err" id="err-staff-p"></span>
+      </div>
+
+      <!-- ШАГ 8: Учёт наличных -->
+      <div class="slide" data-step="8">
+        <div class="slide-icon">💵</div>
+        <h2 class="slide-title">Наличные расчёты</h2>
+        <p class="slide-sub">Выберите все подходящие варианты</p>
+        <div class="checks-list">
+          <label class="chk-label">
+            <input type="checkbox" id="cash-none-p" onchange="cashNoneToggleP()"/>
+            <span>Нет — наличных расчётов нет</span>
+          </label>
+          <label class="chk-label">
+            <input type="checkbox" id="cash-kassa-p" onchange="cashOptionToggleP()"/>
+            <span>Касса (ККМ)</span>
+          </label>
+          <label class="chk-label">
+            <input type="checkbox" id="cash-avans-p" onchange="cashOptionToggleP()"/>
+            <span>Авансовые отчёты</span>
+          </label>
+        </div>
+        <span class="q-err" id="err-cash-p"></span>
+      </div>
+
+      <!-- ШАГ 9: Доп. услуги -->
+      <div class="slide" data-step="9">
+        <div class="slide-icon">➕</div>
+        <h2 class="slide-title">Дополнительные услуги</h2>
+        <p class="slide-sub">Отметьте всё, что нужно</p>
+        <div class="checks-list">
+          <label class="chk-label">
+            <input type="checkbox" id="add-ved-p"/>
+            <span>ВЭД / Валютные расчёты</span>
+          </label>
+          <label class="chk-label">
+            <input type="checkbox" id="add-reconcile-p"/>
+            <span>Сверки с покупателями и поставщиками</span>
+          </label>
+          <label class="chk-label">
+            <input type="checkbox" id="add-military-p" onchange="militaryToggleP()"/>
+            <span>Воинский учёт</span>
+          </label>
+          <div class="num-row" id="military-count-row-p" style="display:none">
+            <label class="q-label">Количество сотрудников для воинского учёта</label>
+            <input class="q-input num-input" type="number" id="military-count-p" min="1" value="1"/>
+          </div>
+          <label class="chk-label">
+            <input type="checkbox" id="add-licenses-p" onchange="licensesToggleP()"/>
+            <span>Лицензионная отчётность (строительство, алко и др.)</span>
+          </label>
+          <div class="num-row" id="license-count-row-p" style="display:none">
+            <label class="q-label">Количество лицензий</label>
+            <input class="q-input num-input" type="number" id="license-count-p" min="1" value="1"/>
+          </div>
+          <label class="chk-label">
+            <input type="checkbox" id="add-spot-p" onchange="spotToggleP()"/>
+            <span>СПОТ (подтверждение поставки)</span>
+          </label>
+          <div class="num-row" id="spot-count-row-p" style="display:none">
+            <label class="q-label">Количество документов</label>
+            <input class="q-input num-input" type="number" id="spot-count-p" min="1" value="1"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- ШАГ 11: Контакты -->
+      <div class="slide" data-step="11">
+        <div class="slide-icon">✍️</div>
+        <h2 class="slide-title">Как с вами связаться?</h2>
+        <p class="slide-sub">Наш менеджер подготовит персональное предложение и свяжется с вами</p>
+        <div class="fields-list">
+          <div class="field-row">
+            <label class="q-label">Ваше имя <span class="req">*</span></label>
+            <input class="q-input" type="text" id="f-lead-name" placeholder="Иван Иванов" autocomplete="name"/>
+            <span class="q-err" id="err-lead-name-step"></span>
+          </div>
+          <div class="field-row">
+            <label class="q-label">Телефон <span class="req">*</span></label>
+            <input class="q-input" type="tel" id="f-lead-phone" placeholder="+7 (999) 000-00-00" autocomplete="tel"/>
+            <span class="q-err" id="err-lead-phone-step"></span>
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <button class="btn btn-primary btn-xl" style="width:100%" onclick="submitLeadP()">Получить расчёт →</button>
+          <span class="q-err q-err--c" id="err-lead-final" style="margin-top:8px;display:block"></span>
+          <p style="font-size:11px;color:var(--gray-400);text-align:center;margin-top:10px;line-height:1.5">Нажимая кнопку, вы соглашаетесь на обработку персональных данных</p>
+        </div>
+      </div>
+
+      <!-- ШАГ 12: Итог (внутренний — не отображается пользователю) -->
+      <div class="slide" data-step="12" style="display:none"></div>
+
+    </div><!-- /slides -->
+
+    <div class="quiz-nav">
+      <button class="btn btn-ghost" id="btn-back-p" onclick="goBackP()" style="display:none">← Назад</button>
+      <button class="btn btn-primary" id="btn-next-p" onclick="goNextP()">Далее →</button>
+    </div>
+  </div>
+</div><!-- /quiz-wrap -->
+
+<!-- ЭКРАН УСПЕХА -->
+<div class="lead-success" id="lead-success-p">
+  <div class="success-icon">✅</div>
+  <h2 class="success-title">Заявка отправлена!</h2>
+  <p class="success-sub">Наш менеджер изучит ваш запрос и свяжется с вами в течение рабочего дня.</p>
+  <button class="btn btn-primary btn-xl" onclick="restartQuizP()">Рассчитать ещё раз</button>
+</div>
+
+<script>
+/* ── Webhook Битрикс24 — заполните после настройки ── */
+const BITRIX_WEBHOOK = '';
+
+/* ── Состояние ───────────────────────────────────── */
+let stepP = 1, backP = false;
+const AP = {
+  entity:'', isNull:false, tax:'', niches:[],
+  mp:[], mpInventory:false, vats:[],
+  staffRf:'none', rfCount:4,
+  staffForeign:'none', foreignCount:1,
+  cashKassa:false, cashAvans:false,
+  ved:false, reconcile:false,
+  military:false, militaryCount:1,
+  licenses:false, licenseCount:1,
+  spot:false, spotCount:1,
+  whInventory:false, rtInventory:false,
+  leadName:'', leadPhone:'',
+};
+
+const escP = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function startQuizP() {
+  document.getElementById('hero-p').style.display = 'none';
+  document.getElementById('quiz-wrap-p').style.display = 'block';
+  showStepP(1);
+  document.getElementById('quiz-start-p').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ── Навигация ───────────────────────────────────── */
+function nextStepNumP(n) {
+  if (n === 2 && AP.isNull) return 11;
+  if (n === 4 && !AP.niches.includes('marketplace')) return 6;
+  if (n === 9) return 11;
+  return n + 1;
+}
+function prevStepNumP(n) {
+  if (n === 4 && !AP.niches.includes('marketplace')) return 3;
+  if (n === 6 && !AP.niches.includes('marketplace')) return 4;
+  if (n === 11 && AP.isNull) return 2;
+  if (n === 11) return 9;
+  return n - 1;
+}
+function computePathP() {
+  if (AP.isNull) return [1,2,11];
+  const p = [1,2,3,4];
+  if (AP.niches.includes('marketplace')) p.push(5);
+  p.push(6,7,8,9,11);
+  return p;
+}
+
+function goNextP() {
+  if (!validateStepP(stepP)) return;
+  collectStepP(stepP);
+  backP = false;
+  showStepP(nextStepNumP(stepP));
+}
+function goBackP() {
+  collectStepP(stepP);
+  backP = true;
+  const p = prevStepNumP(stepP);
+  if (p >= 1) showStepP(p);
+}
+
+function showStepP(n) {
+  document.querySelectorAll('#quiz-wrap-p .slide').forEach(el => {
+    el.classList.remove('active','back');
+    el.style.display = 'none';
+  });
+  const sl = document.querySelector(`#quiz-wrap-p .slide[data-step="${n}"]`);
+  if (!sl) return;
+  sl.style.display = 'block';
+  sl.classList.add('active');
+  if (backP) sl.classList.add('back');
+
+  const path = computePathP();
+  const visual = path.indexOf(n) + 1;
+  document.getElementById('step-label-p').textContent = `Шаг ${visual} из ${path.length}`;
+  document.getElementById('prog-fill-p').style.width = `${Math.min((visual/path.length)*100,100)}%`;
+
+  const btnBack = document.getElementById('btn-back-p');
+  const btnNext = document.getElementById('btn-next-p');
+  btnBack.style.display = n > 1 ? 'inline-flex' : 'none';
+  btnNext.style.display = n === 11 ? 'none' : 'inline-flex';
+
+  restoreStepP(n);
+  stepP = n; backP = false;
+}
+
+/* ── Валидация ───────────────────────────────────── */
+function clearErrsP() {
+  document.querySelectorAll('#quiz-wrap-p .q-err').forEach(e => e.textContent='');
+  document.querySelectorAll('#quiz-wrap-p .q-input').forEach(e => e.classList.remove('input-err'));
+}
+function setErrP(id, msg) { const el=document.getElementById(id); if(el) el.textContent=msg; }
+
+function validateStepP(n) {
+  clearErrsP();
+  if (n===1 && !AP.entity) { setErrP('err-entity-p','Выберите форму'); return false; }
+  if (n===2 && !document.querySelector('#g-null-p .selected')) { setErrP('err-null-p','Выберите вариант'); return false; }
+  if (n===3 && !AP.isNull && !AP.tax) { setErrP('err-tax-p','Выберите систему налогообложения'); return false; }
+  if (n===4 && !AP.niches.length) { setErrP('err-niche-p','Выберите хотя бы один вид деятельности'); return false; }
+  if (n===5 && !AP.mp.length) { setErrP('err-mp-p','Выберите маркетплейс'); return false; }
+  if (n===6 && !AP.vats.length) { setErrP('err-vat-p','Выберите вариант НДС'); return false; }
+  if (n===7) {
+    const rf = document.querySelector('#g-staff-rf-p .selected');
+    const fo = document.querySelector('#g-staff-foreign-p .selected');
+    if (!rf || !fo) { setErrP('err-staff-p','Выберите вариант'); return false; }
+  }
+  if (n===8) {
+    const none=document.getElementById('cash-none-p').checked;
+    const ka=document.getElementById('cash-kassa-p').checked;
+    const av=document.getElementById('cash-avans-p').checked;
+    if (!none && !ka && !av) { setErrP('err-cash-p','Выберите хотя бы один вариант'); return false; }
+  }
+  return true;
+}
+
+/* ── Сбор данных ─────────────────────────────────── */
+function collectStepP(n) {
+  if (n===1) AP.entity = (document.querySelector('#g-entity-p .selected')||{}).dataset?.val||'';
+  if (n===2) { const v=(document.querySelector('#g-null-p .selected')||{}).dataset?.val; AP.isNull=v==='yes'; }
+  if (n===3) AP.tax = (document.querySelector('#g-tax-p .selected')||{}).dataset?.val||'';
+  if (n===4) {
+    AP.niches = [...document.querySelectorAll('#g-niche-p .selected')].map(b=>b.dataset.val);
+    AP.whInventory = document.getElementById('add-wh-inventory-p')?.checked||false;
+    AP.rtInventory = document.getElementById('add-rt-inventory-p')?.checked||false;
+  }
+  if (n===5) {
+    AP.mp = [...document.querySelectorAll('#g-mp-p .selected')].map(b=>b.dataset.val);
+    AP.mpInventory = document.getElementById('mp-inventory-p')?.checked||false;
+  }
+  if (n===6) AP.vats = [...document.querySelectorAll('#g-vat-p .selected')].map(b=>b.dataset.val);
+  if (n===7) {
+    AP.staffRf = (document.querySelector('#g-staff-rf-p .selected')||{}).dataset?.val||'none';
+    AP.rfCount = parseInt(document.getElementById('rf-count-p')?.value||'4',10);
+    AP.staffForeign = (document.querySelector('#g-staff-foreign-p .selected')||{}).dataset?.val||'none';
+    AP.foreignCount = parseInt(document.getElementById('foreign-count-p')?.value||'1',10);
+  }
+  if (n===8) {
+    AP.cashKassa = document.getElementById('cash-kassa-p')?.checked||false;
+    AP.cashAvans = document.getElementById('cash-avans-p')?.checked||false;
+  }
+  if (n===9) {
+    AP.ved = document.getElementById('add-ved-p')?.checked||false;
+    AP.reconcile = document.getElementById('add-reconcile-p')?.checked||false;
+    AP.military = document.getElementById('add-military-p')?.checked||false;
+    AP.militaryCount = parseInt(document.getElementById('military-count-p')?.value||'1',10);
+    AP.licenses = document.getElementById('add-licenses-p')?.checked||false;
+    AP.licenseCount = parseInt(document.getElementById('license-count-p')?.value||'1',10);
+    AP.spot = document.getElementById('add-spot-p')?.checked||false;
+    AP.spotCount = parseInt(document.getElementById('spot-count-p')?.value||'1',10);
+  }
+}
+
+function restoreStepP(n) {
+  const rp = (gid, val) => document.querySelectorAll(`#${gid} button`).forEach(b=>b.classList.toggle('selected',b.dataset.val===val));
+  if (n===1) rp('g-entity-p', AP.entity);
+  if (n===2) rp('g-null-p', AP.isNull?'yes':(AP.entity?'no':''));
+  if (n===3) rp('g-tax-p', AP.tax);
+  if (n===4) {
+    document.querySelectorAll('#g-niche-p button').forEach(b=>b.classList.toggle('selected',AP.niches.includes(b.dataset.val)));
+    const wb=document.getElementById('add-wh-inventory-p'); if(wb) wb.checked=AP.whInventory;
+    const rb=document.getElementById('add-rt-inventory-p'); if(rb) rb.checked=AP.rtInventory;
+    document.getElementById('wh-inventory-block-p').style.display=AP.niches.includes('wholesale')?'block':'none';
+    document.getElementById('rt-inventory-block-p').style.display=AP.niches.includes('retail')?'block':'none';
+  }
+  if (n===5) {
+    document.querySelectorAll('#g-mp-p button').forEach(b=>b.classList.toggle('selected',AP.mp.includes(b.dataset.val)));
+    const mi=document.getElementById('mp-inventory-p'); if(mi) mi.checked=AP.mpInventory;
+  }
+  if (n===6) document.querySelectorAll('#g-vat-p button').forEach(b=>b.classList.toggle('selected',AP.vats.includes(b.dataset.val)));
+  if (n===7) {
+    rp('g-staff-rf-p',AP.staffRf); rp('g-staff-foreign-p',AP.staffForeign);
+    document.getElementById('rf-count-row-p').style.display=AP.staffRf==='rf_more'?'flex':'none';
+    document.getElementById('foreign-count-row-p').style.display=AP.staffForeign==='yes'?'flex':'none';
+    const rc=document.getElementById('rf-count-p'); if(rc) rc.value=AP.rfCount;
+    const fc=document.getElementById('foreign-count-p'); if(fc) fc.value=AP.foreignCount;
+  }
+  if (n===8) {
+    const kc=document.getElementById('cash-kassa-p'); if(kc) kc.checked=AP.cashKassa;
+    const ac=document.getElementById('cash-avans-p'); if(ac) ac.checked=AP.cashAvans;
+    const nc=document.getElementById('cash-none-p'); if(nc) nc.checked=!AP.cashKassa&&!AP.cashAvans;
+  }
+  if (n===9) {
+    const pairs = [['add-ved-p','ved'],['add-reconcile-p','reconcile'],['add-military-p','military'],['add-licenses-p','licenses'],['add-spot-p','spot']];
+    pairs.forEach(([id,key])=>{ const el=document.getElementById(id); if(el) el.checked=AP[key]; });
+    document.getElementById('military-count-row-p').style.display=AP.military?'flex':'none';
+    document.getElementById('license-count-row-p').style.display=AP.licenses?'flex':'none';
+    document.getElementById('spot-count-row-p').style.display=AP.spot?'flex':'none';
+    const mc=document.getElementById('military-count-p'); if(mc) mc.value=AP.militaryCount;
+    const lc=document.getElementById('license-count-p'); if(lc) lc.value=AP.licenseCount;
+    const sc=document.getElementById('spot-count-p'); if(sc) sc.value=AP.spotCount;
+  }
+  if (n===11) {
+    const fn=document.getElementById('f-lead-name'); if(fn) fn.value=AP.leadName;
+    const fp=document.getElementById('f-lead-phone'); if(fp) fp.value=AP.leadPhone;
+  }
+}
+
+/* ── UI хелперы ──────────────────────────────────── */
+function pickP(btn, gid) { document.querySelectorAll(`#${gid} button`).forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); }
+function toggleMultiP(btn) { btn.classList.toggle('selected'); collectStepP(stepP); nicheInventoryToggleP(); }
+function toggleMultiVatP(btn) { btn.classList.toggle('selected'); }
+function nicheInventoryToggleP() {
+  const ns = [...document.querySelectorAll('#g-niche-p .selected')].map(b=>b.dataset.val);
+  document.getElementById('wh-inventory-block-p').style.display=ns.includes('wholesale')?'block':'none';
+  document.getElementById('rt-inventory-block-p').style.display=ns.includes('retail')?'block':'none';
+}
+function cashNoneToggleP() {
+  if(document.getElementById('cash-none-p').checked){
+    document.getElementById('cash-kassa-p').checked=false;
+    document.getElementById('cash-avans-p').checked=false;
+  }
+}
+function cashOptionToggleP() {
+  if(document.getElementById('cash-kassa-p').checked||document.getElementById('cash-avans-p').checked)
+    document.getElementById('cash-none-p').checked=false;
+}
+function militaryToggleP(){ document.getElementById('military-count-row-p').style.display=document.getElementById('add-military-p').checked?'flex':'none'; }
+function spotToggleP(){ document.getElementById('spot-count-row-p').style.display=document.getElementById('add-spot-p').checked?'flex':'none'; }
+function licensesToggleP(){ document.getElementById('license-count-row-p').style.display=document.getElementById('add-licenses-p').checked?'flex':'none'; }
+
+/* ── Отправка заявки ─────────────────────────────── */
+function submitLeadP() {
+  clearErrsP();
+  const name = document.getElementById('f-lead-name')?.value.trim()||'';
+  const phone = document.getElementById('f-lead-phone')?.value.trim()||'';
+  if (!name) { setErrP('err-lead-name-step','Введите ваше имя'); return; }
+  if (!phone || phone.replace(/\D/g,'').length < 10) { setErrP('err-lead-phone-step','Введите номер телефона'); return; }
+  AP.leadName=name; AP.leadPhone=phone;
+
+  const taxN = {patent:'Патент',ausn_d:'АУСН Доходы',ausn_dr:'АУСН Доходы-Расходы',usn6:'УСН 6%',usn15:'УСН 15%',osno:'ОСНО'};
+  const nicheN = {marketplace:'Маркетплейс',wholesale:'Оптовая торговля',retail:'Розничная торговля',production:'Производство',construction:'Строительство',catering:'Общепит',medicine:'Медицина',services:'Услуги'};
+  const details = [
+    `Форма: ${AP.entity}`,
+    `Отчётность: ${AP.isNull?'нулевая':'с оборотами'}`,
+    AP.tax?`Налогообложение: ${taxN[AP.tax]||AP.tax}`:'',
+    AP.niches.length?`Деятельность: ${AP.niches.map(n=>nicheN[n]||n).join(', ')}`:'',
+    AP.cashKassa?'Касса (ККМ)':'',
+    AP.cashAvans?'Авансовые отчёты':'',
+    AP.ved?'ВЭД':'',
+    AP.reconcile?'Сверки с контрагентами':'',
+    AP.military?`Воинский учёт (${AP.militaryCount} чел.)`:'',
+    AP.licenses?`Лицензионная отчётность (${AP.licenseCount} лиц.)`:'',
+  ].filter(Boolean).join('\n');
+
+  const btn = document.querySelector('#quiz-wrap-p [onclick="submitLeadP()"]');
+  if(btn){ btn.disabled=true; btn.textContent='Отправляем…'; }
+
+  sendToBitrixP({name, phone, details})
+    .finally(() => showLeadSuccessP());
+}
+
+async function sendToBitrixP({name, phone, details}) {
+  if (!BITRIX_WEBHOOK) return;
+  try {
+    const p = new URLSearchParams();
+    p.append('fields[TITLE]',`Заявка с калькулятора — ${name}`);
+    p.append('fields[NAME]', name);
+    p.append('fields[PHONE][0][VALUE]', phone);
+    p.append('fields[PHONE][0][VALUE_TYPE]','WORK');
+    p.append('fields[SOURCE_ID]','WEB');
+    p.append('fields[COMMENTS]', details);
+    await fetch(BITRIX_WEBHOOK, {method:'POST', body:p});
+  } catch(e) { /* тихо */ }
+}
+
+function showLeadSuccessP() {
+  document.getElementById('quiz-wrap-p').style.display='none';
+  const s=document.getElementById('lead-success-p');
+  s.style.display='flex';
+  s.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function restartQuizP() {
+  Object.assign(AP,{entity:'',isNull:false,tax:'',niches:[],mp:[],mpInventory:false,vats:[],staffRf:'none',rfCount:4,staffForeign:'none',foreignCount:1,cashKassa:false,cashAvans:false,ved:false,reconcile:false,military:false,militaryCount:1,licenses:false,licenseCount:1,spot:false,spotCount:1,whInventory:false,rtInventory:false,leadName:'',leadPhone:''});
+  document.getElementById('lead-success-p').style.display='none';
+  document.getElementById('quiz-wrap-p').style.display='block';
+  showStepP(1);
+}
+</script>
+</body>
+</html>

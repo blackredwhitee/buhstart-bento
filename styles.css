@@ -234,7 +234,8 @@ h2{font-size:38px}
 .bento .dark .more{color:var(--orange)}
 
 /* карточка при наведении темнеет — цепляет глаз */
-a.post{transition:transform .18s,background .2s,color .2s}
+/* фон меняем мгновенно: при плавном фоне текст успевал побелеть раньше и пропадал */
+a.post{transition:transform .18s}
 a.post:not(.dark):hover{background:var(--dark);color:#fff}
 a.post:not(.dark):hover h3{color:#fff}
 a.post:not(.dark):hover .cardtext{color:rgba(255,255,255,.65)}

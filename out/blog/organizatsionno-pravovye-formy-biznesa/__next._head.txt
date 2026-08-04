@@ -1,6 +1,0 @@
-1:"$Sreact.fragment"
-2:I[13231,["/buhstart-next/_next/static/chunks/30p236ed1ee7e.js","/buhstart-next/_next/static/chunks/3fsec3_li6_-4.js"],"ViewportBoundary"]
-3:I[13231,["/buhstart-next/_next/static/chunks/30p236ed1ee7e.js","/buhstart-next/_next/static/chunks/3fsec3_li6_-4.js"],"MetadataBoundary"]
-4:"$Sreact.suspense"
-5:I[24013,["/buhstart-next/_next/static/chunks/30p236ed1ee7e.js","/buhstart-next/_next/static/chunks/3fsec3_li6_-4.js"],"IconMark"]
-0:{"rsc":["$","$1","h",{"children":[null,["$","$L2",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L3",null,{"children":["$","$4",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Доверительная Бухгалтерия — buhstart.ru"}],["$","meta","1",{"name":"description","content":"Бухгалтерское сопровождение для ИП и ООО. Работаем удалённо по всей России с 2003 года."}],["$","link","2",{"rel":"icon","href":"/buhstart-next/favicon.ico?favicon.2vob68tjqpejf.ico","sizes":"256x256","type":"image/x-icon"}],["$","$L5","3",{}]]}]}]}],null]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"3l6XGCBpQRvrUS8juWCCN"}

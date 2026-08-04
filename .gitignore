@@ -1,9 +1,0 @@
-.next/
-out/
-node_modules/
-.claude/
-*.log
-.DS_Store
-__pycache__/
-_*.html
-_*.py

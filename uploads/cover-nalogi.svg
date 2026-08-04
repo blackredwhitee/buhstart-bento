@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 160" width="400" height="160" role="img" aria-label="Монеты и налоговая ставка">
+  <rect width="400" height="160" fill="#FBF3EC"/>
+  <g opacity="0.5" fill="#F5DFCB">
+    <circle cx="34" cy="28" r="3"/><circle cx="54" cy="28" r="3"/><circle cx="34" cy="48" r="3"/><circle cx="54" cy="48" r="3"/>
+  </g>
+  <!-- столбики монет -->
+  <g>
+    <rect x="104" y="112" width="52" height="30" rx="8" fill="#F07828"/>
+    <ellipse cx="130" cy="112" rx="26" ry="9" fill="#FF9A55"/>
+    <rect x="104" y="86" width="52" height="28" rx="8" fill="#F07828"/>
+    <ellipse cx="130" cy="86" rx="26" ry="9" fill="#FF9A55"/>
+    <rect x="104" y="62" width="52" height="26" rx="8" fill="#F07828"/>
+    <ellipse cx="130" cy="62" rx="26" ry="9" fill="#FFB07E"/>
+  </g>
+  <!-- знак рубля на верхней монете -->
+  <g stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none">
+    <path d="M124 55v14"/>
+    <path d="M124 55h7a5 5 0 0 1 0 10h-7"/>
+    <path d="M120 65h13"/>
+  </g>
+  <!-- карточка с процентом -->
+  <g transform="translate(206 40)">
+    <rect width="118" height="80" rx="10" fill="#fff" stroke="#EAD9C9" stroke-width="1.5"/>
+    <rect x="16" y="16" width="34" height="6" rx="3" fill="#F5DFCB"/>
+    <g transform="translate(16 34)">
+      <circle cx="9" cy="9" r="8.5" fill="none" stroke="#3D3D3D" stroke-width="3"/>
+      <circle cx="31" cy="31" r="8.5" fill="none" stroke="#3D3D3D" stroke-width="3"/>
+      <path d="M2 38 38 2" stroke="#F07828" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    <rect x="70" y="52" width="32" height="6" rx="3" fill="#F5DFCB"/>
+    <rect x="70" y="64" width="20" height="6" rx="3" fill="#F5DFCB"/>
+  </g>
+</svg>

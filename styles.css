@@ -204,8 +204,8 @@ form .btn{height:52px}
 
 .tiltable{transition:transform .18s cubic-bezier(.22,.61,.36,1),box-shadow .25s;will-change:transform;position:relative}
 .tiltable:hover{box-shadow:0 18px 40px rgba(24,24,27,.10)}
-a.post.tiltable::after,a.card.tiltable::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .25s;background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),rgba(240,120,40,.10),transparent 62%)}
-a.post.tiltable:hover::after,a.card.tiltable:hover::after{opacity:1}
+a.post.tiltable::before,a.card.tiltable::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .25s;background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),rgba(240,120,40,.10),transparent 62%)}
+a.post.tiltable:hover::before,a.card.tiltable:hover::before{opacity:1}
 .btn-p{transition:background .15s,transform .18s cubic-bezier(.22,.61,.36,1)}
 .post:hover{transform:none}
 
@@ -228,6 +228,12 @@ h2{font-size:38px}
 
 /* асимметричный бенто: первая карточка на две колонки */
 .bento .wide{grid-column:span 2}
+.bento .wide3{grid-column:span 3}
+.all-svc{display:flex;flex-direction:row;align-items:center;gap:20px}
+.all-svc .iconbox{margin-bottom:0!important}
+.all-svc h3{font-size:20px}
+.all-svc::after{content:"→";margin-left:auto;font:600 24px/1 Onest,sans-serif;color:var(--orange)}
+.all-svc:hover::after{color:#fff}
 .bento .dark{background:var(--dark);color:#fff}
 .bento .dark h3{color:#fff;font-size:26px;letter-spacing:-.02em}
 .bento .dark .cardtext{color:rgba(255,255,255,.6);font-size:16px}

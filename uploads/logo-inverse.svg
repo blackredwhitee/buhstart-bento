@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 276 64" width="276" height="64">
+  <defs></defs>
+  <g><path fill="#FFFFFF" fill-rule="evenodd" d="M15 6H31A9 9 0 0 1 40 15V31A9 9 0 0 1 31 40H15A9 9 0 0 1 6 31V15A9 9 0 0 1 15 6ZM33 24H40V31A9 9 0 0 1 31 40H24V33A9 9 0 0 1 33 24Z"></path><path fill="#F07828" fill-rule="evenodd" d="M33 24H49A9 9 0 0 1 58 33V49A9 9 0 0 1 49 58H33A9 9 0 0 1 24 49V33A9 9 0 0 1 33 24ZM33 24H40V31A9 9 0 0 1 31 40H24V33A9 9 0 0 1 33 24Z"></path></g>
+  <text x="80" y="27" font-family="Onest, sans-serif" font-weight="700" font-size="26" letter-spacing="-0.65" fill="#FFFFFF">Доверительная</text>
+  <text x="80" y="55" font-family="Onest, sans-serif" font-weight="700" font-size="26" letter-spacing="-0.65" fill="#FFFFFF">Бухгалтерия</text>
+</svg>

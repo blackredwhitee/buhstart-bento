@@ -102,3 +102,137 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   });
 });
+
+/* ---------- оживление: появление блоков, счётчики, наклон, магнитная кнопка ---------- */
+document.addEventListener('DOMContentLoaded', function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+  // --- появление блоков при прокрутке, друг за другом ---
+  if(!reduce && 'IntersectionObserver' in window){
+    var groups = [];
+    document.querySelectorAll('main>section').forEach(function(s){
+      var kids = s.querySelectorAll(':scope>*, :scope>.grid>*, :scope>.stack>*, :scope>.tile>.grid>*');
+      groups.push(kids.length ? kids : [s]);
+    });
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(!e.isIntersecting) return;
+        e.target.classList.add('rv-in');
+        io.unobserve(e.target);
+      });
+    }, {rootMargin:'0px 0px -8% 0px', threshold:0.08});
+    var watched = [];
+    groups.forEach(function(kids){
+      Array.prototype.forEach.call(kids, function(el, i){
+        if(el.classList.contains('rv')) return;
+        // то, что уже видно при загрузке, не скрываем — первый экран должен быть на месте
+        if(el.getBoundingClientRect().top < window.innerHeight * 0.9){ el.classList.add('rv','rv-in'); return; }
+        el.classList.add('rv');
+        el.style.transitionDelay = Math.min(i, 6) * 60 + 'ms';
+        io.observe(el);
+        watched.push(el);
+      });
+    });
+    // страховка: если наблюдатель не сработал, показываем всё, что попало в экран
+    function rescue(){
+      var h = window.innerHeight || 800;
+      watched = watched.filter(function(el){
+        if(el.classList.contains('rv-in')) return false;
+        if(el.getBoundingClientRect().top < h){ el.classList.add('rv-in'); return false; }
+        return true;
+      });
+      if(!watched.length) window.removeEventListener('scroll', onScroll);
+    }
+    var onScroll = function(){ clearTimeout(onScroll.t); onScroll.t = setTimeout(rescue, 400); };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    setTimeout(rescue, 1500);
+  }
+
+  // --- счётчики цифр ---
+  function countUp(el){
+    var raw = el.textContent.trim();
+    var m = raw.match(/^(\D*)(\d+(?:[.,]\d+)?)(.*)$/);
+    if(!m) return;
+    var pre = m[1], target = m[2], post = m[3];
+    if(/[А-Яа-яA-Za-z]/.test(post)) return;   // «2 часа» крутить не надо
+    var frac = target.indexOf(',') > -1 ? 1 : 0;
+    var end = parseFloat(target.replace(',', '.'));
+    if(!(end > 0)) return;
+    var t0 = null, dur = 900;
+    function frame(ts){
+      if(t0 === null) t0 = ts;
+      var p = Math.min(1, (ts - t0) / dur);
+      var v = end * (1 - Math.pow(1 - p, 3));
+      if(p < 1){
+        el.textContent = pre + (frac ? v.toFixed(1).replace('.', ',') : Math.round(v)) + post;
+        requestAnimationFrame(frame);
+      } else {
+        el.textContent = raw;   // в конце всегда точное исходное значение
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  if(!reduce && 'IntersectionObserver' in window){
+    var cio = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ countUp(e.target); cio.unobserve(e.target); } });
+    }, {threshold:0.6});
+    document.querySelectorAll('.num').forEach(function(el){ cio.observe(el); });
+  }
+
+  // --- наклон и подсветка: только кликабельные карточки ---
+  if(!reduce && fine){
+    document.querySelectorAll('a.post, a.card, a.person, .nrow').forEach(function(card){
+      card.classList.add('tiltable');
+      card.addEventListener('pointermove', function(e){
+        var r = card.getBoundingClientRect();
+        var dx = (e.clientX - r.left) / r.width - .5, dy = (e.clientY - r.top) / r.height - .5;
+        card.style.transform = 'perspective(900px) rotateX(' + (-dy * 4).toFixed(2) + 'deg) rotateY(' + (dx * 4).toFixed(2) + 'deg) translateY(-3px)';
+        card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+        card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+      });
+      card.addEventListener('pointerleave', function(){ card.style.transform = ''; });
+    });
+
+    // --- магнитная кнопка ---
+    document.querySelectorAll('.btn-p').forEach(function(b){
+      b.addEventListener('pointermove', function(e){
+        var r = b.getBoundingClientRect();
+        b.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * .12).toFixed(1) + 'px,' + ((e.clientY - r.top - r.height / 2) * .18).toFixed(1) + 'px)';
+      });
+      b.addEventListener('pointerleave', function(){ b.style.transform = ''; });
+    });
+  }
+
+  // --- живой тизер калькулятора на главной ---
+  var ct = document.getElementById('calc-teaser');
+  if(ct && !reduce){
+    var STEPS = [
+      {n:1, q:'Вы ИП или ООО?', opts:['ИП','ООО','Пока выбираю'], pick:1},
+      {n:2, q:'Сколько у вас сотрудников?', opts:['Нет','1–5','6–15'], pick:1},
+      {n:3, q:'Система налогообложения?', opts:['УСН 6%','УСН 15%','ОСНО'], pick:0},
+      {n:4, q:'Работаете с НДС?', opts:['Не облагается','НДС 5%','НДС 22%'], pick:2}
+    ];
+    var i = 0;
+    function draw(){
+      var s = STEPS[i];
+      ct.querySelector('.ct-step').textContent = 'Шаг ' + s.n;
+      ct.querySelector('.ct-bar span').style.width = (s.n / 15 * 100).toFixed(0) + '%';
+      var q = ct.querySelector('.ct-q');
+      q.style.opacity = 0;
+      setTimeout(function(){ q.textContent = s.q; q.style.opacity = 1; }, 180);
+      ct.querySelectorAll('.ct-opt').forEach(function(o, k){
+        o.style.opacity = 0;
+        setTimeout(function(){
+          o.textContent = s.opts[k];
+          o.classList.toggle('on', k === s.pick);
+          o.style.opacity = 1;
+        }, 180 + k * 70);
+      });
+      i = (i + 1) % STEPS.length;
+    }
+    draw();
+    var timer = setInterval(draw, 2600);
+    ct.addEventListener('pointerenter', function(){ clearInterval(timer); });
+  }
+});

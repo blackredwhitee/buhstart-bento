@@ -27,7 +27,7 @@ p,li{hyphens:none}
   .m-scroll>*{flex:0 0 280px;scroll-snap-align:start}
   .m-scroll>*:last-child{margin-right:20px}
   /* ответы FAQ со сдвигом относительно вопроса */
-  .faq-a{padding-left:16px !important;border-left:2px solid #FEC89E}
+  .faq-a{padding-left:16px !important;border-left:2px solid #F07828}
   .m-hide{display:none !important}
   .m-sticky{position:sticky;top:0;z-index:30;background:#fff;padding:10px 0}
   .m-screen{min-height:calc(100vh - 210px)}

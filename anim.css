@@ -9,10 +9,10 @@
   [data-rv]{animation:fadeUp .8s cubic-bezier(.2,.7,.3,1) both;animation-timeline:view();animation-range:entry 0% entry 25%}
 }
 @media (prefers-reduced-motion: reduce){
-  .fx,.fx1,.fx2,.fx3,.fx4,.marquee-track,[data-rv],.marker,.pulse,.hdr{animation:none !important;background-size:100% 0.28em}
+  .fx,.fx1,.fx2,.fx3,.fx4,.marquee-track,[data-rv],.marker,.pulse,.hdr{animation:none !important;background-size:100% 0.16em}
 }
-@keyframes markerIn{from{background-size:0% 0.28em}to{background-size:100% 0.28em}}
-.marker{background-image:linear-gradient(#FEC89E,#FEC89E);background-repeat:no-repeat;background-position:0 82%;background-size:0% 0.28em;animation:markerIn .9s .55s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes markerIn{from{background-size:0% 0.16em}to{background-size:100% 0.16em}}
+.marker{background-image:linear-gradient(#F07828,#F07828);background-repeat:no-repeat;background-position:0 82%;background-size:0% 0.16em;animation:markerIn .9s .55s cubic-bezier(.2,.7,.3,1) forwards}
 @keyframes ctaPulse{0%,100%{box-shadow:0 0 0 0 rgba(240,120,40,0.4)}55%{box-shadow:0 0 0 14px rgba(240,120,40,0)}}
 .pulse{animation:ctaPulse 2.6s ease-out infinite}
 @keyframes slideDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}

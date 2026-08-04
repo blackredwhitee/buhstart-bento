@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220" role="img" aria-label="Полный список услуг">
-  <rect width="400" height="220" fill="#F4F2EF"/>
-  <g opacity="0.45" fill="#D5CFC7"><circle cx="352" cy="30" r="3"/><circle cx="372" cy="30" r="3"/><circle cx="352" cy="50" r="3"/><circle cx="372" cy="50" r="3"/><circle cx="28" cy="172" r="3"/><circle cx="48" cy="172" r="3"/><circle cx="28" cy="192" r="3"/><circle cx="48" cy="192" r="3"/></g>
+  <rect width="400" height="220" fill="#F4F4F5"/>
+  <g opacity="0.45" fill="#DEDEE1"><circle cx="352" cy="30" r="3"/><circle cx="372" cy="30" r="3"/><circle cx="352" cy="50" r="3"/><circle cx="372" cy="50" r="3"/><circle cx="28" cy="172" r="3"/><circle cx="48" cy="172" r="3"/><circle cx="28" cy="192" r="3"/><circle cx="48" cy="192" r="3"/></g>
   <g>
-    <rect x="120" y="50" width="76" height="56" rx="9" fill="#fff" stroke="#CFC9C1" stroke-width="1.6"/>
+    <rect x="120" y="50" width="76" height="56" rx="9" fill="#fff" stroke="#D8D8DC" stroke-width="1.6"/>
     <rect x="134" y="64" width="34" height="7" rx="3.5" fill="#F07828"/>
-    <rect x="134" y="80" width="48" height="6" rx="3" fill="#D5CFC7"/>
+    <rect x="134" y="80" width="48" height="6" rx="3" fill="#DEDEE1"/>
 
-    <rect x="206" y="50" width="76" height="56" rx="9" fill="#fff" stroke="#CFC9C1" stroke-width="1.6"/>
-    <rect x="220" y="64" width="28" height="7" rx="3.5" fill="#D5CFC7"/>
-    <rect x="220" y="80" width="48" height="6" rx="3" fill="#D5CFC7"/>
+    <rect x="206" y="50" width="76" height="56" rx="9" fill="#fff" stroke="#D8D8DC" stroke-width="1.6"/>
+    <rect x="220" y="64" width="28" height="7" rx="3.5" fill="#DEDEE1"/>
+    <rect x="220" y="80" width="48" height="6" rx="3" fill="#DEDEE1"/>
 
-    <rect x="120" y="116" width="76" height="56" rx="9" fill="#fff" stroke="#CFC9C1" stroke-width="1.6"/>
-    <rect x="134" y="130" width="28" height="7" rx="3.5" fill="#D5CFC7"/>
-    <rect x="134" y="146" width="48" height="6" rx="3" fill="#D5CFC7"/>
+    <rect x="120" y="116" width="76" height="56" rx="9" fill="#fff" stroke="#D8D8DC" stroke-width="1.6"/>
+    <rect x="134" y="130" width="28" height="7" rx="3.5" fill="#DEDEE1"/>
+    <rect x="134" y="146" width="48" height="6" rx="3" fill="#DEDEE1"/>
 
     <rect x="206" y="116" width="76" height="56" rx="9" fill="#F07828"/>
     <path d="M232 144h24M244 132v24" stroke="#fff" stroke-width="4" stroke-linecap="round"/>

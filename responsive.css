@@ -47,7 +47,7 @@ p,li{hyphens:none}
   .m-bar{height:3px !important;max-height:3px !important;flex:none !important}
   .to-top{bottom:72px !important;width:48px !important;height:48px !important}
   .marker{white-space:nowrap}
-  .m-outline{border:1.5px solid #3D3D3D !important;border-radius:6px;min-height:52px;justify-content:center;padding:0 20px !important;box-sizing:border-box}
+  .m-outline{border:1.5px solid #18181B !important;border-radius:14px;min-height:52px;justify-content:center;padding:0 20px !important;box-sizing:border-box}
   .m-full{max-width:none !important}
   /* цифры: 2 строки по 2, без вертикальных линий и с общим левым краем */
   .m-2col>div{padding-left:0 !important;padding-right:14px !important;border-left:none !important;border-right:none !important}

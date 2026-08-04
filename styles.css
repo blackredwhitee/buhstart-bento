@@ -293,7 +293,7 @@ a.post.dark:hover{background:#000}
 @media(max-width:900px){
   .statement{grid-template-columns:1fr;padding:32px 26px;align-items:start}
   .st-big{font-size:32px}
-  .bento .wide{grid-column:auto}
+  .bento .wide,.bento .wide2,.bento .wide3{grid-column:auto!important}
   .why .r{grid-template-columns:1fr}
   h2{font-size:30px}
 }

@@ -141,10 +141,11 @@ form .btn{height:52px}
 .modal.open{display:flex}
 .modal .box{background:#fff;border-radius:var(--r-tile);padding:32px;width:100%;max-width:440px}
 
-.ticker{max-width:1052px;width:calc(100% - 48px);margin:0 auto 56px;background:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;padding:18px 0}
+.ticker{max-width:1052px;width:calc(100% - 48px);margin:0 auto 56px;background:var(--orange);color:#fff;border-radius:var(--r-tile);overflow:hidden;padding:18px 0}
 .ticker .line{display:flex;gap:40px;white-space:nowrap;width:max-content;animation:tick 34s linear infinite;font-size:14px}
 .ticker span{display:flex;gap:40px;align-items:center}
-.ticker i{color:var(--orange);font-style:normal}
+.ticker .line{color:#fff;font-weight:500}
+.ticker i{color:#fff;font-style:normal}
 @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 .cmp{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;font-size:14px}

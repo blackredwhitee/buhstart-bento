@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 160" width="400" height="160" role="img" aria-label="Документ с печатью налоговой">
-  <rect width="400" height="160" fill="#FBF3EC"/>
-  <g opacity="0.5" fill="#F5DFCB">
+  <rect width="400" height="160" fill="#F4F2EF"/>
+  <g opacity="0.5" fill="#DCD7D0">
     <circle cx="352" cy="26" r="3"/><circle cx="372" cy="26" r="3"/><circle cx="352" cy="46" r="3"/><circle cx="372" cy="46" r="3"/>
     <circle cx="28" cy="118" r="3"/><circle cx="48" cy="118" r="3"/><circle cx="28" cy="138" r="3"/><circle cx="48" cy="138" r="3"/>
   </g>
   <!-- задний лист -->
-  <rect x="112" y="24" width="112" height="132" rx="7" fill="#F3E0D0"/>
+  <rect x="112" y="24" width="112" height="132" rx="7" fill="#E0DBD4"/>
   <!-- основной лист -->
-  <rect x="96" y="16" width="126" height="130" rx="7" fill="#fff" stroke="#EAD9C9" stroke-width="1.5"/>
+  <rect x="96" y="16" width="126" height="130" rx="7" fill="#fff" stroke="#E0DBD4" stroke-width="1.5"/>
   <!-- строки текста -->
-  <g fill="#DED2C6">
+  <g fill="#D3CEC7">
     <rect x="114" y="38" width="66" height="6" rx="3"/>
     <rect x="114" y="54" width="88" height="5" rx="2.5"/>
     <rect x="114" y="68" width="76" height="5" rx="2.5"/>

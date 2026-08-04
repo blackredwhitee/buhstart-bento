@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220" role="img" aria-label="Бухгалтерский учёт и отчётность">
-  <rect width="400" height="220" fill="#FBF3EC"/>
-  <g opacity="0.45" fill="#F5DFCB"><circle cx="352" cy="30" r="3"/><circle cx="372" cy="30" r="3"/><circle cx="352" cy="50" r="3"/><circle cx="372" cy="50" r="3"/><circle cx="28" cy="172" r="3"/><circle cx="48" cy="172" r="3"/><circle cx="28" cy="192" r="3"/><circle cx="48" cy="192" r="3"/></g>
+  <rect width="400" height="220" fill="#F4F2EF"/>
+  <g opacity="0.45" fill="#DCD7D0"><circle cx="352" cy="30" r="3"/><circle cx="372" cy="30" r="3"/><circle cx="352" cy="50" r="3"/><circle cx="372" cy="50" r="3"/><circle cx="28" cy="172" r="3"/><circle cx="48" cy="172" r="3"/><circle cx="28" cy="192" r="3"/><circle cx="48" cy="192" r="3"/></g>
   <rect x="104" y="60" width="118" height="110" rx="10" fill="#12615C" opacity="0"/>
-  <rect x="118" y="52" width="118" height="116" rx="10" fill="#F3E0D0"/>
-  <rect x="104" y="46" width="122" height="118" rx="10" fill="#fff" stroke="#EAD9C9" stroke-width="1.6"/>
+  <rect x="118" y="52" width="118" height="116" rx="10" fill="#E0DBD4"/>
+  <rect x="104" y="46" width="122" height="118" rx="10" fill="#fff" stroke="#E0DBD4" stroke-width="1.6"/>
   <rect x="122" y="58" width="34" height="8" rx="4" fill="#F07828"/>
-  <g fill="#E4DCD3">
+  <g fill="#DCD7D0">
     <rect x="122" y="80" width="82" height="6" rx="3"/>
     <rect x="122" y="96" width="66" height="6" rx="3"/>
     <rect x="122" y="112" width="76" height="6" rx="3"/>
@@ -15,7 +15,7 @@
     <circle r="30" fill="#F07828"/>
     <path d="M-13 1 -4 10 13 -8" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
-  <g transform="translate(268 66)" fill="#F8D9C0">
+  <g transform="translate(268 66)" fill="#DCD7D0">
     <rect width="58" height="8" rx="4"/><rect y="16" width="42" height="8" rx="4"/>
   </g>
 </svg>

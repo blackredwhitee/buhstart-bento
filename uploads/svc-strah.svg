@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220" role="img" aria-label="Страховка: защита отчётности">
+  <rect width="400" height="220" fill="#F4F4F5"></rect>
+  <g opacity="0.45" fill="#DEDEE1"><circle cx="352" cy="30" r="3"></circle><circle cx="372" cy="30" r="3"></circle><circle cx="352" cy="50" r="3"></circle><circle cx="372" cy="50" r="3"></circle><circle cx="28" cy="172" r="3"></circle><circle cx="48" cy="172" r="3"></circle><circle cx="28" cy="192" r="3"></circle><circle cx="48" cy="192" r="3"></circle></g>
+  <path d="M200 40c26 10 48 13 48 13v48c0 36-22 55-48 64-26-9-48-28-48-64V53s22-3 48-13z" fill="#F07828"></path>
+  <path d="M180 108l14 14 28-30" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></path>
+  <rect x="70" y="74" width="62" height="76" rx="8" fill="#fff" stroke="#D8D8DC" stroke-width="1.6"></rect>
+  <g fill="#DEDEE1"><rect x="82" y="88" width="34" height="5" rx="2.5"></rect><rect x="82" y="100" width="26" height="5" rx="2.5"></rect><rect x="82" y="112" width="30" height="5" rx="2.5"></rect></g>
+  <rect x="268" y="74" width="62" height="76" rx="8" fill="#fff" stroke="#D8D8DC" stroke-width="1.6"></rect>
+  <g fill="#DEDEE1"><rect x="280" y="88" width="34" height="5" rx="2.5"></rect><rect x="280" y="100" width="26" height="5" rx="2.5"></rect><rect x="280" y="112" width="30" height="5" rx="2.5"></rect></g>
+</svg>

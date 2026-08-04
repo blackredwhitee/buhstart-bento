@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 160" width="400" height="160" role="img" aria-label="Рост бизнеса">
+  <rect width="400" height="160" fill="#F4F4F5"></rect>
+  <g opacity="0.5" fill="#DEDEE1">
+    <circle cx="30" cy="26" r="3"></circle><circle cx="50" cy="26" r="3"></circle><circle cx="30" cy="46" r="3"></circle><circle cx="50" cy="46" r="3"></circle>
+  </g>
+  
+  <g>
+    <rect x="96" y="104" width="46" height="34" rx="6" fill="#DEDEE1"></rect>
+    <rect x="150" y="80" width="46" height="58" rx="6" fill="#B2B2B8"></rect>
+    <rect x="204" y="52" width="46" height="86" rx="6" fill="#F07828"></rect>
+  </g>
+  
+  <g transform="translate(227 30)">
+    <circle cy="-4" r="8" fill="#3D3D3D"></circle>
+    <path d="M-11 16c0-7 5-12 11-12s11 5 11 12z" fill="#3D3D3D"></path>
+  </g>
+  
+  <g transform="translate(288 44)">
+    <path d="M0 66V10" stroke="#3D3D3D" stroke-width="3.5" stroke-linecap="round"></path>
+    <path d="M-11 21 0 8l11 13" fill="none" stroke="#3D3D3D" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
+  </g>
+  
+  <rect x="88" y="138" width="224" height="4" rx="2" fill="#DEDEE1"></rect>
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220" role="img" aria-label="Аудит: проверка отчётности">
+  <rect width="400" height="220" fill="#F4F4F5"></rect>
+  <g opacity="0.45" fill="#DEDEE1"><circle cx="352" cy="30" r="3"></circle><circle cx="372" cy="30" r="3"></circle><circle cx="352" cy="50" r="3"></circle><circle cx="372" cy="50" r="3"></circle><circle cx="28" cy="172" r="3"></circle><circle cx="48" cy="172" r="3"></circle><circle cx="28" cy="192" r="3"></circle><circle cx="48" cy="192" r="3"></circle></g>
+  <rect x="112" y="46" width="132" height="128" rx="10" fill="#fff" stroke="#D8D8DC" stroke-width="1.6"></rect>
+  <rect x="130" y="60" width="38" height="8" rx="4" fill="#F07828"></rect>
+  <g fill="#DEDEE1">
+    <rect x="130" y="120" width="16" height="34" rx="4"></rect>
+    <rect x="154" y="106" width="16" height="48" rx="4"></rect>
+  </g>
+  <g fill="#F07828">
+    <rect x="178" y="92" width="16" height="62" rx="4"></rect>
+    <rect x="202" y="78" width="16" height="76" rx="4"></rect>
+  </g>
+  <g transform="translate(272 96)">
+    <circle r="42" fill="#fff" opacity="0.9"></circle>
+    <circle r="38" fill="none" stroke="#3D3D3D" stroke-width="6"></circle>
+    <path d="M27 27 52 52" stroke="#3D3D3D" stroke-width="9" stroke-linecap="round"></path>
+    <path d="M-16 4 -4 16 18 -10" fill="none" stroke="#F07828" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
+  </g>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220" role="img" aria-label="Бухгалтерия для маркетплейсов">
+  <rect width="400" height="220" fill="#F4F4F5"></rect>
+  <g opacity="0.45" fill="#DEDEE1"><circle cx="352" cy="30" r="3"></circle><circle cx="372" cy="30" r="3"></circle><circle cx="352" cy="50" r="3"></circle><circle cx="372" cy="50" r="3"></circle><circle cx="28" cy="172" r="3"></circle><circle cx="48" cy="172" r="3"></circle><circle cx="28" cy="192" r="3"></circle><circle cx="48" cy="192" r="3"></circle></g>
+  <rect x="104" y="86" width="112" height="80" rx="8" fill="#F07828"></rect>
+  <path d="M104 86h112l-12-26h-88z" fill="#D9691C"></path>
+  <path d="M160 60v106" stroke="#fff" stroke-width="3" opacity="0.55"></path>
+  <rect x="140" y="104" width="40" height="12" rx="6" fill="#fff" opacity="0.9"></rect>
+  <rect x="238" y="46" width="80" height="126" rx="12" fill="#fff" stroke="#D8D8DC" stroke-width="1.6"></rect>
+  <rect x="264" y="54" width="28" height="5" rx="2.5" fill="#DEDEE1"></rect>
+  <g fill="#DEDEE1">
+    <rect x="252" y="72" width="52" height="26" rx="5"></rect>
+    <rect x="252" y="106" width="52" height="8" rx="4"></rect>
+    <rect x="252" y="120" width="34" height="8" rx="4"></rect>
+  </g>
+  <rect x="252" y="140" width="52" height="18" rx="6" fill="#F07828"></rect>
+  <path d="M266 149h24" stroke="#fff" stroke-width="2.6" stroke-linecap="round"></path>
+</svg>

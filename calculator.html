@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Калькулятор стоимости бухгалтерских услуг — Доверительная Бухгалтерия</title>
+<meta name="description" content="Рассчитайте стоимость бухгалтерского обслуживания за пару минут: ответьте на вопросы о бизнесе и получите коммерческое предложение с тремя тарифами.">
+<link rel="canonical" href="https://blackredwhitee.github.io/buhstart-bento/calculator.html">
+<meta property="og:title" content="Калькулятор стоимости бухгалтерских услуг">
+<meta property="og:description" content="Ответьте на вопросы о бизнесе и получите расчёт с тремя тарифами.">
+<meta property="og:type" content="website">
+<link rel="preload" href="uploads/Onest-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+<header class="site"><div class="wrap"><a class="logo" href="index.html"><img src="uploads/logo-transparent.png" alt="Доверительная Бухгалтерия"></a><nav class="main"><a href="index.html" class="on">Главная</a><div class="has"><a href="uslugi.html">Услуги</a><div class="drop"><a href="usluga-bukhgalterskie-uslugi.html">Бухгалтерские услуги</a><a href="usluga-strahovka.html">Бухгалтерская страховка</a><a href="usluga-audit.html">Аудит — чек-ап бизнеса</a><a href="usluga-upravlencheskii-uchet.html">Управленческий учёт</a><a href="usluga-marketplace.html">Бухгалтерия для маркетплейсов</a></div></div><a href="calculator.html">Калькулятор</a><div class="has"><a href="blog.html">Блог</a><div class="drop"><a href="blog.html">Статьи</a><a href="novosti.html">Новости законодательства</a></div></div><div class="has"><a href="team.html">Команда</a><div class="drop"><a href="team.html">О команде</a><a href="vacancy.html">Вакансии</a></div></div><a href="contacts.html">Контакты</a><a class="hdr-phone" href="tel:+74957788168">+7 (495) 778-81-68</a><button class="btn btn-p" style="height:44px;padding:0 22px" data-lead>Записаться</button></nav><button class="burger" aria-label="Меню"><span></span></button></div></header>
+<div class="mobile-menu"><a href="index.html">Главная</a><a href="uslugi.html">Услуги</a><a href="calculator.html">Калькулятор</a><a href="blog.html">Блог</a><a href="team.html">Команда</a><a href="contacts.html">Контакты</a><a class="sub" href="novosti.html">Новости законодательства</a><a class="sub" href="vacancy.html">Вакансии</a><a href="tel:+74957788168">+7 (495) 778-81-68</a></div>
+
+<style>
+/* стили рабочего калькулятора, приведены к токенам бенто ниже */
+
+@font-face{font-family:'Onest';font-style:normal;font-weight:400 800;font-display:swap;src:url("uploads/Onest-cyrillic-ext.woff2") format('woff2');unicode-range:U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F}
+@font-face{font-family:'Onest';font-style:normal;font-weight:400 800;font-display:swap;src:url("uploads/Onest-cyrillic.woff2") format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
+@font-face{font-family:'Onest';font-style:normal;font-weight:400 800;font-display:swap;src:url("uploads/Onest-latin-ext.woff2") format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Onest';font-style:normal;font-weight:400 800;font-display:swap;src:url("uploads/Onest-latin.woff2") format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden}
+body{font-family:'Onest',system-ui,sans-serif;color:#222;background:#fff;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:#F07828}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.footer-logo img{height:56px;display:block;margin-bottom:16px}
+
+
+.footer-social a{min-width:44px;height:44px;border:1px solid rgba(255,255,255,.25);border-radius:20px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:600;text-decoration:none}
+
+
+.footer-links a{color:rgba(255,255,255,.65);text-decoration:none;font-size:14px}
+
+.footer-bottom a{color:rgba(255,255,255,.45);text-decoration:none}
+:root{
+  --or:#F07828;--or-dark:#E56800;--or-light:#18181B;--or-50:#fff3ee;
+  --g100:#f5f5f5;--g200:#E4E4E7;--g400:#A1A1AA;--g500:#52525B;--g600:#555;--g700:#18181B;--g800:#18181B;
+  --green:#2D7A4F;--red:#ef4444;
+  --r6:6px;--r10:10px;--r16:16px;
+}
+.calc-hero{text-align:center;padding:64px 24px 48px;background:#fff}
+.calc-hero-badge{color:var(--or);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+.calc-hero h1{font-size:clamp(28px,4.5vw,48px);font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-bottom:12px}
+.calc-hero p{font-size:16px;color:var(--g500);max-width:520px;margin:0 auto 32px;line-height:1.65}
+.btn-start{background:var(--or);color:#fff;font-family:'Onest',system-ui,sans-serif;font-weight:700;font-size:18px;padding:16px 44px;border-radius:var(--r6);border:none;cursor:pointer;box-shadow:0 4px 18px rgba(240,120,40,.3);transition:background .15s,transform .15s}
+.btn-start:hover{background:var(--or-dark);transform:translateY(-2px)}
+.quiz-wrap{max-width:760px;margin:0 auto;padding:40px 24px 80px;display:none}
+.quiz-progress{background:transparent;padding:0 0 16px}
+.prog-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--g500);margin-bottom:8px;font-weight:500}
+.prog-bar{height:6px;background:var(--g100);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:var(--or);border-radius:3px;transition:width 250ms ease}
+.quiz-body{background:transparent;padding:0;margin-bottom:0}
+.slide{display:none;padding:24px 0 8px;animation:sIn .2s ease}
+.slide.active{display:block}
+.slide.back{animation:sInB .2s ease}
+@keyframes sIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes sInB{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+.slide-icon{display:none}
+.slide-title{font-size:clamp(22px,4vw,26px);font-weight:700;color:var(--g800);line-height:1.2;margin:0 0 6px;letter-spacing:-0.01em}
+.slide-sub{font-size:14px;color:var(--g500);margin-bottom:24px;line-height:1.6}
+.slide-note{margin-top:14px;padding:12px 16px;background:#fff8f4;border-radius:var(--r6);font-size:13px;color:var(--g600);line-height:1.5}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px}
+.ccard{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;min-height:52px;padding:16px 20px;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r10);cursor:pointer;transition:all .15s;text-align:left;font-family:'Onest',system-ui,sans-serif}
+.ccard:hover{border-color:var(--or);background:var(--or-light)}
+.ccard.selected{border-color:var(--or);background:var(--or-light)}
+.ccard--lg{padding:18px 20px}
+.cc-icon{display:none}
+.cc-label{font-size:15px;font-weight:600;color:var(--g800);line-height:1.3}
+.cc-sub{font-size:12px;color:var(--g500);line-height:1.4}
+.niche-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:8px}
+.ncard{display:flex;flex-direction:row;align-items:center;gap:10px;min-height:52px;padding:14px 18px;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r10);cursor:pointer;transition:all .15s;font-family:'Onest',system-ui,sans-serif;text-align:left}
+.ncard:hover{border-color:var(--or);background:var(--or-light)}
+.ncard.selected{border-color:var(--or);background:var(--or-light)}
+.nc-icon{font-size:20px;line-height:1;flex-shrink:0}
+.nc-name{font-size:15px;font-weight:600;color:var(--g800);line-height:1.3}
+.checks-list,.fields-list{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
+.chk-label{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:14px;color:var(--g700);padding:12px 16px;border:1.5px solid var(--g200);border-radius:var(--r6);transition:all .15s}
+.chk-label:hover{border-color:var(--or);background:var(--or-50)}
+.chk-label input{width:17px;height:17px;accent-color:var(--or);flex-shrink:0;margin-top:1px}
+.staff-block{margin-bottom:20px}
+.staff-title{font-size:13px;font-weight:600;color:var(--g600);margin-bottom:10px}
+.num-row{display:flex;flex-direction:column;gap:5px;margin-top:10px}
+.q-label{font-size:13px;font-weight:600;color:var(--g600)}
+.q-input{height:44px;padding:0 14px;border:1.5px solid var(--g200);border-radius:var(--r6);font-family:'Onest',system-ui,sans-serif;font-size:15px;color:var(--g800);background:#fff;outline:none;transition:border-color .15s;width:100%}
+.q-input:focus{border-color:var(--or);box-shadow:0 0 0 3px rgba(240,120,40,.1)}
+.q-input.input-err{border-color:var(--red);background:#fef2f2}
+.num-input{max-width:160px}
+.req{color:var(--or)}
+.field-row{display:flex;flex-direction:column;gap:5px}
+.q-err{font-size:12px;color:var(--red);min-height:14px}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;padding-top:28px;gap:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border-radius:var(--r6);font-family:'Onest',system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn-primary{background:var(--or);color:#fff}
+.btn-primary:hover{background:var(--or-dark)}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--g500);border:none;padding:8px 0;font-size:14px}
+.btn-ghost:hover{color:var(--or)}
+.btn-xl{padding:14px 32px;font-size:16px}
+.btn-outline{background:transparent;color:var(--or);border:1.5px solid var(--or)}
+.btn-outline:hover{background:var(--or-light)}
+.summary-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--r16);padding:20px;margin-bottom:18px}
+.sum-params{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.sum-param{display:flex;gap:8px;font-size:13px}
+.sum-param-k{color:var(--g400);min-width:110px;flex-shrink:0}
+.sum-param-v{font-weight:500;color:var(--g700)}
+.sum-div{height:1px;background:var(--g100);margin:12px 0}
+.sum-services-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--or);margin-bottom:8px}
+.sum-service-line{display:flex;gap:8px;font-size:13px;color:var(--g700);padding:3px 0}
+.sum-service-dot{color:var(--green);flex-shrink:0}
+.sum-svc-item{padding:8px 0;border-bottom:1px solid var(--g100)}
+.sum-svc-item:last-child{border-bottom:none}
+.sum-svc-name{font-size:14px;font-weight:600;color:var(--g800)}
+.sum-svc-desc{font-size:12px;color:var(--g500);margin-top:2px;line-height:1.5}
+.tariff-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.tariff-card{border:1.5px solid var(--g200);border-radius:var(--r10);padding:18px 14px;display:flex;flex-direction:column;gap:4px}
+.tariff-card.featured{border-color:var(--or);box-shadow:0 0 0 3px rgba(240,120,40,.1)}
+.tariff-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--or);background:var(--or-50);padding:2px 8px;border-radius:100px;display:inline-block;margin-bottom:4px}
+.tariff-name{font-size:13px;font-weight:700;color:var(--g800)}
+.tariff-price{font-size:18px;font-weight:800;color:var(--or);margin:6px 0 2px}
+.tariff-price span{font-size:12px;font-weight:500;color:var(--g500)}
+.tariff-desc{font-size:12px;color:var(--g500);line-height:1.5}
+.sum-actions{text-align:center;margin-top:16px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.kp-sec{display:none;max-width:760px;margin:0 auto;padding:40px 20px 80px}
+.kp-header{background:var(--g800);color:#fff;border-radius:var(--r16) var(--r16) 0 0;padding:28px 32px}
+.kp-company-line{font-size:13px;color:rgba(255,255,255,.6)}
+.kp-company-name{color:#fff;font-size:15px;font-weight:600}
+.kp-meta-row{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px;margin-top:16px}
+.kp-num{font-size:11px;color:rgba(255,255,255,.5)}
+.kp-client-name{font-size:20px;font-weight:700;color:#fff}
+.kp-body{background:#fff;border:1.5px solid var(--g200);border-top:none;border-radius:0 0 var(--r16) var(--r16);padding:28px 32px}
+.kp-sec-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--or);margin-bottom:12px;margin-top:24px}
+.kp-sec-title:first-child{margin-top:0}
+.kp-services{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}
+.kp-service-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:14px;padding:5px 0;border-bottom:1px solid var(--g100)}
+.kp-service-name{color:var(--g700)}
+.kp-service-price{color:var(--g800);font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.kp-tariff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px}
+.kp-tariff{border:1.5px solid var(--g200);border-radius:var(--r10);padding:16px 14px;display:flex;flex-direction:column;gap:4px;background:#fff}
+.kp-tariff.featured{border-color:var(--or);background:var(--or-50)}
+.kp-tariff-badge{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--or);letter-spacing:.06em}
+.kp-tariff-name{font-size:13px;font-weight:700;color:var(--g800);margin-top:2px}
+.kp-tariff-price{font-size:20px;font-weight:800;color:var(--or);margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.kp-tariff-price span{font-size:12px;font-weight:400;color:var(--g500)}
+.kp-tariff-extras{font-size:12px;color:var(--g500);line-height:1.6;border-top:1px solid var(--g200);margin-top:8px;padding-top:8px}
+.kp-conditions{background:var(--g100);border-radius:var(--r6);padding:16px 20px;font-size:13px;color:var(--g600);line-height:1.6;margin-bottom:24px}
+.kp-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding-top:8px}
+.bd-block{margin-bottom:20px}
+.bd-block-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--or);margin-bottom:8px}
+.bd-row{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:3px 0}
+.bd-name{color:var(--g600)}
+.bd-price{color:var(--g800);font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.bd-divider{height:1px;background:var(--g200);margin:8px 0}
+.bd-final .bd-name,.bd-final .bd-price{font-weight:800;color:var(--or);font-size:14px}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--g800);color:#fff;padding:10px 20px;border-radius:100px;font-size:14px;font-weight:600;z-index:9999;transition:transform .3s ease;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.success-sec{display:none;text-align:center;padding:80px 24px;max-width:500px;margin:0 auto}
+.success-icon{font-size:64px;margin-bottom:20px}
+.success-title{font-size:28px;font-weight:800;margin-bottom:10px}
+.success-sub{font-size:15px;color:var(--g500);margin-bottom:32px;line-height:1.6}
+@media print{
+  .site-header,
+  .kp-sec{display:block!important;padding:0}
+}
+@media(max-width:767px){
+  
+  
+  .tariff-cards,.kp-tariff-grid{grid-template-columns:1fr}
+  .quiz-wrap{padding:24px 20px 80px}
+  .kp-body{padding:20px 16px}
+  .kp-header{padding:20px 16px}
+  
+}
+@media(max-width:380px){.grid-2,.niche-grid{grid-template-columns:1fr}}
+@media(max-width:1130px){}
+
+</style>
+<main>
+
+
+
+<section class="calc-hero" id="calc-hero">
+  <div class="calc-hero-badge">Бесплатный расчёт</div>
+  <h1>Узнайте стоимость<br>бухгалтерского обслуживания</h1>
+  <p>Ответьте на несколько вопросов о вашем бизнесе — подберём тариф и сформируем коммерческое предложение.</p>
+  <button class="btn-start" onclick="startQuiz()">Рассчитать стоимость →</button>
+</section>
+
+<div class="quiz-wrap" id="quiz-wrap">
+  <div class="quiz-progress">
+    <div class="prog-meta"><span id="step-label">Шаг 1</span><span id="step-pct">0%</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+  <div class="quiz-body">
+    <div id="quiz-slides">
+
+      <div class="slide" data-step="1">
+        <div class="slide-icon">🏢</div>
+        <h2 class="slide-title">Вы ИП или ООО?</h2>
+        <p class="slide-sub">От этого зависит состав и стоимость услуг</p>
+        <div class="grid-2" id="g-entity">
+          <button class="ccard ccard--lg" data-val="ИП" onclick="pick(this,'g-entity')"><span class="cc-icon">👤</span><span class="cc-label">ИП</span><span class="cc-sub">Индивидуальный предприниматель</span></button>
+          <button class="ccard ccard--lg" data-val="ООО" onclick="pick(this,'g-entity')"><span class="cc-icon">🏛</span><span class="cc-label">ООО</span><span class="cc-sub">Общество с ограниченной ответственностью</span></button>
+        </div>
+        <span class="q-err" id="err-entity"></span>
+      </div>
+
+      <div class="slide" data-step="2">
+        <div class="slide-icon">📂</div>
+        <h2 class="slide-title">Ведёте деятельность?</h2>
+        <p class="slide-sub">Влияет на объём работ и состав отчётности</p>
+        <div class="grid-2" id="g-null">
+          <button class="ccard ccard--lg" data-val="no" onclick="pick(this,'g-null')"><span class="cc-icon">📊</span><span class="cc-label">Да, есть обороты</span><span class="cc-sub">Бизнес работает</span></button>
+          <button class="ccard ccard--lg" data-val="yes" onclick="pick(this,'g-null')"><span class="cc-icon">✅</span><span class="cc-label">Нулевая отчётность</span><span class="cc-sub">Деятельность не велась</span></button>
+        </div>
+        <span class="q-err" id="err-null"></span>
+      </div>
+
+      <div class="slide" data-step="3">
+        <div class="slide-icon">📋</div>
+        <h2 class="slide-title">Система налогообложения</h2>
+        <p class="slide-sub">Выберите текущую или планируемую</p>
+        <div class="grid-2" id="g-tax">
+          <button class="ccard" data-val="usn6" onclick="pick(this,'g-tax');onTaxChange()"><span class="cc-label">УСН 6%</span><span class="cc-sub">Доходы</span></button>
+          <button class="ccard" data-val="ausn_d" onclick="pick(this,'g-tax');onTaxChange()"><span class="cc-label">АУСН Доходы</span><span class="cc-sub">Автоматизированная</span></button>
+          <button class="ccard" data-val="ausn_dr" onclick="pick(this,'g-tax');onTaxChange()"><span class="cc-label">АУСН Д-Р</span><span class="cc-sub">Автомат. Доходы−Расходы</span></button>
+          <button class="ccard" data-val="usn15" onclick="pick(this,'g-tax');onTaxChange()"><span class="cc-label">УСН 15%</span><span class="cc-sub">Доходы минус расходы</span></button>
+          <button class="ccard" data-val="osno" onclick="pick(this,'g-tax');onTaxChange()"><span class="cc-label">ОСНО</span><span class="cc-sub">Общая система</span></button>
+          <button class="ccard" data-val="patent" onclick="pick(this,'g-tax');onTaxChange()"><span class="cc-label">Патент</span><span class="cc-sub">Патентная система</span></button>
+        </div>
+        <div id="add-patent-row" style="display:none;margin-top:10px">
+          <label class="chk-label"><input type="checkbox" id="add-patent"/><span>Совмещаем с Патентом</span></label>
+        </div>
+        <span class="q-err" id="err-tax"></span>
+      </div>
+
+      <div class="slide" data-step="13">
+        <div class="slide-icon">📊</div>
+        <h2 class="slide-title">Налоговый менеджмент</h2>
+        <p class="slide-sub">Контроль налоговой нагрузки и оптимизация — входит в тариф Стандарт</p>
+        <div class="grid-2" id="g-taxmgmt">
+          <button class="ccard ccard--lg" data-val="yes" onclick="pick(this,'g-taxmgmt')"><span class="cc-icon">✅</span><span class="cc-label">Да, нужен</span></button>
+          <button class="ccard ccard--lg" data-val="no" onclick="pick(this,'g-taxmgmt')"><span class="cc-icon">➖</span><span class="cc-label">Нет, не нужен</span></button>
+        </div>
+      </div>
+
+      <div class="slide" data-step="4">
+        <div class="slide-icon">🏭</div>
+        <h2 class="slide-title">Вид деятельности</h2>
+        <p class="slide-sub">Можно выбрать несколько</p>
+        <div class="niche-grid" id="g-niche">
+          <button class="ncard" data-val="marketplace" onclick="toggleMulti(this,'niche')"><span class="nc-icon">🛒</span><span class="nc-name">Маркетплейс</span></button>
+          <button class="ncard" data-val="wholesale" onclick="toggleMulti(this,'niche')"><span class="nc-icon">📦</span><span class="nc-name">Оптовая торговля</span></button>
+          <button class="ncard" data-val="retail" onclick="toggleMulti(this,'niche')"><span class="nc-icon">🏪</span><span class="nc-name">Розничная торговля</span></button>
+          <button class="ncard" data-val="production" onclick="toggleMulti(this,'niche')"><span class="nc-icon">🏗</span><span class="nc-name">Производство</span></button>
+          <button class="ncard" data-val="construction" onclick="toggleMulti(this,'niche')"><span class="nc-icon">🏚</span><span class="nc-name">Строительство</span></button>
+          <button class="ncard" data-val="catering" onclick="toggleMulti(this,'niche')"><span class="nc-icon">🍽</span><span class="nc-name">Общепит</span></button>
+          <button class="ncard" data-val="medicine" onclick="toggleMulti(this,'niche')"><span class="nc-icon">🏥</span><span class="nc-name">Медицина / Стоматология</span></button>
+          <button class="ncard" data-val="services" onclick="toggleMulti(this,'niche')"><span class="nc-icon">💼</span><span class="nc-name">Услуги / Прочее</span></button>
+        </div>
+        <div id="wh-inventory-block" style="display:none;margin-top:8px">
+          <label class="chk-label"><input type="checkbox" id="add-wh-inventory"/><span>Нужен товарный учёт (опт)</span></label>
+        </div>
+        <div id="rt-inventory-block" style="display:none;margin-top:8px">
+          <label class="chk-label"><input type="checkbox" id="add-rt-inventory"/><span>Нужен товарный учёт (розница)</span></label>
+        </div>
+        <span class="q-err" id="err-niche"></span>
+      </div>
+
+      <div class="slide" data-step="5">
+        <div class="slide-icon">🛒</div>
+        <h2 class="slide-title">Какие маркетплейсы?</h2>
+        <p class="slide-sub">Можно выбрать несколько</p>
+        <div class="grid-2" id="g-mp">
+          <button class="ccard" data-val="wb" onclick="toggleMulti(this,'mp')"><span class="cc-label">Wildberries</span></button>
+          <button class="ccard" data-val="ozon" onclick="toggleMulti(this,'mp')"><span class="cc-label">Ozon</span></button>
+          <button class="ccard" data-val="ya" onclick="toggleMulti(this,'mp')"><span class="cc-label">Яндекс Маркет</span></button>
+        </div>
+        <div style="margin-top:10px">
+          <label class="chk-label"><input type="checkbox" id="mp-inventory"/><span>Нужен товарный учёт</span></label>
+        </div>
+        <span class="q-err" id="err-mp"></span>
+      </div>
+
+      <div class="slide" data-step="6">
+        <div class="slide-icon">🧾</div>
+        <h2 class="slide-title">НДС</h2>
+        <p class="slide-sub">Выберите применяемые ставки</p>
+        <div class="niche-grid" id="g-vat">
+          <button class="ncard" data-val="не_облагается" onclick="toggleMulti(this,'vat')"><span class="nc-name">Не облагается</span></button>
+          <button class="ncard" data-val="освобождение" onclick="toggleMulti(this,'vat')"><span class="nc-name">Освобождение (ст. 145)</span></button>
+          <button class="ncard" data-val="nds0" onclick="toggleMulti(this,'vat')"><span class="nc-name">НДС 0%</span></button>
+          <button class="ncard" data-val="nds5" onclick="toggleMulti(this,'vat')"><span class="nc-name">НДС 5%</span></button>
+          <button class="ncard" data-val="nds7" onclick="toggleMulti(this,'vat')"><span class="nc-name">НДС 7%</span></button>
+          <button class="ncard" data-val="nds10" onclick="toggleMulti(this,'vat')"><span class="nc-name">НДС 10%</span></button>
+          <button class="ncard" data-val="nds22" onclick="toggleMulti(this,'vat')"><span class="nc-name">НДС 22%</span></button>
+        </div>
+      </div>
+
+      <div class="slide" data-step="7">
+        <div class="slide-icon">👥</div>
+        <h2 class="slide-title">Сотрудники</h2>
+        <p class="slide-sub">Официально трудоустроенные и по ГПХ</p>
+        <div class="staff-block">
+          <p class="staff-title">Граждане РФ</p>
+          <div class="grid-2" id="g-staff-rf">
+            <button class="ccard" data-val="none" onclick="pick(this,'g-staff-rf');G('rf-count-row').style.display='none'"><span class="cc-label">Нет</span></button>
+            <button class="ccard" data-val="rf_1_3" onclick="pick(this,'g-staff-rf');G('rf-count-row').style.display='none'"><span class="cc-label">1–3 человека</span></button>
+            <button class="ccard" data-val="rf_more" onclick="pick(this,'g-staff-rf');G('rf-count-row').style.display='flex'"><span class="cc-label">4 и более</span></button>
+          </div>
+          <div class="num-row" id="rf-count-row" style="display:none">
+            <label class="q-label">Количество сотрудников</label>
+            <input class="q-input num-input" type="number" id="rf-count" min="4" value="4"/>
+          </div>
+        </div>
+        <div class="staff-block">
+          <p class="staff-title">Иностранные граждане</p>
+          <div class="grid-2" id="g-staff-foreign">
+            <button class="ccard" data-val="none" onclick="pick(this,'g-staff-foreign');G('foreign-count-row').style.display='none'"><span class="cc-label">Нет</span></button>
+            <button class="ccard" data-val="yes" onclick="pick(this,'g-staff-foreign');G('foreign-count-row').style.display='flex'"><span class="cc-label">Есть</span></button>
+          </div>
+          <div class="num-row" id="foreign-count-row" style="display:none">
+            <label class="q-label">Количество иностранцев</label>
+            <input class="q-input num-input" type="number" id="foreign-count" min="1" value="1"/>
+          </div>
+        </div>
+        <span class="q-err" id="err-staff"></span>
+      </div>
+
+      <div class="slide" data-step="8">
+        <div class="slide-icon">💵</div>
+        <h2 class="slide-title">Наличные расчёты</h2>
+        <p class="slide-sub">Выберите всё подходящее</p>
+        <div class="checks-list">
+          <label class="chk-label"><input type="checkbox" id="cash-none" onchange="cashNoneT()"/><span>Нет — наличных расчётов нет</span></label>
+          <label class="chk-label"><input type="checkbox" id="cash-kassa" onchange="cashOptT()"/><span>Касса (ККМ)</span></label>
+          <label class="chk-label"><input type="checkbox" id="cash-avans" onchange="cashOptT()"/><span>Авансовые отчёты</span></label>
+        </div>
+      </div>
+
+      <div class="slide" data-step="9">
+        <div class="slide-icon">➕</div>
+        <h2 class="slide-title">Дополнительные услуги</h2>
+        <p class="slide-sub">Отметьте всё, что нужно</p>
+        <div class="checks-list">
+          <label class="chk-label"><input type="checkbox" id="add-ved"/><span>ВЭД / Валютные расчёты</span></label>
+          <label class="chk-label"><input type="checkbox" id="add-reconcile"/><span>Сверки с покупателями и поставщиками</span></label>
+          <label class="chk-label"><input type="checkbox" id="add-military" onchange="G('military-count-row').style.display=this.checked?'flex':'none'"/><span>Воинский учёт</span></label>
+          <div class="num-row" id="military-count-row" style="display:none">
+            <label class="q-label">Количество сотрудников</label>
+            <input class="q-input num-input" type="number" id="military-count" min="1" value="1"/>
+          </div>
+          <label class="chk-label"><input type="checkbox" id="add-licenses" onchange="G('license-count-row').style.display=this.checked?'flex':'none'"/><span>Лицензионная отчётность (строительство, алко и др.)</span></label>
+          <div class="num-row" id="license-count-row" style="display:none">
+            <label class="q-label">Количество лицензий</label>
+            <input class="q-input num-input" type="number" id="license-count" min="1" value="1"/>
+          </div>
+          <label class="chk-label"><input type="checkbox" id="add-spot" onchange="G('spot-count-row').style.display=this.checked?'flex':'none'"/><span>СПОТ (подтверждение поставки)</span></label>
+          <div class="num-row" id="spot-count-row" style="display:none">
+            <label class="q-label">Количество документов</label>
+            <input class="q-input num-input" type="number" id="spot-count" min="1" value="1"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide" data-step="10">
+        <div class="slide-icon">⚡</div>
+        <h2 class="slide-title">Скорость ответа менеджера</h2>
+        <p class="slide-sub">Приоритетный ответ — дополнение к тарифу Стандарт</p>
+        <div class="grid-2" id="g-priority">
+          <button class="ccard ccard--lg" data-val="day" onclick="pick(this,'g-priority')"><span class="cc-icon">🕐</span><span class="cc-label">В течение рабочего дня</span></button>
+          <button class="ccard ccard--lg" data-val="15min" onclick="pick(this,'g-priority')"><span class="cc-icon">⚡</span><span class="cc-label">В течение 15 минут</span></button>
+        </div>
+        <span class="q-err" id="err-priority"></span>
+      </div>
+
+      <div class="slide" data-step="14">
+        <div class="slide-icon">🏢</div>
+        <h2 class="slide-title">Присутствие бухгалтера в офисе</h2>
+        <p class="slide-sub">Выезд бухгалтера к вам — входит в тариф Стандарт</p>
+        <div class="grid-2" id="g-office-buh">
+          <button class="ccard ccard--lg" data-val="yes" onclick="pick(this,'g-office-buh');G('ob-visits-row').style.display='flex'"><span class="cc-icon">✅</span><span class="cc-label">Да, нужно</span></button>
+          <button class="ccard ccard--lg" data-val="no" onclick="pick(this,'g-office-buh');G('ob-visits-row').style.display='none'"><span class="cc-icon">➖</span><span class="cc-label">Нет, не нужно</span></button>
+        </div>
+        <div class="num-row" id="ob-visits-row" style="margin-top:16px;display:flex">
+          <label class="q-label">Количество визитов в месяц</label>
+          <input class="q-input num-input" type="number" id="ob-visits" min="1" max="30" value="4"/>
+        </div>
+        <p class="slide-note">Присутствие бухгалтера от компании в офисе заказчика в рамках договора на обслуживание</p>
+      </div>
+
+      <div class="slide" data-step="15">
+        <div class="slide-icon">📈</div>
+        <h2 class="slide-title">Управленческий учёт</h2>
+        <p class="slide-sub">Входит в тариф Оптима — помогает управлять финансами компании</p>
+        <div class="grid-2" id="g-mgmt-acc">
+          <button class="ccard ccard--lg" data-val="yes" onclick="pick(this,'g-mgmt-acc')"><span class="cc-icon">✅</span><span class="cc-label">Да, нужен</span></button>
+          <button class="ccard ccard--lg" data-val="no" onclick="pick(this,'g-mgmt-acc')"><span class="cc-icon">➖</span><span class="cc-label">Нет, не нужен</span></button>
+        </div>
+        <p class="slide-note">Включает: ОДДС и ОПиУ, анализ ключевых показателей, управленческий баланс и финансовую модель компании</p>
+      </div>
+
+      <div class="slide" data-step="11">
+        <div class="slide-icon">✍️</div>
+        <h2 class="slide-title">Ваши контакты</h2>
+        <p class="slide-sub">Для подготовки коммерческого предложения</p>
+        <div class="fields-list">
+          <div class="field-row">
+            <label class="q-label">Ваше имя <span class="req">*</span></label>
+            <input class="q-input" type="text" id="f-name" placeholder="Иванов Иван Иванович"/>
+            <span class="q-err" id="err-name"></span>
+          </div>
+          <div class="field-row">
+            <label class="q-label">Телефон <span class="req">*</span></label>
+            <input class="q-input" type="tel" id="f-phone" placeholder="+7 (999) 000-00-00" autocomplete="tel"/>
+            <span class="q-err" id="err-phone"></span>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--g400);margin-top:14px;line-height:1.5">Нажимая «Посмотреть расчёт», вы соглашаетесь на <a href="soglasie.html">обработку персональных данных</a></p>
+      </div>
+
+      <div class="slide" data-step="12">
+        <div class="slide-icon">✅</div>
+        <h2 class="slide-title">Расчёт готов</h2>
+        <p class="slide-sub">Состав услуг по вашему запросу</p>
+        <div class="summary-card">
+          <div class="sum-params" id="sum-params"></div>
+          <div class="sum-div"></div>
+          <div class="sum-services-title">Состав услуг</div>
+          <div id="sum-services"></div>
+          <div class="sum-div"></div>
+          <div class="tariff-cards" id="tariff-cards"></div>
+        </div>
+        <div class="sum-actions">
+          <button class="btn btn-primary btn-xl" onclick="generateKP()">Сформировать КП →</button>
+          <p style="font-size:12px;color:var(--g400)">Откроется коммерческое предложение с ценами</p>
+        </div>
+        <span class="q-err" id="err-final" style="text-align:center;display:block;margin-top:8px"></span>
+      </div>
+
+    </div>
+
+    <div class="quiz-nav">
+      <button class="btn btn-ghost" id="btn-back" onclick="goBack()" style="display:none">← Назад</button>
+      <button class="btn btn-primary" id="btn-next" onclick="goNext()">Далее →</button>
+    </div>
+  </div>
+</div>
+
+<div class="kp-sec" id="kp-sec">
+  <div class="kp-header">
+    <div class="kp-company-line"><span class="kp-company-name">ООО «Профит-Консалт» — Доверительная Бухгалтерия</span><br>ИНН&nbsp;7709792856 · г. Москва, Денежный пер., д. 4 · +7 (495) 778-81-68 · info@buhstart.ru</div>
+    <div class="kp-meta-row">
+      <div><div class="kp-num" id="kp-num"></div><div class="kp-client-name" id="kp-client"></div></div>
+      <div style="font-size:13px;color:rgba(255,255,255,.5)" id="kp-date"></div>
+    </div>
+  </div>
+  <div class="kp-body">
+    <div class="kp-sec-title">Состав услуг</div>
+    <div class="kp-services" id="kp-services"></div>
+    <div class="kp-sec-title">Тарифы</div>
+    <div class="kp-tariff-grid" id="kp-tariffs"></div>
+    <div class="kp-sec-title">Детализация по тарифам</div>
+    <div id="kp-breakdown" style="margin-bottom:24px"></div>
+    <div class="kp-conditions">
+      <strong>Условия сотрудничества:</strong><br>
+      Оплата: 50% предоплата до начала работы, 50% — по итогам периода.<br>
+      Срок начала: 1–3 рабочих дня после подписания договора.<br>
+      КП действует до: <span id="kp-valid"></span>.
+    </div>
+    <div class="kp-actions">
+      <button class="btn btn-primary btn-xl" id="btn-send-lead" onclick="sendLead()">Отправить заявку →</button>
+      <button class="btn btn-outline btn-xl" onclick="window.print()">Распечатать КП</button>
+      <button class="btn btn-ghost" onclick="backToQuiz()">← Изменить параметры</button>
+    </div>
+    <span class="q-err" id="err-lead" style="text-align:center;display:block;margin-top:12px"></span>
+  </div>
+</div>
+
+<div class="success-sec" id="success-sec">
+  <div class="success-icon">📄</div>
+  <h2 class="success-title">Ваш расчёт готов!</h2>
+  <p class="success-sub">КП скачалось на ваш компьютер — откройте файл в браузере, чтобы распечатать или сохранить как PDF.<br>Заявка уже отправлена менеджеру — он свяжется с вами в течение рабочего дня.</p>
+  <button class="btn btn-primary btn-xl" onclick="restartQuiz()">Рассчитать ещё раз</button>
+</div>
+
+
+</main>
+<footer class="site"><div class="wrap"><div class="cols"><div><a class="logo" href="index.html" style="margin-bottom:16px"><img src="uploads/logo-white.png" alt="Доверительная Бухгалтерия" style="height:44px"></a><p class="about">Бухгалтерское сопровождение бизнеса с 2003 года. Учёт, отчётность, зарплата и аудит для ИП и ООО.</p><div class="soc"><a href="https://t.me/Galina_Gor" target="_blank" rel="noopener"><img src="uploads/icon-telegram.png" alt="Telegram"></a><a href="https://max.ru/" target="_blank" rel="noopener"><img src="uploads/icon-max.png" alt="MAX"></a></div></div><div><h4>Услуги</h4><a href="usluga-bukhgalterskie-uslugi.html">Бухгалтерские услуги</a><a href="usluga-strahovka.html">Бухгалтерская страховка</a><a href="usluga-audit.html">Аудит — чек-ап бизнеса</a><a href="usluga-upravlencheskii-uchet.html">Управленческий учёт</a><a href="usluga-marketplace.html">Бухгалтерия для маркетплейсов</a></div><div><h4>Компания</h4><a href="team.html">О команде</a><a href="vacancy.html">Вакансии</a><a href="blog.html">Статьи</a><a href="novosti.html">Новости законодательства</a><a href="calculator.html">Калькулятор</a></div><div><h4>Контакты</h4><a href="tel:+74957788168">+7 (495) 778-81-68</a><a href="tel:+79255070979">+7 (925) 507-09-79</a><a href="mailto:info@buhstart.ru">info@buhstart.ru</a><span class="fitem">Москва, Краснопрудная 12/1, стр. 1</span><a href="contacts.html" style="color:var(--orange);font-weight:600">Все контакты →</a></div></div><div class="fbot"><span>ООО «Профит-Консалт», ИНН 7709792856, ОГРН 1087746623095</span><span class="links"><a href="privacy.html">Политика конфиденциальности</a><a href="soglasie.html">Согласие на обработку данных</a></span></div></div></footer>
+<div class="fab"><button class="top" aria-label="Наверх"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button><button class="ask" data-ask><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5Z"/></svg>Задать вопрос</button></div><div class="mobile-bar"><button class="btn btn-p" data-lead>Записаться</button><a class="call" href="tel:+74957788168" aria-label="Позвонить"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L15 12l5 2v3a2 2 0 0 1-2.2 2A16 16 0 0 1 4 5.2 2 2 0 0 1 6 3Z"/></svg></a></div>
+<div class="modal"><div class="box"><form data-form="lead" style="display:flex;flex-direction:column;gap:12px"><div class="kicker m-kicker">Вопрос бухгалтеру</div><h3 class="m-title" style="font-size:24px;font-weight:700;letter-spacing:-0.02em">Спросите — ответим</h3><p class="cardtext m-sub"></p><textarea class="field m-question" name="comment" placeholder="Ваш вопрос"></textarea><input class="field" name="name" placeholder="Имя" required><input class="field" name="phone" placeholder="Телефон или Telegram" required><label class="agree"><input type="checkbox" name="agree"> Я даю <a href="soglasie.html" target="_blank">согласие на обработку персональных данных</a> и принимаю <a href="privacy.html" target="_blank">политику конфиденциальности</a></label><div class="formerr">Без согласия на обработку данных отправить нельзя</div><button class="btn btn-p btn-block" type="submit">Отправить</button></form><div class="done"><div class="ok">✓</div><div style="font-size:17px;font-weight:600;margin-top:16px">Отправлено</div><p class="cardtext" style="margin-top:8px">Ответим в течение 2 часов в рабочее время.</p><button class="btn btn-s" style="margin-top:20px" data-close>Закрыть</button></div></div>
+<div class="modal"><div class="box"><form data-form="lead" style="display:flex;flex-direction:column;gap:12px"><div class="kicker m-kicker">Вопрос бухгалтеру</div><h3 class="m-title" style="font-size:24px;font-weight:700;letter-spacing:-0.02em">Спросите — ответим</h3><p class="cardtext m-sub"></p><textarea class="field m-question" name="comment" placeholder="Ваш вопрос"></textarea><input class="field" name="name" placeholder="Имя" required><input class="field" name="phone" placeholder="Телефон или Telegram" required><label class="agree"><input type="checkbox" name="agree"> Я даю <a href="soglasie.html" target="_blank">согласие на обработку персональных данных</a> и принимаю <a href="privacy.html" target="_blank">политику конфиденциальности</a></label><div class="formerr">Без согласия на обработку данных отправить нельзя</div><button class="btn btn-p btn-block" type="submit">Отправить</button></form><div class="done"><div class="ok">✓</div><div style="font-size:17px;font-weight:600;margin-top:16px">Отправлено</div><p class="cardtext" style="margin-top:8px">Ответим в течение 2 часов в рабочее время.</p><button class="btn btn-s" style="margin-top:20px" data-close>Закрыть</button></div></div></div>
+<script src="site.js"></script>
+<script>
+const BITRIX_WEBHOOK = '';
+const SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbxLWOlaftsjU3tG0r3q95i5zaj20uvtmTru9ZIHisSUIj5FTvn2oYAJKz3e4N2SDQa7jQ/exec';
+
+const DESC = {
+  'Нулевая отчётность':'Подготовка и сдача отчётности без оборотов, контроль оплаты фиксированных взносов',
+  'ООО':'Подготовка и сдача бухгалтерского баланса с отчётом о финансовых результатах, учёт ОС, НМА, расчётов с контрагентами',
+  'Патент':'Учёт доходов, подготовка книги учёта доходов, контроль оплаты налогов и взносов ИП',
+  'Патент (доп.)':'Учёт доходов, подготовка книги учёта доходов',
+  'УСН 6%':'Учёт доходов, подготовка и сдача уведомлений по УСН и декларации при УСН',
+  'УСН 15%':'Учёт доходов и расходов, ввод первичной документации, подготовка и сдача уведомлений по УСН и декларации при УСН',
+  'АУСН Доходы':'Учёт доходов, контроль правильности отображения в ЛК АУСН начисления налога',
+  'АУСН Доходы-Расходы':'Учёт доходов и расходов, контроль корректности отражения операций в ЛК АУСН',
+  'ОСНО':'Учёт списаний и поступлений, ввод первичной документации, подготовка и сдача деклараций по налогу на прибыль и по НДС',
+  'НДС 5%':'Подготовка и сдача декларации по НДС',
+  'НДС 7%':'Подготовка и сдача декларации по НДС',
+  'НДС 10%':'Подготовка и сдача декларации по НДС',
+  'НДС 22%':'Подготовка и сдача декларации по НДС',
+  'НДС 0%':'Подготовка и сдача декларации по НДС',
+  'НДС не облагается':'',
+  'Освобождение от НДС (ст.145)':'Подготовка заявления об освобождении и сдача уведомления',
+  'Wildberries':'Бухгалтерский учёт операций по маркетплейсам: выручка, комиссии, возвраты, эквайринг, расходы на логистику',
+  'Ozon':'Бухгалтерский учёт операций по маркетплейсам: выручка, комиссии, возвраты, эквайринг, расходы на логистику',
+  'Яндекс Маркет':'Бухгалтерский учёт операций по маркетплейсам: выручка, комиссии, возвраты, эквайринг, расходы на логистику',
+  'Маркетплейс':'Бухгалтерский учёт операций по маркетплейсам: выручка, комиссии, возвраты, эквайринг, расходы на логистику',
+  'Товарный учёт (маркетплейс)':'Загрузка документов из ЛК маркетплейсов',
+  'Услуги прочие':'Создание и сбор счетов, договоров, актов выполненных услуг, УПД',
+  'Оптовая торговля':'Большой документооборот, ЭДО, сверки, валютный контроль, контроль дебиторской задолженности',
+  'Товарный учёт (опт)':'Товарно-складской учёт',
+  'Розничная торговля':'Ежедневная выручка по кассе (Z-отчёты), эквайринг, учёт розничных товаров, маркировка',
+  'Товарный учёт (розница)':'Товарно-складской учёт',
+  'Строительство':'Учёт материалов и спецодежды, формы КС-2 и КС-3, учёт выполненных строительно-монтажных работ',
+  'Общепит':'Калькуляционный учёт (рецепты, техкарты), работа с ЕГАИС, «Меркурий» и «Честный ЗНАК»',
+  'Медицина':'Учёт МПЗ и медоборудования, учёт расчётов с фондами ДМС, ОМС и пациентами',
+  'Производство':'Расчёт себестоимости, учёт сырья и НЗП, распределение прямых и косвенных расходов',
+  'Работа с расчётным счётом':'Загрузка выписок, обработка и разноска банковских операций, подготовка платёжных поручений',
+  'Приоритетный ответ менеджера':'Индивидуальный бухгалтер, отвечающий руководителю в течение рабочего дня',
+  'Налоговый менеджмент':'Проведение консультаций по налогообложению, оптимизация налоговой нагрузки',
+  'Расширенное сопровождение р/с':'Обработка и разноска банковских операций, подготовка платёжных поручений',
+  'Управленческий учёт':'Построение ОДДС и ОПиУ, расчёт и анализ ключевых показателей прибыльности компании',
+  'Полное сопровождение р/с и платёжного поручения':'Загрузка выписок, обработка операций, подготовка и отправка платёжных поручений',
+  'ВЭД / Валютные расчёты':'Учёт экспортных и импортных операций',
+  'Сверки с контрагентами':'Подготовка и подписание актов сверки с поставщиками, подрядчиками, покупателями и заказчиками',
+  'Касса (ККМ)':'Сверка поступлений с ОФД, учёт наличных денежных средств, контроль кассового остатка',
+  'Авансовые отчёты':'Подготовка и загрузка авансовых отчётов от подотчётных лиц',
+  'ВЭД / Валютные расчёты':'Учёт экспортных и импортных операций',
+};
+function getDesc(name){
+  if(DESC[name]) return DESC[name];
+  for(const k of Object.keys(DESC)){if(name.startsWith(k.replace(/\(.*\)/,'').trim())) return DESC[k];}
+  return '';
+}
+
+const P = {
+  null_ip:2000,null_ooo:3000,entity_ooo:10000,
+  tax:{patent:1000,ausn_d:5000,ausn_dr:20000,usn6:5000,usn15:20000,osno:30000},
+  vat:{не_облагается:0,освобождение:5000,nds0:0,nds5:5000,nds7:5000,nds10:5000,nds22:10000},
+  niche:{marketplace:20000,wb:0,ozon:5000,ya:10000,mp_inventory:15000,wholesale:20000,wh_inventory:10000,retail:20000,rt_inventory:15000,production:60000,construction:40000,catering:30000,medicine:50000,services:20000},
+  staff:{rf_1_3:5000,rf_per:1500,foreign:20000},
+  cash:{kassa:15000,avans:10000},
+  ved:8000,reconcile:15000,tax_mgmt:20000,
+  military_per:2000,licenses:10000,spot:1000,
+  invoice:{base:10000,std:12500,opt:18000},
+};
+const OPTIMA_BASE = 60000;
+const VISIT_PRICE = 7500;
+
+let curStep=1, goingBack=false, lastKP=null;
+const A={
+  entity:'',isNull:false,tax:'',niches:[],addPatent:false,
+  mp:[],mpInventory:false,vats:[],
+  staffRf:'none',rfCount:4,staffForeign:'none',foreignCount:1,
+  cashKassa:false,cashAvans:false,
+  ved:false,reconcile:false,military:false,militaryCount:1,
+  licenses:false,licenseCount:1,spot:false,spotCount:1,
+  whInventory:false,rtInventory:false,
+  priorityManager:'day',taxMgmt:false,
+  officeBuhPresence:true,officeBuhVisits:4,
+  mgmtAcc:false,
+  name:'',phone:'',director:''
+};
+
+const G=id=>document.getElementById(id);
+const fmt=n=>new Intl.NumberFormat('ru-RU').format(Math.round(n))+' ₽';
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const mu=n=>Math.round(n/0.8/100)*100;
+const toDay=()=>new Date().toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'});
+const toDayLong=()=>new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
+const kpValid=()=>{const d=new Date();d.setDate(d.getDate()+10);return d.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})};
+function kpNum(){const y=new Date().getFullYear(),k='kp_p_'+y,n=parseInt(localStorage.getItem(k)||'0',10)+1;localStorage.setItem(k,String(n));return 'КП-'+y+'-'+String(n).padStart(4,'0')}
+function clientFull(){return (A.name||'').trim();}
+function showToast(m){const t=G('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+function taxQ(){return['ausn_dr','usn15','osno'].includes(A.tax)}
+
+function nxStep(n){
+  if(n===2&&A.isNull)return 11;
+  if(n===3)return taxQ()?13:4;
+  if(n===13)return 4;
+  if(n===4&&!A.niches.includes('marketplace'))return 6;
+  if(n===9)return 10;
+  if(n===10)return 14;
+  if(n===14)return 15;
+  if(n===15)return 11;
+  return n+1;
+}
+function pvStep(n){
+  if(n===4)return taxQ()?13:3;
+  if(n===6&&!A.niches.includes('marketplace'))return 4;
+  if(n===13)return 3;
+  if(n===10)return 9;
+  if(n===14)return 10;
+  if(n===15)return 14;
+  if(n===11)return A.isNull?2:15;
+  return n-1;
+}
+function path(){
+  if(A.isNull)return[1,2,11,12];
+  const p=[1,2,3];
+  if(taxQ())p.push(13);
+  p.push(4);
+  if(A.niches.includes('marketplace'))p.push(5);
+  p.push(6,7,8,9,10,14,15,11,12);
+  return p;
+}
+
+function startQuiz(){G('calc-hero').style.display='none';G('quiz-wrap').style.display='block';showStep(1);G('quiz-wrap').scrollIntoView({behavior:'smooth',block:'start'})}
+function backToQuiz(){G('kp-sec').style.display='none';G('quiz-wrap').style.display='block';showStep(12);G('quiz-wrap').scrollIntoView({behavior:'smooth',block:'start'})}
+function restartQuiz(){Object.assign(A,{entity:'',isNull:false,tax:'',niches:[],addPatent:false,mp:[],mpInventory:false,vats:[],staffRf:'none',rfCount:4,staffForeign:'none',foreignCount:1,cashKassa:false,cashAvans:false,ved:false,reconcile:false,military:false,militaryCount:1,licenses:false,licenseCount:1,spot:false,spotCount:1,whInventory:false,rtInventory:false,priorityManager:'day',taxMgmt:false,officeBuhPresence:true,officeBuhVisits:4,mgmtAcc:false,name:'',phone:'',director:''});lastKP=null;G('success-sec').style.display='none';G('kp-sec').style.display='none';G('calc-hero').style.display='block';window.scrollTo({top:0,behavior:'smooth'})}
+
+function goNext(){if(!validate(curStep))return;collect(curStep);goingBack=false;showStep(nxStep(curStep))}
+function goBack(){collect(curStep);goingBack=true;showStep(pvStep(curStep))}
+
+function showStep(n){
+  document.querySelectorAll('#quiz-slides .slide').forEach(el=>{el.classList.remove('active','back');el.style.display='none'});
+  const sl=document.querySelector('#quiz-slides .slide[data-step="'+n+'"]');
+  if(!sl)return;
+  sl.style.display='block';sl.classList.add('active');
+  if(goingBack)sl.classList.add('back');
+  const p=path(),vis=p.indexOf(n)+1,tot=p.length;
+  G('step-label').textContent='Шаг '+vis+' из '+tot;
+  G('step-pct').textContent=Math.round(vis/tot*100)+'%';
+  G('prog-fill').style.width=Math.min(vis/tot*100,100)+'%';
+  G('btn-back').style.display=n>1?'inline-flex':'none';
+  const bn=G('btn-next');bn.style.display=n===12?'none':'inline-flex';
+  bn.textContent=n===11?'Посмотреть расчёт →':'Далее →';
+  if(n===12)buildSummary();
+  restore(n);
+  curStep=n;goingBack=false;
+}
+
+function clearErrs(){document.querySelectorAll('#quiz-wrap .q-err').forEach(e=>e.textContent='');document.querySelectorAll('#quiz-wrap .q-input').forEach(e=>e.classList.remove('input-err'))}
+function setErr(id,msg){const e=G(id);if(e)e.textContent=msg}
+function validate(n){
+  clearErrs();
+  if(n===1&&!document.querySelector('#g-entity .selected')){setErr('err-entity','Выберите вариант');return false}
+  if(n===2&&!document.querySelector('#g-null .selected')){setErr('err-null','Выберите вариант');return false}
+  if(n===3&&!document.querySelector('#g-tax .selected')){setErr('err-tax','Выберите систему налогообложения');return false}
+  if(n===4&&!document.querySelectorAll('#g-niche .selected').length){setErr('err-niche','Выберите вид деятельности');return false}
+  if(n===5&&!document.querySelectorAll('#g-mp .selected').length){setErr('err-mp','Выберите маркетплейс');return false}
+  if(n===7){if(!document.querySelector('#g-staff-rf .selected')){setErr('err-staff','Укажите сотрудников РФ');return false}if(!document.querySelector('#g-staff-foreign .selected')){setErr('err-staff','Укажите иностранных сотрудников');return false}}
+  if(n===10&&!document.querySelector('#g-priority .selected')){setErr('err-priority','Выберите вариант');return false}
+  if(n===11){const nm=(G('f-name').value||'').trim(),ph=(G('f-phone').value||'').trim();if(!nm){setErr('err-name','Введите название или ФИО');G('f-name').classList.add('input-err');return false}if(!ph||ph.replace(/\D/g,'').length<10){setErr('err-phone','Введите номер телефона');G('f-phone').classList.add('input-err');return false}}
+  return true;
+}
+
+function collect(n){
+  const pv=(gid)=>(document.querySelector('#'+gid+' .selected')||{}).dataset?.val||'';
+  if(n===1)A.entity=pv('g-entity');
+  if(n===2)A.isNull=pv('g-null')==='yes';
+  if(n===3){A.tax=pv('g-tax');if(!taxQ())A.taxMgmt=false;const ap=G('add-patent');A.addPatent=ap?ap.checked:false}
+  if(n===4){A.niches=[...document.querySelectorAll('#g-niche .selected')].map(b=>b.dataset.val);const wh=G('add-wh-inventory');A.whInventory=wh?wh.checked:false;const rt=G('add-rt-inventory');A.rtInventory=rt?rt.checked:false}
+  if(n===5){A.mp=[...document.querySelectorAll('#g-mp .selected')].map(b=>b.dataset.val);const mi=G('mp-inventory');A.mpInventory=mi?mi.checked:false}
+  if(n===6)A.vats=[...document.querySelectorAll('#g-vat .selected')].map(b=>b.dataset.val);
+  if(n===7){A.staffRf=pv('g-staff-rf');A.rfCount=parseInt(G('rf-count')?.value||'4',10);A.staffForeign=pv('g-staff-foreign');A.foreignCount=parseInt(G('foreign-count')?.value||'1',10)}
+  if(n===8){A.cashKassa=G('cash-kassa')?.checked||false;A.cashAvans=G('cash-avans')?.checked||false}
+  if(n===9){A.ved=G('add-ved')?.checked||false;A.reconcile=G('add-reconcile')?.checked||false;A.military=G('add-military')?.checked||false;A.militaryCount=parseInt(G('military-count')?.value||'1',10);A.licenses=G('add-licenses')?.checked||false;A.licenseCount=parseInt(G('license-count')?.value||'1',10);A.spot=G('add-spot')?.checked||false;A.spotCount=parseInt(G('spot-count')?.value||'1',10)}
+  if(n===10){const v=pv('g-priority');if(v)A.priorityManager=v}
+  if(n===13)A.taxMgmt=pv('g-taxmgmt')==='yes';
+  if(n===14){A.officeBuhPresence=pv('g-office-buh')==='yes';A.officeBuhVisits=parseInt(G('ob-visits')?.value||'4',10)}
+  if(n===15)A.mgmtAcc=pv('g-mgmt-acc')==='yes';
+  if(n===11){A.name=(G('f-name')?.value||'').trim();A.phone=(G('f-phone')?.value||'').trim();}
+}
+
+function restore(n){
+  const rp=(gid,val)=>document.querySelectorAll('#'+gid+' button').forEach(b=>b.classList.toggle('selected',b.dataset.val===val));
+  if(n===1)rp('g-entity',A.entity);
+  if(n===2)rp('g-null',A.isNull?'yes':'no');
+  if(n===3){rp('g-tax',A.tax);G('add-patent-row').style.display=['usn6','usn15','osno'].includes(A.tax)?'block':'none';const ap=G('add-patent');if(ap)ap.checked=A.addPatent}
+  if(n===4){document.querySelectorAll('#g-niche button').forEach(b=>b.classList.toggle('selected',A.niches.includes(b.dataset.val)));G('wh-inventory-block').style.display=A.niches.includes('wholesale')?'block':'none';G('rt-inventory-block').style.display=A.niches.includes('retail')?'block':'none';const wh=G('add-wh-inventory');if(wh)wh.checked=A.whInventory;const rt=G('add-rt-inventory');if(rt)rt.checked=A.rtInventory}
+  if(n===5){document.querySelectorAll('#g-mp button').forEach(b=>b.classList.toggle('selected',A.mp.includes(b.dataset.val)));const mi=G('mp-inventory');if(mi)mi.checked=A.mpInventory}
+  if(n===6)document.querySelectorAll('#g-vat button').forEach(b=>b.classList.toggle('selected',A.vats.includes(b.dataset.val)));
+  if(n===7){rp('g-staff-rf',A.staffRf);rp('g-staff-foreign',A.staffForeign);G('rf-count-row').style.display=A.staffRf==='rf_more'?'flex':'none';G('foreign-count-row').style.display=A.staffForeign==='yes'?'flex':'none';const rc=G('rf-count');if(rc)rc.value=A.rfCount;const fc=G('foreign-count');if(fc)fc.value=A.foreignCount}
+  if(n===8){const kc=G('cash-kassa');if(kc)kc.checked=A.cashKassa;const ac=G('cash-avans');if(ac)ac.checked=A.cashAvans;const nc=G('cash-none');if(nc)nc.checked=!A.cashKassa&&!A.cashAvans}
+  if(n===9){[['add-ved','ved'],['add-reconcile','reconcile'],['add-military','military'],['add-licenses','licenses'],['add-spot','spot']].forEach(([id,k])=>{const el=G(id);if(el)el.checked=A[k]});G('military-count-row').style.display=A.military?'flex':'none';G('license-count-row').style.display=A.licenses?'flex':'none';G('spot-count-row').style.display=A.spot?'flex':'none';const mc=G('military-count');if(mc)mc.value=A.militaryCount;const lc=G('license-count');if(lc)lc.value=A.licenseCount;const sc=G('spot-count');if(sc)sc.value=A.spotCount}
+  if(n===10)rp('g-priority',A.priorityManager);
+  if(n===13)rp('g-taxmgmt',A.taxMgmt?'yes':'no');
+  if(n===14){rp('g-office-buh',A.officeBuhPresence?'yes':'no');G('ob-visits-row').style.display=A.officeBuhPresence?'flex':'none';const ov=G('ob-visits');if(ov)ov.value=A.officeBuhVisits}
+  if(n===15)rp('g-mgmt-acc',A.mgmtAcc?'yes':'no');
+  if(n===11){const fn=G('f-name');if(fn)fn.value=A.name;const fp=G('f-phone');if(fp)fp.value=A.phone;}
+}
+
+function pick(btn,gid){document.querySelectorAll('#'+gid+' button').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected')}
+function toggleMulti(btn,type){
+  btn.classList.toggle('selected');
+  if(type==='niche'){const ns=[...document.querySelectorAll('#g-niche .selected')].map(b=>b.dataset.val);G('wh-inventory-block').style.display=ns.includes('wholesale')?'block':'none';G('rt-inventory-block').style.display=ns.includes('retail')?'block':'none'}
+}
+function onTaxChange(){G('add-patent-row').style.display=['usn6','usn15','osno'].includes((document.querySelector('#g-tax .selected')||{}).dataset?.val||'')?'block':'none'}
+function cashNoneT(){if(G('cash-none').checked){G('cash-kassa').checked=false;G('cash-avans').checked=false}}
+function cashOptT(){if(G('cash-kassa').checked||G('cash-avans').checked)G('cash-none').checked=false}
+
+function calcTotal(){
+  const lines=[];let rawBase=0;
+  function add(name,pr){lines.push({name,price:mu(pr)});rawBase+=pr}
+
+  if(A.isNull){
+    add('Нулевая отчётность',A.entity==='ИП'?P.null_ip:P.null_ooo);
+  }else{
+    const mpN={wb:'Wildberries',ozon:'Ozon',ya:'Яндекс Маркет'};
+    const nicheN={marketplace:A.mp.length?(mpN[A.mp[0]]||'Маркетплейс'):'Маркетплейс',wholesale:'Оптовая торговля',retail:'Розничная торговля',production:'Производство',construction:'Строительство',catering:'Общепит',medicine:'Медицина',services:'Услуги прочие'};
+    A.niches.forEach(nic=>{
+      const pr=P.niche[nic]||0;if(pr)add(nicheN[nic]||nic,pr);
+      if(nic==='wholesale'&&A.whInventory)add('Товарный учёт (опт)',P.niche.wh_inventory);
+      if(nic==='retail'&&A.rtInventory)add('Товарный учёт (розница)',P.niche.rt_inventory);
+    });
+    if(A.niches.includes('marketplace')){A.mp.forEach((m,i)=>{if(i>0)add(mpN[m]||m,5000)});if(A.mpInventory)add('Товарный учёт (маркетплейс)',P.niche.mp_inventory)}
+    if(A.entity==='ООО')add('ООО',P.entity_ooo);
+    const taxN={patent:'Патент',ausn_d:'АУСН Доходы',ausn_dr:'АУСН Доходы-Расходы',usn6:'УСН 6%',usn15:'УСН 15%',osno:'ОСНО'};
+    const tp=P.tax[A.tax]||0;if(tp)add(taxN[A.tax]||A.tax,tp);
+    if(A.addPatent&&A.tax!=='patent')add('Патент (доп.)',P.tax.patent);
+    const vatN={'не_облагается':'НДС не облагается','освобождение':'Освобождение от НДС (ст.145)',nds0:'НДС 0%',nds5:'НДС 5%',nds7:'НДС 7%',nds10:'НДС 10%',nds22:'НДС 22%'};
+    (A.vats||[]).forEach(v=>{const pr=P.vat[v]||0;if(pr)add(vatN[v]||v,pr);else lines.push({name:vatN[v]||v,price:0})});
+    if(A.staffRf==='rf_1_3')add('Сотрудники РФ (1–3 чел.)',P.staff.rf_1_3);
+    else if(A.staffRf==='rf_more')add('Сотрудники РФ ('+A.rfCount+' чел.)',P.staff.rf_per*A.rfCount);
+    if(A.staffForeign==='yes')add('Иностранные сотрудники ('+A.foreignCount+' чел.)',P.staff.foreign*A.foreignCount);
+    if(A.cashKassa)add('Касса (ККМ)',P.cash.kassa);
+    if(A.cashAvans)add('Авансовые отчёты',P.cash.avans);
+    if(A.ved)add('ВЭД / Валютные расчёты',P.ved);
+    if(A.reconcile)add('Сверки с контрагентами',P.reconcile);
+    if(A.military)add('Воинский учёт ('+A.militaryCount+' чел.)',P.military_per*A.militaryCount);
+    if(A.licenses)add('Лицензионная отчётность ('+(A.licenseCount||1)+' лиц.)',P.licenses*(A.licenseCount||1));
+    if(A.spot)add('СПОТ ('+(A.spotCount||1)+' шт.)',P.spot*(A.spotCount||1));
+  }
+  lines.push({name:'Работа с расчётным счётом',price:P.invoice.base});
+  const baseTotal=lines.reduce((s,l)=>s+(l.price||0),0);
+
+  const vis=A.officeBuhPresence?Math.max(1,A.officeBuhVisits||4):1;
+  const mPriority=mu(Math.round(rawBase*0.2));
+  const mTaxMgmt=taxQ()&&A.taxMgmt?mu(P.tax_mgmt||P.reconcile):0;
+  const mOfficeBuh=mu(vis*VISIT_PRICE);
+  const mOptima=mu(OPTIMA_BASE);
+  const mInvStdExtra=P.invoice.std-P.invoice.base;
+  const mInvOptExtra=P.invoice.opt-P.invoice.std;
+
+  const stdLines=[
+    {name:'Приоритетный ответ менеджера',price:mPriority},
+    ...(taxQ()&&A.taxMgmt?[{name:'Налоговый менеджмент',price:mTaxMgmt}]:[]),
+    {name:'Присутствие бухгалтера в офисе ('+vis+' визит'+(vis===1?'':'а')+'/мес.)',price:mOfficeBuh},
+    {name:'Расширенное сопровождение р/с',price:mInvStdExtra},
+  ];
+  const optLines=[
+    {name:'Управленческий учёт',price:mOptima},
+    {name:'Полное сопровождение р/с и платёжного поручения',price:mInvOptExtra},
+  ];
+  const stdTotal=baseTotal+stdLines.reduce((s,l)=>s+l.price,0);
+  const optTotal=stdTotal+optLines.reduce((s,l)=>s+l.price,0);
+
+  return{lines,baseTotal,stdLines,stdTotal,optLines,optTotal};
+}
+
+function buildSummary(){
+  collect(11);
+  const r=calcTotal();
+  const taxN={patent:'Патент',ausn_d:'АУСН Доходы',ausn_dr:'АУСН Доходы-Расходы',usn6:'УСН 6%',usn15:'УСН 15%',osno:'ОСНО'};
+  G('sum-params').innerHTML=
+    '<div class="sum-param"><span class="sum-param-k">Форма</span><span class="sum-param-v">'+esc(A.entity)+'</span></div>'+
+    (!A.isNull?'<div class="sum-param"><span class="sum-param-k">Налогообложение</span><span class="sum-param-v">'+esc(taxN[A.tax]||A.tax)+'</span></div>':'<div class="sum-param"><span class="sum-param-k">Отчётность</span><span class="sum-param-v">Нулевая</span></div>');
+  G('sum-services').innerHTML=r.lines.map(l=>{const d=getDesc(l.name);return'<div class="sum-svc-item"><div class="sum-svc-name">'+esc(l.name)+'</div>'+(d?'<div class="sum-svc-desc">'+esc(d)+'</div>':'')+'</div>';}).join('');
+  G('tariff-cards').innerHTML=
+    '<div class="tariff-card"><div class="tariff-name">Базовая</div><div class="tariff-price">'+fmt(r.baseTotal)+'<span>/мес</span></div><div class="tariff-desc">Бухгалтерский учёт, налоговая отчётность, р/с</div></div>'+
+    '<div class="tariff-card featured"><div class="tariff-badge">Популярный</div><div class="tariff-name">Стандарт</div><div class="tariff-price">'+fmt(r.stdTotal)+'<span>/мес</span></div><div class="tariff-desc">Базовая + приоритетный ответ, офисный бухгалтер'+(taxQ()&&A.taxMgmt?', нал. менеджмент':'')+'</div></div>'+
+    '<div class="tariff-card"><div class="tariff-name">Оптима</div><div class="tariff-price">'+fmt(r.optTotal)+'<span>/мес</span></div><div class="tariff-desc">Стандарт + управленческий учёт</div></div>';
+}
+
+function generateKP(){
+  collect(12);
+  if(!A.name){setErr('err-final','Введите данные на шаге «Контакты»');return}
+  const r=calcTotal();
+  const num=lastKP?lastKP.num:kpNum();
+  lastKP={num,r};
+
+  const taxN={patent:'Патент',ausn_d:'АУСН Доходы',ausn_dr:'АУСН Доходы-Расходы',usn6:'УСН 6%',usn15:'УСН 15%',osno:'ОСНО'};
+
+  // --- Заполнение on-page КП ---
+  G('kp-num').textContent='№ '+num;
+  G('kp-client').textContent=clientFull();
+  G('kp-date').textContent=toDay();
+  G('kp-valid').textContent=kpValid();
+  G('kp-services').innerHTML=r.lines.map(l=>{
+    const d=getDesc(l.name);
+    return'<div class="kp-service-row"><span class="kp-service-name">'+esc(l.name)+(d?'<br><small style="font-weight:400;color:#999">'+esc(d)+'</small>':'')+'</span><span class="kp-service-price">'+(l.price>0?fmt(l.price)+' ₽':'—')+'</span></div>';
+  }).join('');
+  G('kp-tariffs').innerHTML=
+    '<div class="kp-tariff"><div class="kp-tariff-name">Базовая</div><div class="kp-tariff-price">'+fmt(r.baseTotal)+'<span>/мес</span></div><div class="kp-tariff-extras">Бухгалтерский учёт, налоговая отчётность, р/с</div></div>'+
+    '<div class="kp-tariff featured"><div class="kp-tariff-badge">рекомендуем</div><div class="kp-tariff-name">Стандарт</div><div class="kp-tariff-price">'+fmt(r.stdTotal)+'<span>/мес</span></div><div class="kp-tariff-extras">Всё из Базовой +<br>'+r.stdLines.map(l=>'• '+esc(l.name)).join('<br>')+'</div></div>'+
+    '<div class="kp-tariff"><div class="kp-tariff-name">Оптима</div><div class="kp-tariff-price">'+fmt(r.optTotal)+'<span>/мес</span></div><div class="kp-tariff-extras">Всё из Стандарт +<br>'+r.optLines.map(l=>'• '+esc(l.name)).join('<br>')+'</div></div>';
+  G('kp-breakdown').innerHTML='';
+  G('quiz-wrap').style.display='none';
+  G('kp-sec').style.display='block';
+  G('kp-sec').scrollIntoView({behavior:'smooth',block:'start'});
+
+  // --- Версия для печати в новом окне ---
+  const svcRows=r.lines.map(l=>{
+    const d=getDesc(l.name);
+    return'<tr><td style="padding:6px 10px 6px 0;border-bottom:1px solid #f0f0f0;font-size:11pt">'+esc(l.name)+(d?'<br><span style="font-size:9pt;color:#888">'+esc(d)+'</span>':'')+'</td>'
+      +'<td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td>'
+      +'<td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td>'
+      +'<td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td></tr>';
+  }).join('')
+  +r.stdLines.map(l=>'<tr><td style="padding:6px 10px 6px 0;border-bottom:1px solid #f0f0f0;font-size:11pt">'+esc(l.name)+'</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#ccc">—</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td></tr>').join('')
+  +r.optLines.map(l=>'<tr><td style="padding:6px 10px 6px 0;border-bottom:1px solid #f0f0f0;font-size:11pt">'+esc(l.name)+'</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#ccc">—</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#ccc">—</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td></tr>').join('');
+  const printHtml='<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><title>КП '+num+' — Доверительная Бухгалтерия</title>'
+    +'<style>*{box-sizing:border-box}body{font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#18181B;margin:0;padding:56px 32px 32px}table{border-collapse:collapse;width:100%}.print-bar{position:fixed;top:0;left:0;right:0;background:#fff;border-bottom:1px solid #eee;padding:10px 24px;display:flex;gap:10px;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.08);z-index:9}.btn{padding:7px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;border:none}.btn-or{background:#F07828;color:#fff}.btn-wh{background:#fff;color:#444;border:1px solid #ddd!important}.hint{font-size:12px;color:#aaa;margin-left:4px}@media print{.print-bar{display:none!important}body{padding:0}}</style>'
+    +'</head><body>'
+    +'<div class="print-bar"><button class="btn btn-or" onclick="window.print()">Распечатать / Сохранить PDF</button><button class="btn btn-wh" onclick="window.close()">Закрыть</button><span class="hint">В диалоге печати выберите «Сохранить как PDF»</span></div>'
+    +'<table style="margin-bottom:20px"><tr>'
+    +'<td><div style="font-size:20pt;font-weight:800;color:#F07828">Доверительная Бухгалтерия</div>'
+    +'<div style="font-size:9pt;color:#888;margin-top:3px">ООО «Профит-Консалт» · ИНН 7709792856 · Москва, Денежный пер., д. 4</div>'
+    +'<div style="font-size:9pt;color:#888">+7 (495) 778-81-68 · info@buhstart.ru · buhstart.ru</div></td>'
+    +'<td style="text-align:right;vertical-align:top"><div style="font-size:9pt;color:#888">'+num+' от '+toDay()+'</div>'
+    +'<div style="font-size:14pt;font-weight:700;margin-top:4px">'+esc(clientFull())+'</div>'
+    +(A.phone?'<div style="font-size:9pt;color:#888">'+esc(A.phone)+'</div>':'')
+    +(A.director?'<div style="font-size:9pt;color:#888">'+esc(A.director)+'</div>':'')
+    +'</td></tr></table>'
+    +'<div style="font-size:16pt;font-weight:800;margin:0 0 4px">Коммерческое предложение</div>'
+    +'<div style="font-size:9pt;color:#888;margin-bottom:12px">Бухгалтерское обслуживание · '+(A.isNull?'Нулевая отчётность':(taxN[A.tax]||A.tax))+' · '+A.entity+'</div>'
+    +'<p style="font-size:10pt;color:#444;line-height:1.5;margin-bottom:16px">В продолжение нашего разговора высылаем коммерческое предложение на бухгалтерское обслуживание вашей организации. Ниже представлены три варианта сопровождения — от базового пакета до полного сопровождения с управленческим учётом.</p>'
+    +'<div style="font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#F07828;margin:16px 0 8px">Состав услуг</div>'
+    +'<table style="margin-bottom:16px"><thead><tr style="background:#F07828;color:#fff">'
+    +'<th style="padding:8px 10px;text-align:left;width:55%;font-weight:700">Наименование услуги</th>'
+    +'<th style="padding:8px 10px;text-align:center;font-weight:700">Базовая</th>'
+    +'<th style="padding:8px 10px;text-align:center;font-weight:700;background:#E35611">Стандарт</th>'
+    +'<th style="padding:8px 10px;text-align:center;font-weight:700">Оптима</th>'
+    +'</tr></thead><tbody>'+svcRows+'</tbody></table>'
+    +'<div style="font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#F07828;margin:16px 0 8px">Стоимость в месяц</div>'
+    +'<table style="margin-bottom:16px"><thead><tr>'
+    +'<th style="text-align:left;padding:8px 10px"></th>'
+    +'<th style="text-align:center;padding:8px 10px;font-weight:700">Базовая</th>'
+    +'<th style="text-align:center;padding:8px 10px;font-weight:700;background:#FFF3EE;border-top:2px solid #F07828">Стандарт ★</th>'
+    +'<th style="text-align:center;padding:8px 10px;font-weight:700">Оптима</th>'
+    +'</tr></thead><tbody><tr>'
+    +'<td style="padding:10px 10px;font-size:11pt">Стоимость</td>'
+    +'<td style="padding:10px 10px;text-align:center"><span style="font-size:15pt;font-weight:800;color:#F07828">'+fmt(r.baseTotal)+'</span> ₽/мес</td>'
+    +'<td style="padding:10px 10px;text-align:center;background:#FFF3EE"><span style="font-size:15pt;font-weight:800;color:#F07828">'+fmt(r.stdTotal)+'</span> ₽/мес</td>'
+    +'<td style="padding:10px 10px;text-align:center"><span style="font-size:15pt;font-weight:800;color:#F07828">'+fmt(r.optTotal)+'</span> ₽/мес</td>'
+    +'</tr></tbody></table>'
+    +'<div style="background:#F4F4F5;border-radius:4px;padding:10px 16px;font-size:10pt;color:#555;margin-bottom:16px">Предложение действует до: <strong>'+kpValid()+'</strong></div>'
+    +'<div style="font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#F07828;margin:16px 0 6px">О компании</div>'
+    +'<p style="font-size:10pt;color:#444;line-height:1.6;margin-bottom:12px">Доверительная Бухгалтерия (ООО «Профит-Консалт») успешно работает с 2003 года. За более чем 20 лет мы накопили экспертизу в налоговом и бухгалтерском сопровождении ИП и ООО. Работаем удалённо по всей России на любых системах налогообложения.</p>'
+    +'<div style="font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#F07828;margin:16px 0 6px">Условия сотрудничества</div>'
+    +'<p style="font-size:10pt;color:#444;line-height:1.6;margin-bottom:20px">Оплата: 50% предоплата до начала работы, 50% — по итогам периода.<br>Срок начала: 1–3 рабочих дня после подписания договора.<br>Подробнее на сайте: <strong>buhstart.ru</strong></p>'
+    +'<div style="margin-top:24px;font-size:10pt"><span style="border-top:1px solid #999;padding-top:4px;display:inline-block;min-width:220px">Руководитель _______________&nbsp; Горелкина Г.В.</span></div>'
+    +'</body></html>';
+  // --- Скачивание КП (.docx) + отправка в Drive ---
+  generateDocx(r, num).then(function(kpB64){ saveToSheets(r, num, kpB64); });
+
+  // --- Автоотправка заявки ---
+  sendLeadAuto(r, num);
+
+  // --- Экран «Ваш расчёт готов» ---
+  G('quiz-wrap').style.display='none';
+  G('kp-sec').style.display='none';
+  G('success-sec').style.display='block';
+  G('success-sec').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+async function saveToSheets(r, num, kpB64){
+  if(!SHEETS_WEBHOOK) return;
+  const taxN={patent:'Патент',ausn_d:'АУСН Доходы',ausn_dr:'АУСН Доходы-Расходы',usn6:'УСН 6%',usn15:'УСН 15%',osno:'ОСНО'};
+  const staffParts=[];
+  if(A.staffRf&&A.staffRf!=='no'){staffParts.push('РФ: '+(A.staffRf==='rf_1_3'?'1–3':(A.rfCount||''))+' чел.')}
+  if(A.staffForeign==='yes'){staffParts.push('Иностр.: '+(A.foreignCount||1)+' чел.')}
+  try{
+    await fetch(SHEETS_WEBHOOK,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
+      type:'calculator',
+      name: A.name, phone: A.phone, email: '',
+      company: A.entity||'',
+      tariff: 'Базовая: '+fmt(r.baseTotal)+' | Стандарт: '+fmt(r.stdTotal)+' | Оптима: '+fmt(r.optTotal),
+      employees: staffParts.join(', ')||'—',
+      system: A.isNull?'Нулевая':(taxN[A.tax]||A.tax||''),
+      kpBase64: kpB64||'',
+      kpName: 'КП_'+num+'_'+(A.name||'').replace(/[^а-яёА-ЯЁa-zA-Z0-9]/g,'_')+'.docx',
+      kpMime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    })});
+  }catch(e){}
+}
+
+async function sendLeadAuto(r, num){
+  const taxN={patent:'Патент',ausn_d:'АУСН Доходы',ausn_dr:'АУСН Доходы-Расходы',usn6:'УСН 6%',usn15:'УСН 15%',osno:'ОСНО'};
+  const details=[
+    'КП: '+num,
+    'Форма: '+A.entity,
+    A.isNull?'Нулевая отчётность':'Налогообложение: '+(taxN[A.tax]||A.tax),
+    'Базовая: '+fmt(r.baseTotal)+'/мес',
+    'Стандарт: '+fmt(r.stdTotal)+'/мес',
+    'Оптима: '+fmt(r.optTotal)+'/мес',
+  ].filter(Boolean).join('\n');
+  if(BITRIX_WEBHOOK){
+    try{
+      const p=new URLSearchParams();
+      p.append('fields[TITLE]','КП с калькулятора — '+A.name);
+      p.append('fields[NAME]',A.name);
+      p.append('fields[PHONE][0][VALUE]',A.phone);
+      p.append('fields[PHONE][0][VALUE_TYPE]','WORK');
+      p.append('fields[SOURCE_ID]','WEB');
+      p.append('fields[COMMENTS]',details);
+      await fetch(BITRIX_WEBHOOK,{method:'POST',body:p});
+    }catch(e){}
+  }
+}
+
+async function sendLead(){
+  if(!lastKP){showToast('Сначала сформируйте КП');return}
+  await sendLeadAuto(lastKP.r, lastKP.num);
+  G('kp-sec').style.display='none';
+  G('success-sec').style.display='block';
+  G('success-sec').scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script>
+<script>
+// ── DOCX-генерация КП ────────────────────────────────────────────────────────
+var KP_TPL_B64='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';
+
+function escXml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function fmtRub(n){return n.toLocaleString('ru-RU')+' ₽/мес.';}
+
+// Генерация строки таблицы услуг
+function svcRow(name,hasBase,hasStd,hasOpt,isEven){
+  var bg=isEven?'FAFAFA':'FFFFFF';
+  var rpr='<w:rPr><w:b w:val="false"/><w:bCs w:val="false"/><w:i w:val="false"/><w:iCs w:val="false"/><w:color w:val="217346"/><w:sz w:val="22"/><w:szCs w:val="22"/><w:rFonts w:ascii="Arial" w:cs="Arial" w:eastAsia="Arial" w:hAnsi="Arial"/></w:rPr>';
+  var rprB='<w:rPr><w:b/><w:bCs/><w:i w:val="false"/><w:iCs w:val="false"/><w:color w:val="217346"/><w:sz w:val="22"/><w:szCs w:val="22"/><w:rFonts w:ascii="Arial" w:cs="Arial" w:eastAsia="Arial" w:hAnsi="Arial"/></w:rPr>';
+  function chkCell(has){
+    return '<w:tc><w:tcPr><w:tcW w:type="dxa" w:w="1606"/><w:tcBorders><w:top w:val="single" w:color="E0E0E0" w:sz="4"/><w:left w:val="single" w:color="E0E0E0" w:sz="4"/><w:bottom w:val="single" w:color="E0E0E0" w:sz="4"/><w:right w:val="single" w:color="E0E0E0" w:sz="4"/></w:tcBorders><w:shd w:fill="'+bg+'" w:val="clear"/><w:tcMar><w:top w:type="dxa" w:w="60"/><w:left w:type="dxa" w:w="40"/><w:bottom w:type="dxa" w:w="60"/><w:right w:type="dxa" w:w="40"/></w:tcMar><w:vAlign w:val="center"/></w:tcPr><w:p><w:pPr><w:spacing w:before="0" w:after="0"/><w:jc w:val="center"/></w:pPr><w:r>'+
+      (has?rprB:rpr)+(has?'<w:t xml:space="preserve">✓</w:t>':'')+'</w:r></w:p></w:tc>';
+  }
+  var nameRpr='<w:rPr><w:b w:val="false"/><w:bCs w:val="false"/><w:i w:val="false"/><w:iCs w:val="false"/><w:color w:val="222120"/><w:sz w:val="19"/><w:szCs w:val="19"/><w:rFonts w:ascii="Arial" w:cs="Arial" w:eastAsia="Arial" w:hAnsi="Arial"/></w:rPr>';
+  return '<w:tr><w:tc><w:tcPr><w:tcW w:type="dxa" w:w="4819"/><w:tcBorders><w:top w:val="single" w:color="E0E0E0" w:sz="4"/><w:left w:val="single" w:color="E0E0E0" w:sz="4"/><w:bottom w:val="single" w:color="E0E0E0" w:sz="4"/><w:right w:val="single" w:color="E0E0E0" w:sz="4"/></w:tcBorders><w:shd w:fill="'+bg+'" w:val="clear"/><w:tcMar><w:top w:type="dxa" w:w="60"/><w:left w:type="dxa" w:w="120"/><w:bottom w:type="dxa" w:w="60"/><w:right w:type="dxa" w:w="60"/></w:tcMar><w:vAlign w:val="center"/></w:tcPr><w:p><w:pPr><w:spacing w:before="0" w:after="0"/><w:jc w:val="left"/></w:pPr><w:r>'+nameRpr+'<w:t xml:space="preserve">'+escXml(name)+'</w:t></w:r></w:p></w:tc>'+chkCell(hasBase)+chkCell(hasStd)+chkCell(hasOpt)+'</w:tr>';
+}
+
+async function generateDocx(r, num){
+  if(typeof JSZip==='undefined'){console.error('JSZip not loaded');return false;}
+  try{
+    // decode base64 template
+    var bin=atob(KP_TPL_B64);
+    var arr=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
+
+    var zip=await JSZip.loadAsync(arr);
+    var docXml=await zip.file('word/document.xml').async('string');
+
+    // company info
+    docXml=docXml.replace('{{COMPANY_LINE1}}','Доверительная Бухгалтерия');
+    docXml=docXml.replace('{{COMPANY_LINE2}}','ООО «Профит-Консалт» · ИНН 7709792856 · г. Москва, Денежный пер., д. 4');
+    docXml=docXml.replace('{{COMPANY_PHONE}}','+7 (495) 778-81-68');
+    docXml=docXml.replace('{{COMPANY_SHORT}}','ООО «Профит-Консалт»');
+
+    // KP meta
+    docXml=docXml.replace('{{KP_NUM}}',escXml(num));
+    docXml=docXml.replace('{{KP_DATE}}',toDay());
+    docXml=docXml.replace('{{CLIENT_NAME}}',escXml(clientFull()));
+    docXml=docXml.replace('{{CLIENT_DIRECTOR}}',escXml(A.director||''));
+    docXml=docXml.replace('{{VALID_DATE}}',escXml(kpValid()));
+    docXml=docXml.replace('{{SIGNER}}','Горелкина Галина Викторовна');
+
+    // about company
+    docXml=docXml.replace('{{ABOUT_TEXT}}','Доверительная Бухгалтерия (ООО «Профит-Консалт») успешно работает с 2003 года. За более 20 лет мы накопили экспертизу в налоговом и бухгалтерском сопровождении ИП и ООО. Работаем удалённо по всей России на любых системах налогообложения.');
+
+    // prices (no discount — show base price in all cells)
+    docXml=docXml.replace('{{PRICE_BASE}}',fmtRub(r.baseTotal));
+    docXml=docXml.replace('{{PRICE_STD}}',fmtRub(r.stdTotal));
+    docXml=docXml.replace('{{PRICE_OPT}}',fmtRub(r.optTotal));
+    // hide discount rows — replace with same price
+    docXml=docXml.replace('{{DISC_BASE}}','—');
+    docXml=docXml.replace('{{DISC_STD}}','—');
+    docXml=docXml.replace('{{DISC_OPT}}','—');
+    docXml=docXml.replace('{{PRICE_BASE_DISC}}',fmtRub(r.baseTotal));
+    docXml=docXml.replace('{{PRICE_STD_DISC}}',fmtRub(r.stdTotal));
+    docXml=docXml.replace('{{PRICE_OPT_DISC}}',fmtRub(r.optTotal));
+
+    // build service rows
+    var rows='';
+    var idx=0;
+    r.lines.forEach(function(l){rows+=svcRow(l.name,true,true,true,idx%2===1);idx++;});
+    r.stdLines.forEach(function(l){rows+=svcRow(l.name,false,true,true,idx%2===1);idx++;});
+    r.optLines.forEach(function(l){rows+=svcRow(l.name,false,false,true,idx%2===1);idx++;});
+    docXml=docXml.replace('{{SERVICE_ROWS}}',rows);
+
+    zip.file('word/document.xml',docXml);
+    var out=await zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+    var url=URL.createObjectURL(out);
+    var a=document.createElement('a');
+    a.href=url;
+    a.download='КП_'+num+'_'+A.name.replace(/[^а-яёА-ЯЁa-zA-Z0-9]/g,'_')+'.docx';
+    document.body.appendChild(a);a.click();
+    setTimeout(function(){URL.revokeObjectURL(url);a.remove();},1000);
+    // return base64 for Drive upload
+    var b64=await new Promise(function(res){
+      var rd=new FileReader();rd.onload=function(){res(rd.result.split(',')[1])};rd.readAsDataURL(out);
+    });
+    return b64;
+  }catch(e){
+    console.error('generateDocx error:',e);
+    return null;
+  }
+}
+</script>
+</body>
+</html>

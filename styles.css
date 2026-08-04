@@ -101,9 +101,9 @@ footer.site a,footer.site .fitem{display:block;font-size:14px;color:rgba(255,255
 footer.site a:hover{color:#fff}
 footer.site .about{font-size:14px;line-height:1.6;color:rgba(255,255,255,.6)}
 .soc{display:flex;gap:10px;margin-top:20px}
-.soc a{height:44px;padding:0 20px;border-radius:var(--r-field);background:#fff;color:var(--ink);font:600 14px/1 Onest,sans-serif;display:inline-flex;align-items:center;justify-content:center;margin:0}
-footer.site .soc a,.soc a{color:var(--ink)}          /* иначе footer.site a перебивает и текст белый на белом */
-footer.site .soc a:hover,.soc a:hover{color:var(--orange)}
+.soc a{height:44px;padding:0 20px;border-radius:var(--r-field);border:1px solid var(--line);background:none;color:var(--ink);font:600 14px/1 Onest,sans-serif;display:inline-flex;align-items:center;justify-content:center;margin:0;transition:border-color .2s,color .2s}
+footer.site .soc a{color:#fff;border-color:rgba(255,255,255,.28)}   /* в подвале обводкой по тёмному */
+footer.site .soc a:hover,.soc a:hover{color:var(--orange);border-color:var(--orange)}
 .fbot{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.45);border-top:1px solid rgba(255,255,255,.15);margin-top:32px;padding-top:20px}
 .fbot a{color:rgba(255,255,255,.45);display:inline;margin:0}
 .fbot .links{display:flex;gap:20px;flex-wrap:wrap}
@@ -141,7 +141,7 @@ form .btn{height:52px}
 .modal.open{display:flex}
 .modal .box{background:#fff;border-radius:var(--r-tile);padding:32px;width:100%;max-width:440px}
 
-.ticker{max-width:1052px;width:calc(100% - 48px);margin:0 auto 56px;background:var(--orange);color:#fff;border-radius:var(--r-tile);overflow:hidden;padding:18px 0}
+.ticker{max-width:1052px;width:calc(100% - 48px);margin:0 auto 56px;background:var(--orange);color:#fff;overflow:hidden;padding:18px 0}
 .ticker .line{display:flex;gap:40px;white-space:nowrap;width:max-content;animation:tick 34s linear infinite;font-size:14px}
 .ticker span{display:flex;gap:40px;align-items:center}
 .ticker .line{color:#fff;font-weight:500}
@@ -228,6 +228,13 @@ h2{font-size:38px}
 
 /* асимметричный бенто: первая карточка на две колонки */
 .bento .wide{grid-column:span 2}
+.bento .wide2{grid-column:span 2}
+/* цифры на страницах-разделах: чередование тёмных и оранжевых плиток */
+.stats .card:nth-child(1){background:var(--dark)!important;color:#fff}
+.stats .card:nth-child(2){background:var(--orange)!important;color:#fff}
+.stats .card:nth-child(1) .small,.stats .card:nth-child(2) .small{color:rgba(255,255,255,.75)}
+.stats .card .num{letter-spacing:-.03em}
+
 .bento .wide3{grid-column:span 3}
 .all-svc{display:flex;flex-direction:row;align-items:center;gap:20px}
 .all-svc .iconbox{margin-bottom:0!important}

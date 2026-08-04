@@ -155,7 +155,8 @@ document.addEventListener('DOMContentLoaded', function(){
     var m = raw.match(/^(\D*)(\d+(?:[.,]\d+)?)(.*)$/);
     if(!m) return;
     var pre = m[1], target = m[2], post = m[3];
-    if(/[А-Яа-яA-Za-z]/.test(post)) return;   // «2 часа» крутить не надо
+    if(/[А-Яа-яA-Za-z]/.test(post)) return;      // «2 часа» крутить не надо
+    if(/^(19|20)\d{2}$/.test(raw)) return;       // год основания — тоже не крутим
     var frac = target.indexOf(',') > -1 ? 1 : 0;
     var end = parseFloat(target.replace(',', '.'));
     if(!(end > 0)) return;

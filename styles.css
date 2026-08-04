@@ -102,7 +102,8 @@ footer.site a:hover{color:#fff}
 footer.site .about{font-size:14px;line-height:1.6;color:rgba(255,255,255,.6)}
 .soc{display:flex;gap:10px;margin-top:20px}
 .soc a{height:44px;padding:0 20px;border-radius:var(--r-field);background:#fff;color:var(--ink);font:600 14px/1 Onest,sans-serif;display:inline-flex;align-items:center;justify-content:center;margin:0}
-.soc a:hover{background:var(--orange);color:#fff}
+footer.site .soc a,.soc a{color:var(--ink)}          /* иначе footer.site a перебивает и текст белый на белом */
+footer.site .soc a:hover,.soc a:hover{color:var(--orange)}
 .fbot{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.45);border-top:1px solid rgba(255,255,255,.15);margin-top:32px;padding-top:20px}
 .fbot a{color:rgba(255,255,255,.45);display:inline;margin:0}
 .fbot .links{display:flex;gap:20px;flex-wrap:wrap}

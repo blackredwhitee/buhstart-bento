@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220" role="img" aria-label="Управленческий учёт: прибыль и деньги">
   <rect width="400" height="220" fill="#F4F2EF"/>
-  <g opacity="0.45" fill="#DCD7D0"><circle cx="352" cy="30" r="3"/><circle cx="372" cy="30" r="3"/><circle cx="352" cy="50" r="3"/><circle cx="372" cy="50" r="3"/><circle cx="28" cy="172" r="3"/><circle cx="48" cy="172" r="3"/><circle cx="28" cy="192" r="3"/><circle cx="48" cy="192" r="3"/></g>
-  <rect x="96" y="46" width="180" height="122" rx="10" fill="#fff" stroke="#E0DBD4" stroke-width="1.6"/>
-  <g stroke="#E4E0DA" stroke-width="1.4"><path d="M112 76h148"/><path d="M112 106h148"/><path d="M112 136h148"/></g>
+  <g opacity="0.45" fill="#D5CFC7"><circle cx="352" cy="30" r="3"/><circle cx="372" cy="30" r="3"/><circle cx="352" cy="50" r="3"/><circle cx="372" cy="50" r="3"/><circle cx="28" cy="172" r="3"/><circle cx="48" cy="172" r="3"/><circle cx="28" cy="192" r="3"/><circle cx="48" cy="192" r="3"/></g>
+  <rect x="96" y="46" width="180" height="122" rx="10" fill="#fff" stroke="#CFC9C1" stroke-width="1.6"/>
+  <g stroke="#DCD7D0" stroke-width="1.4"><path d="M112 76h148"/><path d="M112 106h148"/><path d="M112 136h148"/></g>
   <path d="M118 132 154 112 190 120 226 88 258 66" fill="none" stroke="#F07828" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
   <circle cx="258" cy="66" r="7" fill="#F07828"/>
   <circle cx="258" cy="66" r="14" fill="none" stroke="#F07828" stroke-width="2" opacity="0.35"/>
   <g transform="translate(292 112)">
     <rect x="0" y="26" width="56" height="26" rx="8" fill="#F07828"/>
-    <ellipse cx="28" cy="26" rx="28" ry="9" fill="#F0842F"/>
+    <ellipse cx="28" cy="26" rx="28" ry="9" fill="#D9691C"/>
     <rect x="0" y="4" width="56" height="24" rx="8" fill="#F07828"/>
-    <ellipse cx="28" cy="4" rx="28" ry="9" fill="#F79553"/>
+    <ellipse cx="28" cy="4" rx="28" ry="9" fill="#F07828"/>
     <g stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none">
       <path d="M22 -2v12"/><path d="M22 -2h7a4.5 4.5 0 0 1 0 9h-7"/><path d="M18 7h12"/>
     </g>

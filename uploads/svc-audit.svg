@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220" role="img" aria-label="Аудит: проверка отчётности">
   <rect width="400" height="220" fill="#F4F2EF"/>
-  <g opacity="0.45" fill="#DCD7D0"><circle cx="352" cy="30" r="3"/><circle cx="372" cy="30" r="3"/><circle cx="352" cy="50" r="3"/><circle cx="372" cy="50" r="3"/><circle cx="28" cy="172" r="3"/><circle cx="48" cy="172" r="3"/><circle cx="28" cy="192" r="3"/><circle cx="48" cy="192" r="3"/></g>
-  <rect x="112" y="46" width="132" height="128" rx="10" fill="#fff" stroke="#E0DBD4" stroke-width="1.6"/>
+  <g opacity="0.45" fill="#D5CFC7"><circle cx="352" cy="30" r="3"/><circle cx="372" cy="30" r="3"/><circle cx="352" cy="50" r="3"/><circle cx="372" cy="50" r="3"/><circle cx="28" cy="172" r="3"/><circle cx="48" cy="172" r="3"/><circle cx="28" cy="192" r="3"/><circle cx="48" cy="192" r="3"/></g>
+  <rect x="112" y="46" width="132" height="128" rx="10" fill="#fff" stroke="#CFC9C1" stroke-width="1.6"/>
   <rect x="130" y="60" width="38" height="8" rx="4" fill="#F07828"/>
-  <g fill="#DCD7D0">
+  <g fill="#D5CFC7">
     <rect x="130" y="120" width="16" height="34" rx="4"/>
     <rect x="154" y="106" width="16" height="48" rx="4"/>
   </g>

@@ -22,6 +22,15 @@ a{color:#F07828}
 .site-nav a,.hdr-phone{text-decoration:none;color:#3D3D3D;font-size:15px;font-weight:500}
 .hdr-cta{text-decoration:none;background:#F07828;color:#fff;font-weight:600;font-size:15px;height:44px;padding:0 20px;border-radius:6px;display:inline-flex;align-items:center;letter-spacing:.02em;white-space:nowrap}
 .hdr-burger{display:none;margin-left:auto;width:44px;height:44px;border:1px solid #e8e8e8;border-radius:8px;background:#fff;cursor:pointer;align-items:center;justify-content:center}
+.nav-dd{position:relative;display:flex;align-items:center;height:72px}
+.nav-dd-t{display:flex;align-items:center;gap:6px;text-decoration:none;color:#3D3D3D;font-size:15px;font-weight:500}
+.nav-dd .chev{transition:transform 160ms ease}
+.nav-dd:hover .nav-dd-t,.nav-dd:focus-within .nav-dd-t{color:#F07828}
+.nav-dd:hover .chev,.nav-dd:focus-within .chev{transform:rotate(180deg)}
+.nav-dd-m{position:absolute;top:60px;left:-16px;min-width:240px;background:#fff;border:1px solid #E8E8E8;border-radius:10px;box-shadow:0 14px 36px rgba(0,0,0,.12);padding:8px;display:none;flex-direction:column}
+.nav-dd:hover .nav-dd-m,.nav-dd:focus-within .nav-dd-m{display:flex}
+.nav-dd-m a{text-decoration:none;color:#1A1A1A;font-size:15px;font-weight:500;padding:11px 14px;border-radius:7px;white-space:nowrap}
+.nav-dd-m a:hover{background:#FEF7F2;color:#F07828}
 .site-footer{background:#3D3D3D;color:rgba(255,255,255,.75);font-size:13px;margin-top:80px}
 .site-footer-inner{max-width:1100px;margin:0 auto;padding:56px 24px 32px}
 .site-footer-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:40px 32px}
@@ -182,11 +191,19 @@ a{color:#F07828}
   <div class="site-header-inner">
     <a class="site-header-logo" href="index.html"><img src="uploads/logo-transparent.png" alt="Доверительная Бухгалтерия"/></a>
     <nav class="site-nav">
-      <a href="uslugi.html">Услуги</a>
+      <div class="nav-dd">
+        <a class="nav-dd-t" href="uslugi.html">Услуги<svg class="chev" width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav-dd-m"><a href="usluga.html?s=bukhgalterskie-uslugi">Бухгалтерские услуги</a><a href="usluga.html?s=strahovka">Бухгалтерская страховка</a><a href="usluga.html?s=audit">Аудит — чек-ап бизнеса</a><a href="usluga.html?s=upravlencheskii-uchet">Управленческий учёт</a><a href="usluga.html?s=marketplace">Бухгалтерия для маркетплейсов</a></div>
+      </div>
       <a href="calculator.html">Калькулятор</a>
-      <a href="blog.html">Статьи</a>
-      <a href="team.html">Команда</a>
-      <a href="vacancy.html">Работа у&nbsp;нас</a>
+      <div class="nav-dd">
+        <a class="nav-dd-t" href="blog.html">Блог<svg class="chev" width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav-dd-m"><a href="blog.html">Статьи</a><a href="novosti.html">Новости законодательства</a></div>
+      </div>
+      <div class="nav-dd">
+        <a class="nav-dd-t" href="team.html">Команда<svg class="chev" width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav-dd-m"><a href="team.html">О команде</a><a href="vacancy.html">Вакансии</a></div>
+      </div>
       <a href="contacts.html">Контакты</a>
     </nav>
     <a class="hdr-phone" href="tel:+74957788168">+7 (495) 778-81-68</a>

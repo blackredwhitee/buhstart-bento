@@ -36,11 +36,20 @@ document.addEventListener('DOMContentLoaded', function(){
     modal.querySelector('.done').classList.remove('show');
     modal.querySelector('form').style.display = 'flex';
     var isAsk = kind === 'ask';
-    modal.querySelector('.m-kicker').textContent = isAsk ? 'Вопрос бухгалтеру' : 'Заявка';
-    modal.querySelector('.m-title').textContent = isAsk ? 'Спросите — ответим' : (situation ? 'Уточнить цену' : 'Записаться на консультацию');
-    modal.querySelector('.m-sub').textContent = situation ? ('Ситуация: ' + situation) : (isAsk ? 'Короткий вопрос по учёту, налогам или отчётности. Отвечаем в рабочее время.' : 'Оставьте контакты — перезвоним в течение 2 часов в рабочее время.');
-    modal.querySelector('.m-question').style.display = isAsk ? 'block' : 'none';
-    modal.dataset.source = situation ? ('Уточнить цену: ' + situation) : (isAsk ? 'Вопрос бухгалтеру' : 'Записаться на консультацию');
+    var isPersonal = /^Личное обращение/.test(situation || '');
+    modal.querySelector('.m-kicker').textContent = isAsk ? 'Вопрос бухгалтеру' : (isPersonal ? 'Руководителю лично' : 'Заявка');
+    modal.querySelector('.m-title').textContent = isAsk ? 'Спросите — ответим'
+      : isPersonal ? 'Написать руководителю'
+      : (situation ? 'Уточнить цену' : 'Записаться на консультацию');
+    modal.querySelector('.m-sub').textContent = isPersonal
+      ? 'Обращение читает лично Горелкина Галина Викторовна, руководитель компании.'
+      : situation ? ('Ситуация: ' + situation)
+      : (isAsk ? 'Короткий вопрос по учёту, налогам или отчётности. Отвечаем в рабочее время.'
+               : 'Оставьте контакты — перезвоним в течение 2 часов в рабочее время.');
+    modal.querySelector('.m-question').style.display = (isAsk || isPersonal) ? 'block' : 'none';
+    modal.dataset.source = isPersonal ? 'Личное обращение к руководителю'
+      : situation ? ('Уточнить цену: ' + situation)
+      : (isAsk ? 'Вопрос бухгалтеру' : 'Записаться на консультацию');
   }
   document.querySelectorAll('[data-ask]').forEach(function(b){ b.addEventListener('click', function(){ openModal('ask'); }); });
   document.querySelectorAll('[data-lead]').forEach(function(b){ b.addEventListener('click', function(){ openModal('lead', b.dataset.lead || ''); }); });
@@ -210,21 +219,29 @@ document.addEventListener('DOMContentLoaded', function(){
   if(ct && !reduce){
     var STEPS = [
       {n:1, q:'Вы ИП или ООО?', opts:['ИП','ООО','Пока выбираю'], pick:1},
-      {n:2, q:'Сколько у вас сотрудников?', opts:['Нет','1–5','6–15'], pick:1},
+      {n:2, q:'Ведёте деятельность?', opts:['Да, есть обороты','Нулевая отчётность','Только открылись'], pick:0},
       {n:3, q:'Система налогообложения?', opts:['УСН 6%','УСН 15%','ОСНО'], pick:0},
-      {n:4, q:'Работаете с НДС?', opts:['Не облагается','НДС 5%','НДС 22%'], pick:2}
+      {n:4, q:'Вид деятельности?', opts:['Услуги','Торговля','Производство'], pick:1},
+      {n:5, q:'Есть сотрудники в штате?', opts:['Нет','Да, есть'], pick:1},
+      {n:6, q:'Нужен бухгалтер в офисе?', opts:['Да, нужен','Нет, не нужен'], pick:1}
     ];
+    var TOTAL = 8;
     var i = 0;
     function draw(){
       var s = STEPS[i];
-      ct.querySelector('.ct-step').textContent = 'Шаг ' + s.n;
-      ct.querySelector('.ct-bar span').style.width = (s.n / 15 * 100).toFixed(0) + '%';
-      var q = ct.querySelector('.ct-q');
+      ct.querySelector('.ct-bar span').style.width = (s.n / TOTAL * 100).toFixed(0) + '%';
+      var q = ct.querySelector('.ct-q'), st = ct.querySelector('.ct-step');
       q.style.opacity = 0;
-      setTimeout(function(){ q.textContent = s.q; q.style.opacity = 1; }, 180);
+      setTimeout(function(){
+        st.textContent = 'Шаг ' + s.n + ' из ' + TOTAL;
+        q.textContent = s.q;
+        q.style.opacity = 1;
+      }, 180);
       ct.querySelectorAll('.ct-opt').forEach(function(o, k){
         o.style.opacity = 0;
         setTimeout(function(){
+          if(k >= s.opts.length){ o.style.display = 'none'; return }
+          o.style.display = '';
           o.textContent = s.opts[k];
           o.classList.toggle('on', k === s.pick);
           o.style.opacity = 1;

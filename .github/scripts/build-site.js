@@ -160,14 +160,22 @@ replaceInside('novosti.html', 'news', news.map(rowHtml).join(''));
 /* ---------- кейсы ---------- */
 
 function caseHtml(c, i) {
-  const tilt = i % 2 ? 'tilt-r' : 'tilt-l';
-  return `<article class="case ${tilt}">
+  const metric = c.metric
+    ? `<div class="case-metric">${esc(c.metric)}${c.metricNote ? `<small>${esc(c.metricNote)}</small>` : ''}</div>`
+    : '';
+  const row = (label, text) => text
+    ? `<div class="case-row"><div class="case-label">${label}</div><p class="case-text">${esc(text)}</p></div>`
+    : '';
+  return `<article class="case ${i % 2 ? 'tilt-r' : 'tilt-l'}">
 ${c.tag ? `<span class="pill case-tag">${esc(c.tag)}</span>` : ''}
-<div class="kicker">Что было</div>
-<div class="case-num">${esc(c.result || '')}<small>${esc(c.resultNote || '')}</small></div>
-<div class="case-was">${esc(c.story || '')}</div>
+<h3 class="case-title">${esc(c.title || '')}</h3>
+${metric}
+${row('Что было', c.was)}
+${row('Что сделали', c.did)}
+${row('Результат', c.result)}
 </article>`;
 }
+
 if (cases.length) replaceInside('keysy.html', 'cases', cases.map(caseHtml).join('\n'));
 
 /* ---------- тизеры для главной ---------- */

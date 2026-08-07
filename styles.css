@@ -368,14 +368,22 @@ footer.site{background-image:
 .tilt-l,.tilt-r,.bento .dark,.statement{transition:transform .3s cubic-bezier(.22,.61,.36,1)}
 a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 
-/* ---------- кейс-плакат: результат крупной цифрой ---------- */
-.case{position:relative;background:var(--tile);border-radius:var(--r-tile);padding:38px 40px;overflow:hidden}
-.case-num{font:800 66px/.95 Onest,sans-serif;letter-spacing:-.05em;color:var(--orange);margin:6px 0 4px}
-.case-num small{display:block;font:600 14px/1.4 Onest,sans-serif;letter-spacing:0;color:var(--ink2);margin-top:10px}
-.case-was{font-size:14px;line-height:1.55;color:var(--ink2);margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+/* ---------- кейс ---------- */
+.case{position:relative;background:var(--tile);border-radius:var(--r-tile);padding:36px 38px;overflow:hidden}
 .case-tag{position:absolute;right:26px;top:26px}
+.case-title{font:800 27px/1.18 Onest,sans-serif;letter-spacing:-.03em;max-width:80%;margin-bottom:6px}
+.case-metric{font:800 54px/1 Onest,sans-serif;letter-spacing:-.05em;color:var(--orange);margin:18px 0 4px}
+.case-metric small{display:block;font:600 14px/1.45 Onest,sans-serif;letter-spacing:0;color:var(--ink2);margin-top:10px}
+.case-row{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.case-label{font:600 12px/1 Onest,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--orange);margin-bottom:8px}
+.case-row:nth-of-type(3) .case-label,.case-row:last-child .case-label{color:var(--ok)}
+.case-text{font-size:15px;line-height:1.6;color:var(--ink2)}
 @media(max-width:767px){
-  .case-num{font-size:46px}
+  .case{padding:26px 22px}
+  .case-title{font-size:22px;max-width:100%}
+  .case-metric{font-size:40px}
+  .case-tag{position:static;display:inline-block;margin-bottom:14px}
+}
   .tilt-l,.tilt-r,.bento .dark,.statement{transform:none}
   .punch::before,.punch::after{display:none}
 }

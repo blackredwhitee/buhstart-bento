@@ -60,7 +60,7 @@ main>section:first-child{margin-bottom:20px}   /* бегущая строка б
 .btn-block{width:100%}
 .blocklink{display:flex;justify-content:flex-end;margin-top:20px}
 .linkbtn{height:48px;padding:0 24px;border:2px solid var(--orange);border-radius:var(--r-btn);background:none;color:var(--orange);font:600 15px/1 Onest,sans-serif;display:inline-flex;align-items:center;cursor:pointer;transition:background .2s,color .2s}
-.linkbtn:hover{background:var(--orange);color:#fff}
+.linkbtn:hover{background:var(--orange)!important;color:#fff!important;border-color:var(--orange)}
 .iconbox{width:44px;height:44px;border-radius:12px;background:var(--dark);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
 .iconbox-l{background:var(--bg);color:var(--ink)}
 .crumbs{font-size:13px;color:var(--ink3);margin-bottom:18px}

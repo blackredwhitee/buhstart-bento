@@ -327,20 +327,6 @@ footer.site{background-image:
   radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px)}
 
 
-/* ---------- рукописный слой: пометки как правки в отчёте ---------- */
-.hm{position:relative;display:inline-block}
-.hm::after{content:"";position:absolute;pointer-events:none;background-repeat:no-repeat;background-size:100% 100%}
-.hm-circle::after{inset:-14% -7%;background-image:url('uploads/mark-circle.svg')}
-.hm-line::after{left:-2%;right:-2%;bottom:-.34em;height:.42em;background-image:url('uploads/mark-underline.svg')}
-.hm-arrow{position:absolute;width:110px;height:64px;background:url('uploads/mark-arrow.svg') no-repeat center/contain;pointer-events:none;opacity:.9}
-.stamp{position:absolute;width:132px;height:132px;background:url('uploads/stamp-checked.svg') no-repeat center/contain;transform:rotate(-12deg);pointer-events:none;opacity:.9}
-.hnote{font:500 15px/1.35 Onest,sans-serif;color:var(--ink2);position:relative;padding-left:26px}
-.hnote::before{content:"";position:absolute;left:0;top:.15em;width:18px;height:14px;background:url('uploads/mark-check.svg') no-repeat center/contain}
-.hand{font:italic 400 17px/1.45 Onest,sans-serif;color:var(--ink2);display:inline-block;transform:rotate(-.6deg)}
-.hand-note{position:relative;padding:14px 18px 14px 20px;border-left:3px solid var(--orange);background:rgba(240,120,40,.06);border-radius:0 14px 14px 0}
-.hand-sign{display:block;margin-top:8px;font:600 13px/1.2 Onest,sans-serif;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em}
-
-
 /* ---------- календарь отчётности ---------- */
 .cal{margin-top:22px;display:flex;flex-direction:column;gap:10px}
 .cal-row{display:grid;grid-template-columns:74px 1fr auto;gap:18px;align-items:center;padding:16px 20px;background:var(--bg);border-radius:var(--r-card)}

@@ -254,3 +254,134 @@ document.addEventListener('DOMContentLoaded', function(){
     ct.addEventListener('pointerenter', function(){ clearInterval(timer); });
   }
 });
+
+/* ---------- календарь отчётности: ближайшие сроки ---------- */
+document.addEventListener('DOMContentLoaded', function(){
+  var box = document.getElementById('cal');
+  if(!box) return;
+
+  // повторяющиеся сроки: день месяца → что сдавать. Месяцы: 1–12, 0 = каждый месяц
+  var RULES = [
+    {day:25, months:[1,4,7,10], what:'НДС — уплата 1/3 за квартал',                who:'ОСНО'},
+    {day:25, months:[1,4,7,10], what:'Декларация по НДС за квартал',               who:'ОСНО'},
+    {day:25, months:[4,7,10],   what:'Аванс по УСН за квартал',                    who:'УСН'},
+    {day:25, months:[4,7,10],   what:'Расчёт по страховым взносам (РСВ)',          who:'с сотрудниками'},
+    {day:25, months:[4,7,10],   what:'6-НДФЛ за квартал',                          who:'с сотрудниками'},
+    {day:25, months:[0],        what:'Уведомление по ЕНП',                         who:'все режимы'},
+    {day:28, months:[0],        what:'Уплата налогов по ЕНП',                      who:'все режимы'},
+    {day:25, months:[0],        what:'Персонифицированные сведения о физлицах',    who:'с сотрудниками'},
+    {day:25, months:[1],        what:'Декларация по УСН за прошлый год: ООО до 25.03, ИП до 25.04', who:'УСН'},
+    {day:25, months:[3],        what:'Декларация по УСН за год — ООО',             who:'УСН, ООО'},
+    {day:25, months:[4],        what:'Декларация по УСН за год — ИП',              who:'УСН, ИП'},
+    {day:31, months:[3],        what:'Бухгалтерская отчётность за прошлый год',    who:'ООО'},
+    {day:15, months:[0],        what:'Взносы на травматизм и ЕФС-1 (при событиях)',who:'с сотрудниками'},
+    {day:31, months:[12],       what:'Фиксированные взносы ИП за себя',           who:'ИП'}
+  ];
+
+  var MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  var now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  function nextDate(rule){
+    for(var add = 0; add < 14; add++){
+      var d = new Date(today.getFullYear(), today.getMonth() + add, 1);
+      var m = d.getMonth() + 1;
+      if(rule.months[0] !== 0 && rule.months.indexOf(m) < 0) continue;
+      var last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+      var day = Math.min(rule.day, last);
+      var when = new Date(d.getFullYear(), d.getMonth(), day);
+      // срок переносится с выходного на ближайший рабочий день
+      while(when.getDay() === 0 || when.getDay() === 6) when.setDate(when.getDate() + 1);
+      if(when >= today) return when;
+    }
+    return null;
+  }
+
+  var all = RULES.map(function(r){ return {when: nextDate(r), r: r} })
+                 .filter(function(x){ return x.when })
+                 .sort(function(a, b){ return a.when - b.when });
+  // показываем ближайшие 60 дней, но не меньше трёх строк
+  var near = all.filter(function(x){ return (x.when - today) / 86400000 <= 60 });
+  var items = (near.length >= 3 ? near : all).slice(0, 5);
+
+  function plural(n){
+    var a = n % 10, b = n % 100;
+    if(b > 10 && b < 20) return 'дней';
+    if(a === 1) return 'день';
+    if(a > 1 && a < 5) return 'дня';
+    return 'дней';
+  }
+
+  box.innerHTML = items.map(function(x){
+    var left = Math.round((x.when - today) / 86400000);
+    var urgent = left <= 7;
+    return '<div class="cal-row' + (urgent ? ' cal-hot' : '') + '">'
+      + '<div class="cal-date"><b>' + x.when.getDate() + '</b><span>' + MONTHS[x.when.getMonth()] + '</span></div>'
+      + '<div class="cal-what"><div class="cal-title">' + x.r.what + '</div><div class="cal-who">' + x.r.who + '</div></div>'
+      + '<div class="cal-left">' + (left === 0 ? 'сегодня' : 'через ' + left + ' ' + plural(left)) + '</div>'
+      + '</div>';
+  }).join('');
+});
+
+/* ---------- тест «риск налоговой проверки» по открытым критериям ФНС ---------- */
+document.addEventListener('DOMContentLoaded', function(){
+  var wrap = document.getElementById('risk');
+  if(!wrap) return;
+
+  var QS = [
+    'Зарплата у сотрудников ниже средней по вашей отрасли в регионе?',
+    'Компания показывала убыток два года подряд или дольше?',
+    'Доля вычетов по НДС держится выше 89% от начисленного налога?',
+    'Расходы растут быстрее доходов?',
+    'Показатели вплотную подошли к лимитам вашего спецрежима — по выручке или сотрудникам?',
+    'Есть контрагенты, о которых почти ничего не известно: нет сайта, массовый адрес, нет договора на руках?'
+  ];
+
+  var i = 0, score = 0;
+  var qEl = document.getElementById('risk-q'), body = document.getElementById('risk-body'),
+      res = document.getElementById('risk-res'), fill = document.getElementById('risk-fill'),
+      cnt = document.getElementById('risk-count');
+
+  function draw(){
+    qEl.style.opacity = 0;
+    setTimeout(function(){ qEl.textContent = QS[i]; qEl.style.opacity = 1; }, 140);
+    fill.style.width = (i / QS.length * 100) + '%';
+    cnt.textContent = 'Вопрос ' + (i + 1) + ' из ' + QS.length;
+  }
+
+  function answer(points){
+    score += points;
+    i++;
+    if(i < QS.length){ draw(); return; }
+    body.style.display = 'none';
+    res.classList.add('show');
+    var light = document.getElementById('risk-light'),
+        verdict = document.getElementById('risk-verdict'),
+        advice = document.getElementById('risk-advice');
+    var level, text, tip;
+    if(score <= 1){
+      level = 'low';  text = 'Риск низкий';
+      tip = 'По открытым критериям вы не выделяетесь. Это не гарантия — инспекция смотрит и на контрагентов, — но поводов для выездной проверки в ваших цифрах не видно.';
+    } else if(score <= 3){
+      level = 'mid';  text = 'Риск средний';
+      tip = 'Вы попадаете под часть критериев. Обычно это лечится за один аудит: находим, что именно настораживает налоговую, и закрываем до того, как придёт требование.';
+    } else {
+      level = 'high'; text = 'Риск высокий';
+      tip = 'Совпадений много — по таким признакам инспекция как раз и отбирает компании для выездной проверки. Стоит разобраться в отчётности не откладывая.';
+    }
+    light.className = 'risk-light ' + level;
+    light.textContent = score + ' из ' + QS.length;
+    verdict.textContent = text;
+    advice.textContent = tip;
+    // фиксируем результат, чтобы менеджер видел контекст обращения
+    var m = document.querySelector('.modal');
+    if(m) m.dataset.riskScore = score;
+  }
+
+  document.getElementById('risk-yes').addEventListener('click', function(){ answer(1) });
+  document.getElementById('risk-no').addEventListener('click', function(){ answer(0) });
+  document.getElementById('risk-idk').addEventListener('click', function(){ answer(0.5) });
+  document.getElementById('risk-again').addEventListener('click', function(){
+    i = 0; score = 0; res.classList.remove('show'); body.style.display = ''; draw();
+  });
+  draw();
+});

@@ -1,4 +1,20 @@
 // общий скрипт сайта «Доверительная Бухгалтерия»
+
+/* Аналитика. Когда появится номер счётчика Яндекс.Метрики:
+   1. вписать его в YM_ID ниже;
+   2. вставить код счётчика на страницы (одной строкой перед </body>).
+   Цели уже расставлены — заработают сразу, дополнительно настраивать в коде ничего не нужно.
+   Список целей: lead_open, lead_sent, question_sent, vacancy_sent, calc_start,
+   calc_done, calc_kp, risk_done, calendar_click, phone_click, messenger_click. */
+var YM_ID = null;
+
+function track(goal, params){
+  try{
+    if(YM_ID && typeof ym === 'function') ym(YM_ID, 'reachGoal', goal, params || {});
+    if(typeof gtag === 'function') gtag('event', goal, params || {});
+    if(window.dataLayer) window.dataLayer.push(Object.assign({event: goal}, params || {}));
+  }catch(e){}
+}
 var ENDPOINT = 'https://script.google.com/macros/s/AKfycbxLWOlaftsjU3tG0r3q95i5zaj20uvtmTru9ZIHisSUIj5FTvn2oYAJKz3e4N2SDQa7jQ/exec';
 
 function send(payload){
@@ -51,8 +67,8 @@ document.addEventListener('DOMContentLoaded', function(){
       : situation ? ('Уточнить цену: ' + situation)
       : (isAsk ? 'Вопрос бухгалтеру' : 'Записаться на консультацию');
   }
-  document.querySelectorAll('[data-ask]').forEach(function(b){ b.addEventListener('click', function(){ openModal('ask'); }); });
-  document.querySelectorAll('[data-lead]').forEach(function(b){ b.addEventListener('click', function(){ openModal('lead', b.dataset.lead || ''); }); });
+  document.querySelectorAll('[data-ask]').forEach(function(b){ b.addEventListener('click', function(){ openModal('ask'); track('lead_open', {kind:'question'}); }); });
+  document.querySelectorAll('[data-lead]').forEach(function(b){ b.addEventListener('click', function(){ openModal('lead', b.dataset.lead || ''); track('lead_open', {kind: b.dataset.lead || 'lead'}); }); });
   if(modal){
     modal.addEventListener('click', function(e){ if(e.target === modal) modal.classList.remove('open'); });
     modal.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', function(){ modal.classList.remove('open'); }); });
@@ -82,6 +98,9 @@ document.addEventListener('DOMContentLoaded', function(){
 
       function finish(){
         send(data);
+        var goal = data.type === 'vacancy' ? 'vacancy_sent'
+                 : (data.comment || '').indexOf('Вопрос бухгалтеру') > -1 ? 'question_sent' : 'lead_sent';
+        track(goal, {source: form.dataset.source || (modal && modal.dataset.source) || document.title});
         form.style.display = 'none';
         var done = box.querySelector('.done');
         if(done) done.classList.add('show');
@@ -375,6 +394,7 @@ document.addEventListener('DOMContentLoaded', function(){
     // фиксируем результат, чтобы менеджер видел контекст обращения
     var m = document.querySelector('.modal');
     if(m) m.dataset.riskScore = score;
+    track('risk_done', {score: score, level: level});
   }
 
   document.getElementById('risk-yes').addEventListener('click', function(){ answer(1) });
@@ -384,4 +404,16 @@ document.addEventListener('DOMContentLoaded', function(){
     i = 0; score = 0; res.classList.remove('show'); body.style.display = ''; draw();
   });
   draw();
+});
+
+/* ---------- цели на звонки, мессенджеры и календарь ---------- */
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('a[href^="tel:"]').forEach(function(a){
+    a.addEventListener('click', function(){ track('phone_click', {where: document.title}); });
+  });
+  document.querySelectorAll('a[href*="t.me"], a[href*="max.ru"]').forEach(function(a){
+    a.addEventListener('click', function(){ track('messenger_click', {href: a.getAttribute('href')}); });
+  });
+  var calBtn = document.querySelector('[data-lead*="Календарь"]');
+  if(calBtn) calBtn.addEventListener('click', function(){ track('calendar_click'); });
 });

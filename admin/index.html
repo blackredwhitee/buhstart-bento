@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buhstart CMS</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; font-size: 14px; background: #F5F3EF; color: #1A1A1A; min-height: 100vh; }
+
+/* Login */
+.login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+.login-card { background: #fff; border-radius: 16px; padding: 40px; width: 100%; max-width: 380px; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+.login-logo img { height: 48px; display: block; margin-bottom: 8px; }
+.login-sub { color: #888; margin-bottom: 28px; font-size: 13px; }
+
+/* Layout */
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 220px; background: #1A1A1A; color: #fff; display: flex; flex-direction: column; padding: 0; flex-shrink: 0; }
+.sidebar-logo { padding: 20px; border-bottom: 1px solid #333; }
+.sidebar-logo img { height: 40px; display: block; }
+.sidebar-nav { flex: 1; padding: 12px 0; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; color: #aaa; cursor: pointer; font-size: 13px; border: none; background: none; width: 100%; text-align: left; transition: color .15s, background .15s; }
+.nav-item:hover { color: #fff; background: #2a2a2a; }
+.nav-item.active { color: #F07828; background: #252525; }
+.nav-icon { font-size: 16px; width: 20px; flex-shrink: 0; }
+.sidebar-bottom { padding: 12px 0 20px; border-top: 1px solid #333; }
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.topbar { background: #fff; border-bottom: 1px solid #eee; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; }
+.topbar-title { font-size: 18px; font-weight: 700; }
+.content { padding: 28px; flex: 1; }
+
+/* Form controls */
+label { display: block; font-size: 12px; font-weight: 600; color: #666; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; }
+input[type=text], input[type=email], input[type=password], input[type=date], textarea, select {
+  width: 100%; padding: 10px 14px; border: 1.5px solid #E0DDD8; border-radius: 8px; font-size: 14px; font-family: inherit; background: #fff; color: #1A1A1A; outline: none; transition: border .15s;
+}
+input:focus, textarea:focus, select:focus { border-color: #F07828; }
+textarea { resize: vertical; }
+.field { margin-bottom: 18px; }
+.row { display: grid; gap: 16px; }
+.row-2 { grid-template-columns: 1fr 1fr; }
+.row-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: opacity .15s, transform .1s; }
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-primary { background: #F07828; color: #fff; }
+.btn-primary:hover:not(:disabled) { opacity: .88; }
+.btn-ghost { background: transparent; color: #666; border: 1.5px solid #E0DDD8; }
+.btn-ghost:hover:not(:disabled) { border-color: #999; color: #1A1A1A; }
+.btn-danger { background: #fff; color: #e53e3e; border: 1.5px solid #fed7d7; }
+.btn-danger:hover:not(:disabled) { background: #fff5f5; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-icon { padding: 7px; border-radius: 6px; background: #f5f5f5; border: none; cursor: pointer; color: #666; font-size: 14px; }
+.btn-icon:hover { background: #eee; color: #1A1A1A; }
+
+/* Article list */
+.article-list { display: flex; flex-direction: column; gap: 8px; }
+.article-row { background: #fff; border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; border: 1.5px solid transparent; transition: border .15s; }
+.article-row:hover { border-color: #F07828; }
+.article-row-tag { font-size: 11px; font-weight: 600; background: #FFF0E5; color: #F07828; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+.article-row-title { flex: 1; font-weight: 600; font-size: 14px; color: #1A1A1A; }
+.article-row-date { font-size: 12px; color: #999; white-space: nowrap; }
+.article-row-actions { display: flex; gap: 6px; }
+.empty-state { text-align: center; color: #aaa; padding: 60px 20px; font-size: 14px; }
+
+/* WYSIWYG editor */
+.wysiwyg-wrap { border: 1.5px solid #E0DDD8; border-radius: 10px; overflow: hidden; }
+.wysiwyg-toolbar { display: flex; flex-wrap: wrap; gap: 2px; padding: 8px 10px; background: #F9F7F4; border-bottom: 1px solid #E0DDD8; }
+.tb-btn { padding: 5px 10px; border: 1px solid transparent; border-radius: 6px; background: transparent; font-size: 13px; font-weight: 600; cursor: pointer; color: #444; font-family: inherit; transition: all .12s; line-height: 1; }
+.tb-btn:hover { background: #fff; border-color: #D0CCC7; }
+.tb-btn.active { background: #F07828; color: #fff; border-color: #F07828; }
+.tb-sep { width: 1px; background: #D0CCC7; margin: 4px 4px; align-self: stretch; }
+.wysiwyg-body { padding: 16px 20px; min-height: 260px; font-size: 15px; line-height: 1.7; outline: none; color: #1A1A1A; }
+.wysiwyg-body:empty::before { content: 'Начните печатать или вставьте текст…'; color: #bbb; pointer-events: none; }
+.wysiwyg-body h2 { font-size: 20px; font-weight: 700; margin: 20px 0 6px; line-height: 1.3; }
+.wysiwyg-body h3 { font-size: 16px; font-weight: 700; margin: 16px 0 4px; line-height: 1.3; }
+.wysiwyg-body p { margin: 0 0 10px; }
+.wysiwyg-body ul { padding-left: 20px; margin: 0 0 10px; }
+.wysiwyg-body li { margin-bottom: 4px; }
+
+/* Image upload */
+.img-drop { border: 2px dashed #E0DDD8; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; color: #aaa; font-size: 13px; transition: border .15s; }
+.img-drop:hover, .img-drop.over { border-color: #F07828; color: #F07828; }
+.img-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 10px; }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; box-shadow: 0 4px 16px rgba(0,0,0,.15); z-index: 9999; animation: toastin .2s ease; }
+.toast-ok { background: #1A1A1A; color: #fff; }
+.toast-err { background: #e53e3e; color: #fff; }
+@keyframes toastin { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+/* Spinner */
+.spin { display: inline-block; width: 18px; height: 18px; border: 2px solid #eee; border-top-color: #F07828; border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Misc */
+.sep { height: 1px; background: #eee; margin: 20px 0; }
+.text-muted { color: #888; font-size: 12px; }
+.badge { font-size: 11px; background: #f5f5f5; color: #666; border-radius: 20px; padding: 2px 8px; }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .sidebar { display: none; }
+  .topbar { padding: 12px 16px; }
+  .topbar-title { font-size: 16px; }
+  .content { padding: 16px; }
+  .row-2, .row-3 { grid-template-columns: 1fr; }
+  .article-row { flex-wrap: wrap; gap: 8px; }
+  .article-row-date { display: none; }
+  .article-row-actions { width: 100%; justify-content: flex-end; }
+  .btn-sm { padding: 8px 14px; font-size: 13px; }
+}
+
+.field-hint{font-size:12px;color:#71717a;margin-top:6px}
+.editor-form{max-width:780px;display:flex;flex-direction:column;gap:20px}
+
+.editor-form .input,.editor-form textarea.input{width:100%;box-sizing:border-box}
+.editor-form .row-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.editor-form .row-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const REPO_OWNER = 'blackredwhitee';
+const REPO_NAME  = 'buhstart-bento';
+const TAGS = ['Налоги','Налоговая','Финансы','Бизнес','ИП и ООО'];
+
+// ── State ─────────────────────────────────────────────────────────────
+const S = {
+  view: 'login',   // login | dash | editor | settings
+  section: 'articles', // articles | news
+  articles: [],
+  current: null,   // article being edited (null = new)
+  loading: false,
+  pat: localStorage.getItem('bhs_pat') || sessionStorage.getItem('bhs_pat') || '',
+  loggedIn: !!sessionStorage.getItem('bhs_user'),
+};
+
+// ── Crypto ────────────────────────────────────────────────────────────
+async function sha256(msg) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── GitHub API ────────────────────────────────────────────────────────
+async function ghGet(path) {
+  const r = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+    headers: S.pat ? { Authorization: 'Bearer ' + S.pat } : {}
+  });
+  if (!r.ok) throw new Error('GitHub API ' + r.status + ': ' + path);
+  return r.json();
+}
+
+async function ghPut(path, content, message, sha) {
+  const body = { message, content: btoa(unescape(encodeURIComponent(content))) };
+  if (sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+    method: 'PUT',
+    headers: { Authorization: 'Bearer ' + S.pat, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) { const e = await r.json(); throw new Error(e.message || 'GitHub PUT failed'); }
+  return r.json();
+}
+
+async function ghPutBinary(path, base64content, message, sha) {
+  const body = { message, content: base64content };
+  if (sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+    method: 'PUT',
+    headers: { Authorization: 'Bearer ' + S.pat, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) { const e = await r.json(); throw new Error(e.message || 'GitHub PUT failed'); }
+  return r.json();
+}
+
+async function ghDelete(path, message, sha) {
+  const r = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+    method: 'DELETE',
+    headers: { Authorization: 'Bearer ' + S.pat, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, sha })
+  });
+  if (!r.ok) throw new Error('GitHub DELETE failed');
+}
+
+// ── Utils ─────────────────────────────────────────────────────────────
+function slugify(str) {
+  const m = {а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ё:'yo',ж:'zh',з:'z',и:'i',й:'j',к:'k',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'h',ц:'ts',ч:'ch',ш:'sh',щ:'sch',ъ:'',ы:'y',ь:'',э:'e',ю:'yu',я:'ya'};
+  return str.toLowerCase().split('').map(c => m[c] ?? c).join('').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+
+function isoToRu(iso) {
+  if (!iso) return '';
+  const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  const [y,m,d] = iso.split('-');
+  return `${parseInt(d)} ${months[parseInt(m)-1]} ${y}`;
+}
+
+function ruToIso(ru) {
+  const m = {января:'01',февраля:'02',марта:'03',апреля:'04',мая:'05',июня:'06',июля:'07',августа:'08',сентября:'09',октября:'10',ноября:'11',декабря:'12'};
+  const p = ru.trim().split(/\s+/);
+  if (p.length >= 3) return `${p[2]}-${m[p[1]]||'01'}-${p[0].padStart(2,'0')}`;
+  return new Date().toISOString().slice(0,10);
+}
+
+function decodeB64(b64) {
+  return decodeURIComponent(escape(atob(b64.replace(/\n/g,''))));
+}
+
+function toast(msg, type = 'ok') {
+  const el = document.createElement('div');
+  el.className = 'toast toast-' + type;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+function render() {
+  if (!S.loggedIn) { renderLogin(); return; }
+  switch (S.view) {
+    case 'dash':     renderDash(); break;
+    case 'editor':   renderEditor(); break;
+    case 'settings': renderSettings(); break;
+    default:         S.view = 'dash'; renderDash();
+  }
+}
+
+// ── Login ──────────────────────────────────────────────────────────────
+function renderLogin() {
+  document.getElementById('app').innerHTML = `
+    <div class="login-wrap">
+      <div class="login-card">
+        <div class="login-logo"><img src="../uploads/logo-transparent.png" alt="Доверительная Бухгалтерия"></div>
+        <div class="login-sub">Управление статьями сайта</div>
+        <div class="field"><label>Email</label><input id="l-email" type="email" value="admin@buhstart.ru" autocomplete="email"></div>
+        <div class="field"><label>Пароль</label><input id="l-pass" type="password" autocomplete="current-password"></div>
+        <div id="l-err" style="color:#e53e3e;font-size:13px;margin-bottom:12px;display:none"></div>
+        <button class="btn btn-primary" style="width:100%" id="l-btn" onclick="doLogin()">Войти</button>
+      </div>
+    </div>`;
+  document.getElementById('l-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+}
+
+async function doLogin() {
+  const email = document.getElementById('l-email').value.trim();
+  const pass  = document.getElementById('l-pass').value;
+  const btn   = document.getElementById('l-btn');
+  const err   = document.getElementById('l-err');
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span>';
+  err.style.display = 'none';
+  try {
+    const cfg = await fetch('users.json').then(r => r.json());
+    if (email !== cfg.email) throw new Error('Неверный email или пароль');
+    const h = await sha256(cfg.salt + pass);
+    if (h !== cfg.hash) throw new Error('Неверный email или пароль');
+    sessionStorage.setItem('bhs_user', email);
+    S.loggedIn = true;
+    S.view = 'dash';
+    await loadArticles();
+    render();
+  } catch(e) {
+    err.textContent = e.message; err.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Войти';
+  }
+}
+
+// ── Layout shell ───────────────────────────────────────────────────────
+function shell(activeNav, titleHtml, actionsHtml, bodyHtml) {
+  document.getElementById('app').innerHTML = `
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-logo"><img src="../uploads/logo-transparent.png" alt="Доверительная Бухгалтерия"></div>
+        <nav class="sidebar-nav">
+          <button class="nav-item${activeNav==='articles'?' active':''}" onclick="goSection('articles')"><span class="nav-icon">📝</span>Статьи</button>
+          <button class="nav-item${activeNav==='news'?' active':''}" onclick="goSection('news')"><span class="nav-icon">📰</span>Новости</button>
+          <button class="nav-item${activeNav==='cases'?' active':''}" onclick="goCases()"><span class="nav-icon">📌</span>Кейсы</button>
+        </nav>
+        <div class="sidebar-bottom">
+          <button class="nav-item${activeNav==='settings'?' active':''}" onclick="goTo('settings')"><span class="nav-icon">⚙️</span>Настройки</button>
+          <button class="nav-item" onclick="logout()"><span class="nav-icon">🚪</span>Выйти</button>
+        </div>
+      </aside>
+      <div class="main">
+        <div class="topbar">
+          <div class="topbar-title">${titleHtml}</div>
+          <div>${actionsHtml || ''}</div>
+        </div>
+        <div class="content">${bodyHtml}</div>
+      </div>
+    </div>`;
+}
+
+function goTo(view) { S.view = view; render(); }
+function goSection(section) { S.section = section; S.view = 'dash'; render(); }
+function logout() { sessionStorage.removeItem('bhs_user'); S.loggedIn = false; render(); }
+
+
+// ── Кейсы ───────────────────────────────────────────────────────────────
+async function loadCases() {
+  try {
+    const files = await ghGet('_cases').catch(() => []);
+    const items = await Promise.all(
+      (files || []).filter(f => f.name.endsWith('.json'))
+        .map(f => ghGet('_cases/' + f.name).then(r => ({ ...JSON.parse(decodeB64(r.content)), _sha: r.sha, _path: '_cases/' + f.name })))
+    );
+    S.cases = items.sort((a, b) => (b.isoDate || '').localeCompare(a.isoDate || ''));
+  } catch(e) { S.cases = []; toast('Не удалось загрузить кейсы: ' + e.message, 'err'); }
+}
+
+async function goCases() {
+  S.section = 'cases'; S.view = 'cases';
+  if (!S.cases) { await loadCases(); }
+  renderCases();
+}
+
+function renderCases() {
+  const list = S.cases || [];
+  const rows = list.length
+    ? list.map(c => `
+        <div class="article-row">
+          <span class="article-row-tag">${c.tag || '—'}</span>
+          <span class="article-row-title">${c.title || c.slug}</span>
+          <span class="article-row-date">${c.metric || ''}</span>
+          <div class="article-row-actions">
+            <button class="btn btn-ghost btn-sm" onclick="editCase('${c.slug}')">Изменить</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteCase('${c.slug}')">Удалить</button>
+          </div>
+        </div>`).join('')
+    : `<div class="empty-state">Кейсов пока нет. Добавьте первый — он появится на странице «Кейсы».</div>`;
+  shell('cases', 'Кейсы <span class="badge">' + list.length + '</span>',
+    `<button class="btn btn-primary" onclick="newCase()">+ Новый кейс</button>`,
+    `<div class="article-list">${rows}</div>`);
+}
+
+function newCase() {
+  S.currentCase = { slug: '', tag: '', title: '', metric: '', metricNote: '', was: '', did: '', result: '',
+                    isoDate: new Date().toISOString().slice(0, 10) };
+  renderCaseEditor();
+}
+
+function editCase(slug) {
+  S.currentCase = { ...(S.cases || []).find(c => c.slug === slug) };
+  renderCaseEditor();
+}
+
+function renderCaseEditor() {
+  const c = S.currentCase;
+  const isNew = !c._path;
+  shell('cases', isNew ? 'Новый кейс' : 'Кейс: ' + (c.title || c.slug),
+    `<button class="btn btn-ghost" onclick="goCases()">← Назад</button>
+     <button class="btn btn-primary" onclick="saveCase()">Сохранить</button>`,
+    `<div class="editor-form">
+      <div class="field">
+        <label>Заголовок кейса</label>
+        <input id="c-title" class="input" value="${esc(c.title || '')}" placeholder="Например: Прошли выездную проверку после чужих ошибок">
+        <div class="field-hint">Одна фраза по результату, а не «Кейс №3»</div>
+      </div>
+      <div class="field">
+        <label>Метка</label>
+        <input id="c-tag" class="input" value="${esc(c.tag || '')}" placeholder="Проверка ФНС, Маркетплейсы, Восстановление учёта">
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Цифра результата</label>
+          <input id="c-metric" class="input" value="${esc(c.metric || '')}" placeholder="2,4 млн ₽">
+          <div class="field-hint">Можно оставить пустым, тогда крупной цифры не будет</div>
+        </div>
+        <div class="field">
+          <label>Подпись к цифре</label>
+          <input id="c-metricNote" class="input" value="${esc(c.metricNote || '')}" placeholder="доначисление снизили до 180 тыс ₽">
+        </div>
+      </div>
+      <div class="field">
+        <label>Что было</label>
+        <textarea id="c-was" class="input" rows="3" placeholder="Ситуация на входе">${esc(c.was || '')}</textarea>
+      </div>
+      <div class="field">
+        <label>Что сделали</label>
+        <textarea id="c-did" class="input" rows="3" placeholder="Наши действия">${esc(c.did || '')}</textarea>
+      </div>
+      <div class="field">
+        <label>Результат</label>
+        <textarea id="c-result" class="input" rows="3" placeholder="Чем закончилось, желательно с цифрами">${esc(c.result || '')}</textarea>
+      </div>
+      <div class="field">
+        <label>Дата</label>
+        <input id="c-date" class="input" type="date" value="${esc(c.isoDate || '')}">
+        <div class="field-hint">Нужна только для порядка: свежие кейсы показываются первыми</div>
+      </div>
+    </div>`);
+}
+
+async function saveCase() {
+  const c = S.currentCase;
+  const get = id => (document.getElementById(id).value || '').trim();
+  const data = {
+    title: get('c-title'), tag: get('c-tag'),
+    metric: get('c-metric'), metricNote: get('c-metricNote'),
+    was: get('c-was'), did: get('c-did'), result: get('c-result'),
+    isoDate: get('c-date') || new Date().toISOString().slice(0, 10)
+  };
+  if (!data.title) { toast('Нужен заголовок кейса', 'err'); return; }
+  data.slug = c.slug || autoSlug(data.title);
+  const path = c._path || ('_cases/' + data.slug + '.json');
+  try {
+    await ghPut(path, JSON.stringify(data, null, 2), (c._path ? 'Обновить кейс: ' : 'Добавить кейс: ') + data.slug, c._sha);
+    toast('Сохранено. Сайт обновится через минуту.');
+    S.cases = null; await goCases();
+  } catch(e) { toast('Ошибка: ' + e.message, 'err'); }
+}
+
+async function deleteCase(slug) {
+  if (!confirm('Удалить кейс «' + slug + '»?')) return;
+  const c = (S.cases || []).find(x => x.slug === slug);
+  if (!c) return;
+  try {
+    await ghDelete(c._path, 'Удалить кейс ' + slug, c._sha);
+    S.cases = (S.cases || []).filter(x => x.slug !== slug);
+    toast('Кейс удалён. Сайт обновится через минуту.');
+    renderCases();
+  } catch(e) { toast('Ошибка: ' + e.message, 'err'); }
+}
+
+// ── Dashboard ──────────────────────────────────────────────────────────
+async function loadArticles() {
+  try {
+    const files = await ghGet('_articles');
+    const items = await Promise.all(
+      files.filter(f => f.name.endsWith('.json'))
+        .map(f => ghGet('_articles/' + f.name).then(r => ({ ...JSON.parse(decodeB64(r.content)), _sha: r.sha, _path: '_articles/' + f.name })))
+    );
+    S.articles = items.sort((a,b) => (b.isoDate||'').localeCompare(a.isoDate||''));
+  } catch(e) { toast('Ошибка загрузки статей: ' + e.message, 'err'); }
+}
+
+function renderDash() {
+  const isNews = S.section === 'news';
+  const filtered = S.articles.filter(a => isNews ? a.section === 'news' : a.section !== 'news');
+  const sectionTitle = isNews ? 'Новости законодательства' : 'Статьи';
+  const emptyMsg = isNews ? 'Новостей пока нет. Создайте первую!' : 'Статей пока нет. Создайте первую!';
+  const rows = filtered.length
+    ? filtered.map(a => `
+        <div class="article-row">
+          <span class="article-row-tag">${isNews ? (a.range||a.date||'—') : (a.tag||'—')}</span>
+          <span class="article-row-title">${a.title}</span>
+          <span class="article-row-date">${a.date||''}</span>
+          <div class="article-row-actions">
+            <button class="btn btn-ghost btn-sm" onclick="editArticle('${a.slug}')">Изменить</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmDelete('${a.slug}')">Удалить</button>
+          </div>
+        </div>`).join('')
+    : `<div class="empty-state">${emptyMsg}</div>`;
+
+  shell(isNews?'news':'articles', sectionTitle + ' <span class="badge">'+filtered.length+'</span>',
+    `<button class="btn btn-primary" onclick="newArticle()">+ Новая запись</button>`,
+    `<div class="article-list">${rows}</div>`);
+}
+
+async function confirmDelete(slug) {
+  if (!confirm('Удалить статью «' + slug + '»?')) return;
+  const a = S.articles.find(x => x.slug === slug);
+  if (!a) return;
+  try {
+    await ghDelete(a._path, 'del: remove article ' + slug, a._sha);
+    S.articles = S.articles.filter(x => x.slug !== slug);
+    toast('Статья удалена. Сайт обновится через ~1 минуту.');
+    renderDash();
+  } catch(e) { toast('Ошибка: ' + e.message, 'err'); }
+}
+
+// ── Editor ──────────────────────────────────────────────────────────────
+function newArticle() {
+  const isNews = S.section === 'news';
+  S.current = {
+    slug:'', section: isNews ? 'news' : 'articles',
+    tag: isNews ? 'Новости законодательства' : 'Налоги',
+    title:'', date: isoToRu(new Date().toISOString().slice(0,10)),
+    isoDate: new Date().toISOString().slice(0,10),
+    range: '', preview:'', coverImage:'',
+    blocks:[{t:'p',text:''}], _wsHtml:'', _sha: null, _path: null
+  };
+  S.view = 'editor';
+  render();
+}
+
+function editArticle(slug) {
+  S.current = { ...S.articles.find(a => a.slug === slug) };
+  S.view = 'editor';
+  render();
+}
+
+function renderEditor() {
+  const a = S.current;
+  const isNew = !a._sha;
+  const isNews = a.section === 'news';
+  const coverHtml = a.coverImage
+    ? `<img src="/${a.coverImage}" class="img-preview" id="cover-preview"><br><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="clearCover()">Удалить обложку</button>`
+    : `<div class="img-drop" id="cover-drop" onclick="document.getElementById('cover-file').click()" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)">
+        📷 Нажмите или перетащите файл обложки<br><span style="font-size:11px">JPG, PNG, WebP</span>
+       </div>`;
+
+  // parse existing range "13.07 — 19.07.2026" into two ISO dates
+  const rangeParsed = parseRange(a.range || '', a.isoDate || '');
+  const topRowFields = isNews
+    ? `<div class="field" style="grid-column:span 2">
+          <label>Период — выберите начало и конец недели</label>
+          <div style="display:flex;align-items:center;gap:10px">
+            <input id="e-range-from" type="date" value="${rangeParsed.from}" onchange="updateRange()" style="flex:1">
+            <span style="color:#888;font-size:13px;white-space:nowrap">—</span>
+            <input id="e-range-to" type="date" value="${rangeParsed.to}" onchange="updateRange();S.current.isoDate=this.value" style="flex:1">
+          </div>
+          <div id="e-range-preview" style="margin-top:6px;font-size:12px;color:#888">${esc(a.range||'')}</div>
+        </div>
+        <div class="field">
+          <label>URL (slug)</label>
+          <input id="e-slug" type="text" value="${a.slug||''}" placeholder="auto" ${!isNew?'readonly':''}>
+        </div>`
+    : `<div class="field">
+          <label>Тег / Категория</label>
+          <select id="e-tag" onchange="S.current.tag=this.value">${TAGS.map(t=>`<option${a.tag===t?' selected':''}>${t}</option>`).join('')}</select>
+        </div>
+        <div class="field">
+          <label>Дата публикации</label>
+          <input id="e-date" type="date" value="${a.isoDate||new Date().toISOString().slice(0,10)}" onchange="S.current.isoDate=this.value">
+        </div>
+        <div class="field">
+          <label>URL (slug)</label>
+          <input id="e-slug" type="text" value="${a.slug||''}" placeholder="auto" ${!isNew?'readonly':''}>
+        </div>`;
+
+  shell(isNew?'new':(isNews?'news':'articles'), isNew ? (isNews?'Новая новость':'Новая статья') : 'Редактирование',
+    `<div style="display:flex;gap:10px">
+       <button class="btn btn-ghost" onclick="goTo('dash')">← Назад</button>
+       <button class="btn btn-primary" id="save-btn" onclick="saveArticle()">💾 Сохранить</button>
+     </div>`,
+    `<div style="max-width:760px">
+      <div class="row row-3" style="margin-bottom:18px">
+        ${topRowFields}
+      </div>
+
+      <div class="field">
+        <label>Заголовок</label>
+        <input id="e-title" type="text" value="${esc(a.title||'')}" placeholder="Заголовок статьи" style="font-size:18px;font-weight:700" oninput="S.current.title=this.value;autoSlug()">
+      </div>
+
+      <div class="field">
+        <label>Анонс (показывается в карточке на сайте)</label>
+        <textarea id="e-preview" rows="2" placeholder="Краткое описание — 1–2 предложения" oninput="S.current.preview=this.value">${esc(a.preview||'')}</textarea>
+      </div>
+
+      <div class="field">
+        <label>Обложка статьи</label>
+        <div id="cover-area">${coverHtml}</div>
+        <input type="file" id="cover-file" accept="image/*" style="display:none" onchange="handleCoverFile(event)">
+      </div>
+
+      <div class="field">
+        <label>Содержимое статьи</label>
+        <div class="wysiwyg-wrap">
+          <div class="wysiwyg-toolbar" id="wysiwyg-toolbar">
+            <button class="tb-btn" data-cmd="formatBlock" data-val="p" title="Обычный текст" onmousedown="event.preventDefault();wsFmt('formatBlock','<p>')">Текст</button>
+            <button class="tb-btn" data-cmd="formatBlock" data-val="h2" title="Заголовок раздела" onmousedown="event.preventDefault();wsFmt('formatBlock','<h2>')">Заголовок</button>
+            <button class="tb-btn" data-cmd="formatBlock" data-val="h3" title="Подзаголовок" onmousedown="event.preventDefault();wsFmt('formatBlock','<h3>')">Подзаголовок</button>
+            <button class="tb-btn" data-cmd="insertUnorderedList" title="Список" onmousedown="event.preventDefault();wsFmt('insertUnorderedList')">Список</button>
+            <div class="tb-sep"></div>
+            <button class="tb-btn" data-cmd="bold" title="Жирный" onmousedown="event.preventDefault();wsFmt('bold')"><b>Ж</b></button>
+            <button class="tb-btn" data-cmd="italic" title="Курсив" onmousedown="event.preventDefault();wsFmt('italic')"><i>К</i></button>
+          </div>
+          <div class="wysiwyg-body" id="wysiwyg-body" contenteditable="true" onkeyup="wsSync();wsUpdateToolbar()" onmouseup="wsUpdateToolbar()" onpaste="wsPaste(event)">${blocksToHtml(a.blocks||[])}</div>
+        </div>
+      </div>
+    </div>`);
+}
+
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── WYSIWYG helpers ────────────────────────────────────────────────────
+function blocksToHtml(blocks) {
+  let html = '', inList = false;
+  for (const b of blocks) {
+    if (b.t === 'li') {
+      if (!inList) { html += '<ul>'; inList = true; }
+      html += `<li>${b.text||''}</li>`;
+    } else {
+      if (inList) { html += '</ul>'; inList = false; }
+      if (b.t === 'h') html += `<h2>${b.text||''}</h2>`;
+      else html += `<p>${b.text||''}</p>`;
+    }
+  }
+  if (inList) html += '</ul>';
+  return html || '<p></p>';
+}
+
+function htmlToBlocks(html) {
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  const blocks = [];
+  div.childNodes.forEach(node => {
+    if (node.nodeType === 3) {
+      const t = node.textContent.trim();
+      if (t) blocks.push({t:'p', text:t});
+      return;
+    }
+    const tag = (node.tagName||'').toLowerCase();
+    if (tag === 'ul' || tag === 'ol') {
+      node.querySelectorAll('li').forEach(li => {
+        const t = li.textContent.trim();
+        if (t) blocks.push({t:'li', text:t});
+      });
+    } else if (tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'h4') {
+      const t = node.textContent.trim();
+      if (t) blocks.push({t:'h', text:t});
+    } else {
+      const t = node.textContent.trim();
+      if (t) blocks.push({t:'p', text:t});
+    }
+  });
+  return blocks.length ? blocks : [{t:'p', text:''}];
+}
+
+function wsFmt(cmd, val) {
+  document.execCommand(cmd, false, val || null);
+  wsSync();
+  wsUpdateToolbar();
+  document.getElementById('wysiwyg-body').focus();
+}
+
+function wsPaste(e) {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+  document.execCommand('insertText', false, text);
+}
+
+function wsSync() {
+  const body = document.getElementById('wysiwyg-body');
+  if (body) S.current._wsHtml = body.innerHTML;
+}
+
+function wsUpdateToolbar() {
+  const toolbar = document.getElementById('wysiwyg-toolbar');
+  if (!toolbar) return;
+  const tag = (document.queryCommandValue('formatBlock')||'').toLowerCase().replace(/[<>]/g,'');
+  toolbar.querySelectorAll('.tb-btn[data-cmd]').forEach(btn => {
+    const cmd = btn.dataset.cmd;
+    const val = (btn.dataset.val||'').toLowerCase();
+    let active = false;
+    if (cmd === 'formatBlock') active = (tag === val);
+    else try { active = document.queryCommandState(cmd); } catch(_) {}
+    btn.classList.toggle('active', active);
+  });
+}
+
+function parseRange(range, isoDate) {
+  // "13.07 — 19.07.2026" → {from:'2026-07-13', to:'2026-07-19'}
+  const m = range.match(/(\d{2})\.(\d{2})\s*[—–-]\s*(\d{2})\.(\d{2})\.(\d{4})/);
+  if (m) return { from: `${m[5]}-${m[2]}-${m[1]}`, to: `${m[5]}-${m[4]}-${m[3]}` };
+  const fallback = isoDate || new Date().toISOString().slice(0,10);
+  return { from: fallback, to: fallback };
+}
+
+function updateRange() {
+  const fromEl = document.getElementById('e-range-from');
+  const toEl   = document.getElementById('e-range-to');
+  const prev   = document.getElementById('e-range-preview');
+  if (!fromEl || !toEl) return;
+  const from = fromEl.value; // YYYY-MM-DD
+  const to   = toEl.value;
+  if (!from || !to) return;
+  const [fy,fm,fd] = from.split('-');
+  const [ty,tm,td] = to.split('-');
+  const range = `${fd}.${fm} — ${td}.${tm}.${ty}`;
+  S.current.range   = range;
+  S.current.isoDate = to;
+  if (prev) prev.textContent = range;
+}
+
+function autoSlug() {
+  const a = S.current;
+  if (!a._sha) {
+    const title = document.getElementById('e-title').value;
+    const s = slugify(title);
+    document.getElementById('e-slug').value = s;
+    a.slug = s;
+  }
+}
+
+// ── Cover image ─────────────────────────────────────────────────────────
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('cover-drop').classList.remove('over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) uploadCover(file);
+}
+
+function handleCoverFile(e) {
+  const file = e.target.files[0];
+  if (file) uploadCover(file);
+}
+
+async function uploadCover(file) {
+  if (!S.pat) { toast('Сначала введите GitHub PAT в настройках', 'err'); return; }
+  const ext = file.name.split('.').pop().toLowerCase();
+  const slug = document.getElementById('e-slug').value || slugify(document.getElementById('e-title').value) || 'article';
+  const path = `uploads/articles/${slug}-cover.${ext}`;
+  toast('Загрузка обложки…');
+  try {
+    const b64 = await fileToBase64(file);
+    let sha = null;
+    try { const ex = await ghGet(path); sha = ex.sha; } catch(_) {}
+    await ghPutBinary(path, b64, 'upload: article cover ' + slug, sha);
+    S.current.coverImage = path;
+    toast('Обложка загружена ✓');
+    updateCoverArea();
+  } catch(e) { toast('Ошибка загрузки: ' + e.message, 'err'); }
+}
+
+function updateCoverArea() {
+  const area = document.getElementById('cover-area');
+  if (!area) return;
+  if (S.current.coverImage) {
+    area.innerHTML = `<img src="/${S.current.coverImage}" class="img-preview"><br><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="clearCover()">Удалить обложку</button>`;
+  } else {
+    area.innerHTML = `<div class="img-drop" id="cover-drop" onclick="document.getElementById('cover-file').click()" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)">📷 Нажмите или перетащите файл обложки<br><span style="font-size:11px">JPG, PNG, WebP</span></div>`;
+  }
+}
+
+function clearCover() { S.current.coverImage = ''; updateCoverArea(); }
+
+function fileToBase64(file) {
+  return new Promise((res,rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+// ── Save article ────────────────────────────────────────────────────────
+async function saveArticle() {
+  if (!S.pat) { toast('Сначала введите GitHub PAT в настройках', 'err'); return; }
+
+  // collect values
+  const isNews  = S.current.section === 'news';
+  const title   = document.getElementById('e-title').value.trim();
+  const tag     = isNews ? 'Новости законодательства' : document.getElementById('e-tag').value;
+  const isoDate = isNews
+    ? (document.getElementById('e-range-to')?.value || S.current.isoDate || new Date().toISOString().slice(0,10))
+    : document.getElementById('e-date').value;
+  const slug    = document.getElementById('e-slug').value.trim() || slugify(title);
+  const preview = document.getElementById('e-preview').value.trim();
+  const range   = isNews ? (S.current.range || '') : '';
+
+  if (!title)   { toast('Введите заголовок', 'err'); return; }
+  if (!slug)    { toast('Не удалось сформировать URL', 'err'); return; }
+  if (!isoDate) { toast('Введите дату', 'err'); return; }
+
+  const wsBody = document.getElementById('wysiwyg-body');
+  if (wsBody) S.current._wsHtml = wsBody.innerHTML;
+  const blocks = htmlToBlocks(S.current._wsHtml || blocksToHtml(S.current.blocks)).filter(b => (b.text||'').trim());
+
+  const article = {
+    slug, section: S.current.section || 'articles', tag, title,
+    date: isoToRu(isoDate),
+    isoDate,
+    ...(isNews && range ? { range } : {}),
+    preview,
+    coverImage: S.current.coverImage || '',
+    blocks
+  };
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Сохранение…';
+
+  try {
+    const path = `_articles/${slug}.json`;
+    // if slug changed on edit, delete old file first
+    if (S.current._path && S.current._path !== path) {
+      const oldSha = await ghGet(S.current._path).then(r => r.sha).catch(() => null);
+      if (oldSha) await ghDelete(S.current._path, 'del: rename ' + S.current.slug, oldSha);
+    }
+    // get sha: use cached first, refresh if not available
+    let sha = S.current._sha || null;
+    if (!sha) {
+      try {
+        const existing = await ghGet(path);
+        sha = existing.sha || null;
+      } catch(fetchErr) {
+        sha = null; // file doesn't exist yet — will create
+      }
+    }
+    let putResult;
+    try {
+      putResult = await ghPut(path, JSON.stringify(article, null, 2), (sha ? 'edit: ' : 'add: ') + title, sha);
+    } catch(putErr) {
+      // if sha was wrong/missing, fetch fresh and retry once
+      if (putErr.message && putErr.message.includes('sha')) {
+        const retry = await ghGet(path).catch(() => null);
+        const retrySha = retry ? retry.sha : null;
+        putResult = await ghPut(path, JSON.stringify(article, null, 2), (retrySha ? 'edit: ' : 'add: ') + title, retrySha);
+      } else {
+        throw putErr;
+      }
+    }
+    toast('Сохранено! Сайт обновится через ~1 минуту ✓');
+    S.view = 'dash';
+    render();
+    loadArticles().catch(() => {}); // refresh list in background, don't block navigation
+  } catch(e) {
+    toast('Ошибка: ' + e.message, 'err');
+    btn.disabled = false; btn.innerHTML = '💾 Сохранить';
+  }
+}
+
+// ── Settings ────────────────────────────────────────────────────────────
+function renderSettings() {
+  shell('settings','Настройки','',`
+    <div style="max-width:480px">
+      <div class="field">
+        <label>GitHub Personal Access Token</label>
+        <input id="s-pat" type="password" value="${S.pat}" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+        <div class="text-muted" style="margin-top:6px">
+          Нужен для публикации статей. Создайте на
+          <a href="https://github.com/settings/tokens/new?scopes=repo&description=BuhstartCMS" target="_blank">github.com/settings/tokens</a>
+          с правом <strong>Contents: Read and Write</strong>.
+        </div>
+      </div>
+      <div class="field" style="display:flex;align-items:center;gap:10px">
+        <input type="checkbox" id="s-remember" style="width:auto" ${localStorage.getItem('bhs_pat')?'checked':''}>
+        <label style="margin:0;text-transform:none;font-size:13px;font-weight:400">Запомнить на этом устройстве</label>
+      </div>
+      <div class="sep"></div>
+      <button class="btn btn-primary" onclick="saveSettings()">Сохранить настройки</button>
+      <div class="sep"></div>
+      <div style="background:#FFF8F0;border:1.5px solid #FFD9B8;border-radius:10px;padding:16px;font-size:13px;color:#7A4000;line-height:1.6">
+        <strong>Смена пароля</strong><br>
+        Текущий пароль: <code>Buhstart2026!</code><br>
+        Чтобы сменить — обратитесь к разработчику (нужно обновить <code>admin/users.json</code>).
+      </div>
+    </div>`);
+}
+
+function saveSettings() {
+  const pat = document.getElementById('s-pat').value.trim();
+  const remember = document.getElementById('s-remember').checked;
+  S.pat = pat;
+  if (remember) { localStorage.setItem('bhs_pat', pat); sessionStorage.removeItem('bhs_pat'); }
+  else          { sessionStorage.setItem('bhs_pat', pat); localStorage.removeItem('bhs_pat'); }
+  toast('Настройки сохранены ✓');
+}
+
+// ── Init ────────────────────────────────────────────────────────────────
+(async function init() {
+  if (S.loggedIn) {
+    S.view = 'dash';
+    await loadArticles();
+  }
+  render();
+})();
+</script>
+</body>
+</html>

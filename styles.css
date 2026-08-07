@@ -403,6 +403,51 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
   .risk-verdict{font-size:26px}
 }
 
+
+.hnote-box{margin-top:26px;padding:20px 24px;background:var(--bg);border-left:3px solid var(--orange);border-radius:0 var(--r-card) var(--r-card) 0;font-size:15px;line-height:1.6;color:var(--ink2)}
+.hnote-box b{color:var(--ink)}
+/* ---------- шаги «как это работает» ---------- */
+.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:22px 34px;margin-top:26px}
+.step{display:grid;grid-template-columns:66px 1fr;gap:18px;align-items:start;padding-top:20px;border-top:1px solid var(--line)}
+.step-n{font:800 34px/1 Onest,sans-serif;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.5px var(--orange)}
+.step h3{font-size:18px;font-weight:700;letter-spacing:-.01em}
+@media(max-width:767px){
+  .steps{grid-template-columns:1fr;gap:16px}
+  .step{grid-template-columns:52px 1fr;gap:14px}
+  .step-n{font-size:28px}
+}
+
+
+/* ---------- подсказка «что выбрать, если…» ---------- */
+.picks{margin-top:24px;display:flex;flex-direction:column;gap:10px}
+.pick{display:grid;grid-template-columns:1.1fr 1.2fr auto;gap:24px;align-items:center;padding:20px 24px;background:var(--bg);border-radius:var(--r-card);color:var(--ink);transition:background .18s,color .18s}
+.pick:hover{background:var(--dark);color:#fff}
+.pick-if{font:600 16px/1.4 Onest,sans-serif}
+.pick-do{font-size:14px;line-height:1.5;color:var(--ink2)}
+.pick:hover .pick-do{color:rgba(255,255,255,.7)}
+.pick-svc{font:600 14px/1.3 Onest,sans-serif;color:var(--orange);white-space:nowrap}
+.pick-svc span{margin-left:6px}
+@media(max-width:900px){
+  .pick{grid-template-columns:1fr;gap:8px;padding:18px 20px}
+  .pick-svc{white-space:normal}
+}
+
+
+/* ---------- конец статьи: что делать и смежные материалы ---------- */
+.next-steps{margin-top:34px;padding:28px 30px;background:var(--dark);border-radius:var(--r-card);color:#fff;
+  background-image:radial-gradient(420px circle at 100% 0%,rgba(240,120,40,.16),transparent 60%),radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:auto,20px 20px}
+.ns-title{font:800 24px/1.15 Onest,sans-serif;letter-spacing:-.02em}
+.ns-text{font-size:15px;line-height:1.6;color:rgba(255,255,255,.7);margin-top:10px;max-width:520px}
+.rels{margin-top:30px;padding-top:24px;border-top:1px solid var(--line)}
+.rels-title{font:600 13px/1 Onest,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--orange);margin-bottom:16px}
+.rels-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.rel{display:block;padding:18px 20px;background:var(--bg);border-radius:var(--r-card);color:var(--ink);transition:background .18s,color .18s}
+.rel:hover{background:var(--dark);color:#fff}
+.rel-tag{display:block;font:600 12px/1 Onest,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--orange);margin-bottom:8px}
+.rel-t{font:600 16px/1.35 Onest,sans-serif}
+@media(max-width:767px){.rels-grid{grid-template-columns:1fr}.ns-title{font-size:20px}.next-steps{padding:22px 20px}}
+
 @media(max-width:1023px){
   nav.main{display:none}
   .burger{display:flex}

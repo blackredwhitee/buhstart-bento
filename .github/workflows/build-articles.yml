@@ -1,12 +1,19 @@
-name: Build articles
+name: Собрать сайт из данных
 
 on:
   push:
     paths:
       - '_articles/**'
+      - '_cases/**'
+      - '.github/scripts/build-site.js'
+  workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: build-site
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -14,13 +21,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Rebuild articles.js
-        run: node .github/scripts/build-articles.js
+      - name: Собрать страницы, списки, тизеры и карту сайта
+        run: node .github/scripts/build-site.js
 
-      - name: Commit
+      - name: Закоммитить результат
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add articles.js
-          git diff --staged --quiet || git commit -m "chore: rebuild articles.js [skip ci]"
+          git add article-*.html blog.html novosti.html keysy.html articles.js sitemap.xml
+          git diff --staged --quiet || git commit -m "Пересобрать сайт из данных"
           git push

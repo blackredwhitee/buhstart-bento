@@ -586,3 +586,6 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 .why .r:nth-child(even) .n{-webkit-text-stroke-color:var(--green-light)}
 .faq .item.open .q{color:var(--green-ink)}
 .p-certs li::before{background:var(--green)}
+.post .small{color:var(--green-ink)}          /* дата статьи — спокойный акцент */
+.tile-green .lead{color:var(--ink2)}
+.tile-green .card{background:#fff}

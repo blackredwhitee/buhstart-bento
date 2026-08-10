@@ -21,7 +21,7 @@ var BRAND = {
   lightOrange:'#FEF0E6', border:'#E8E4DF', white:'#FFFFFF'
 };
 
-var STATUSES = ['Новая', 'Интересно, ждёт звонка', 'В работе', 'Ждём ответ клиента', 'Договор', 'Не подошло', 'Отказ', 'Спам'];
+var STATUSES = ['Новая', 'Интересно, ждёт звонка', 'Дорого, готов обсуждать', 'В работе', 'Ждём ответ клиента', 'Договор', 'Не подошло', 'Отказ', 'Спам'];
 
 var SHEETS_CONFIG = {
   'Заявки': {
@@ -178,8 +178,10 @@ function addCalcFeedback(data) {
 
   var cfg = SHEETS_CONFIG['Калькулятор'];
   var text = data.message || '';
-  var interested = /^интересно/i.test(text);
-  sheet.getRange(target, cfg.statusCol).setValue(interested ? 'Интересно, ждёт звонка' : 'Не подошло');
+  var status = /^интересно/i.test(text) ? 'Интересно, ждёт звонка' : 'Не подошло';
+  // цена не устроила, но человек согласился на разговор — самый тёплый повод перезвонить
+  if (/просит консультацию/i.test(text) && /Стоимость выше/i.test(text)) status = 'Дорого, готов обсуждать';
+  sheet.getRange(target, cfg.statusCol).setValue(status);
 
   // заметку перезаписываем, а не копим строками: две записи об одном человеке путают
   var noteCol = cfg.headers.length;                             // «Заметки» — последний столбец

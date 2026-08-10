@@ -13,7 +13,7 @@
 <link rel="icon" href="uploads/favicon-32.png?v=4" sizes="32x32" type="image/png">
 <link rel="icon" href="uploads/favicon.png?v=4" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="uploads/favicon-180.png?v=4">
-<link rel="stylesheet" href="styles.css?v=67">
+<link rel="stylesheet" href="styles.css?v=69">
 
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Главная", "item": "https://buhstart.ru/index.html"}, {"@type": "ListItem", "position": 2, "name": "Калькулятор", "item": "https://buhstart.ru/calculator.html"}]}</script>
 <meta property="og:image" content="https://buhstart.ru/uploads/og-calc.png">
@@ -222,6 +222,13 @@ a{color:#F07828}
 .fb-save.wait{display:block;color:var(--g400)}
 .fb-save.ok{display:block;color:#2D7A4F}
 .fb-save.bad{display:block;color:#B3261E;font-weight:500}
+/* после ответа блок сворачивается: остаётся одна фраза, страница не засоряется */
+.fb-final{display:none;font-size:15.5px;line-height:1.55;color:#18181B}
+.fb-final.show{display:block}
+.fb-final b{display:block;font-size:17px;margin-bottom:4px}
+.fb-no{border:0;background:none;padding:0;font:inherit;font-size:12px;color:var(--g400);
+  text-decoration:underline;cursor:pointer}
+.fb-no:hover{color:var(--or)}
 /* два варианта — равнозначные карточки с пояснением, а не кнопка и текст рядом */
 .fb-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
 .fb-opt{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;
@@ -521,6 +528,8 @@ a{color:#F07828}
         </div>
 
         <div class="fb-block" id="fb-block">
+          <div class="fb-final" id="fb-final"></div>
+          <div id="fb-live">
           <div class="fb-title">Что дальше?</div>
           <div class="fb-row" id="fb-row">
             <button class="fb-opt fb-opt--main" type="button" onclick="fbPick('yes')">
@@ -545,11 +554,12 @@ a{color:#F07828}
             <div class="fb-gift" id="fb-gift">
               <div class="fb-gift-title" id="fb-gift-text"><b>Давайте попробуем подобрать другой вариант</b><br>Мы можем пересмотреть состав услуг и обсудить индивидуальные условия с учётом вашей ситуации.</div>
               <button class="btn btn-primary" type="button" onclick="askConsult()">Подобрать другой вариант →</button>
-              <p class="fb-gift-note">Телефон у нас уже есть — вводить заново не нужно.</p>
+              <p class="fb-gift-note">Телефон у нас уже есть — вводить заново не нужно. <button type="button" class="fb-no" onclick="fbDecline()">Спасибо, не нужно</button></p>
             </div>
           </div>
 
-          <div class="fb-done" id="fb-done">Спасибо! Передали ваш расчёт менеджеру — он свяжется с вами и уточнит детали.</div>
+          </div>
+          <div class="fb-done" id="fb-done"></div>
           <div class="fb-save" id="fb-save"></div>
         </div>
         <span class="q-err" id="err-final" style="text-align:center;display:block;margin-top:8px"></span>
@@ -607,7 +617,7 @@ a{color:#F07828}
 <div class="fab"><button class="top" aria-label="Наверх"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button><button class="ask" data-ask><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5Z"/></svg>Задать вопрос</button></div><div class="mobile-bar"><button class="btn btn-p" data-lead>Записаться</button><a class="call" href="tel:+74957788168" aria-label="Позвонить"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L15 12l5 2v3a2 2 0 0 1-2.2 2A16 16 0 0 1 4 5.2 2 2 0 0 1 6 3Z"/></svg></a></div>
 <div class="modal"><div class="box"><form data-form="lead" style="display:flex;flex-direction:column;gap:12px"><div class="kicker m-kicker">Вопрос бухгалтеру</div><h3 class="m-title" style="font-size:24px;font-weight:700;letter-spacing:-0.02em">Спросите — ответим</h3><p class="cardtext m-sub"></p><textarea class="field m-question" name="comment" placeholder="Ваш вопрос"></textarea><input class="field" name="name" placeholder="Имя" required><input class="field" name="phone" placeholder="Телефон или Telegram" required><label class="agree"><input type="checkbox" name="agree"> Я даю <a href="soglasie.html" target="_blank">согласие на обработку персональных данных</a> и принимаю <a href="privacy.html" target="_blank">политику конфиденциальности</a></label><div class="formerr">Без согласия на обработку данных отправить нельзя</div><button class="btn btn-p btn-block" type="submit">Отправить</button></form><div class="done"><div class="ok">✓</div><div style="font-size:17px;font-weight:600;margin-top:16px">Отправлено</div><p class="cardtext" style="margin-top:8px">Ответим в течение 15 минут в рабочее время.</p><button class="btn btn-s" style="margin-top:20px" data-close>Закрыть</button></div></div></div>
 <script src="vendor-jszip.min.js"></script>
-<script src="site.js?v=67"></script>
+<script src="site.js?v=69"></script>
 <script>
 const BITRIX_WEBHOOK = '';
 const SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzTep7vEAUp2TdSNvvbpWTDGcAyswlh9GUszIcMUTs0naEwNfH-724KCPBC6lLCcp0ziw/exec';
@@ -744,7 +754,11 @@ function backToQuiz(){G('kp-sec').style.display='none';G('quiz-wrap').style.disp
 function restartQuiz(){Object.assign(A,{entity:'',isNull:false,tax:'',niches:[],addPatent:false,mp:[],mpInventory:false,vats:[],staffRf:'none',rfCount:4,staffForeign:'none',foreignCount:1,cashKassa:false,cashAvans:false,ved:false,reconcile:false,military:false,militaryCount:1,licenses:false,licenseCount:1,spot:false,spotCount:1,whInventory:false,rtInventory:false,priorityManager:'day',taxMgmt:false,officeBuhPresence:true,officeBuhVisits:4,mgmtAcc:false,name:'',phone:'',director:''});lastKP=null;resultReady=false;lastDocx=null;fbReasons=[];
   G('fb-row').style.display='';
   document.querySelectorAll('.fb-opt').forEach(function(o){o.classList.remove('chosen','faded')});
-  fbState={decision:'',reason:'',offer:false}; var sv=G('fb-save'); if(sv){sv.className='fb-save';sv.textContent=''}
+  fbState={decision:'',reason:'',offer:false};
+  var sv=G('fb-save'); if(sv){sv.className='fb-save';sv.textContent=''}
+  var lv=G('fb-live'); if(lv) lv.style.display='';
+  var ft=document.querySelector('.fb-title'); if(ft) ft.style.display='';
+  var fn=G('fb-final'); if(fn){ fn.classList.remove('show'); fn.innerHTML='' }
   G('fb-why').classList.remove('show');G('fb-gift').classList.remove('show');G('fb-done').classList.remove('show');
   document.querySelectorAll('input[name=fb-reason]').forEach(function(r){r.checked=false});
   G('success-sec').style.display='none';G('kp-sec').style.display='none';G('calc-hero').style.display='block';window.scrollTo({top:0,behavior:'smooth'})}
@@ -772,9 +786,8 @@ function fbPick(v){
     G('fb-gift').classList.remove('show');
     document.querySelectorAll('input[name=fb-reason]').forEach(function(r){r.checked=false});
     fbState={decision:'discuss', reason:'', offer:false};
-    done.textContent='Спасибо! Передали ваш расчёт менеджеру — он свяжется с вами и уточнит детали.';
-    done.classList.add('show');
     fbSave();
+    fbClose('Спасибо!', 'Передали ваш расчёт менеджеру — он свяжется с вами и уточнит детали.');
   } else {
     why.classList.add('show');
     G('fb-gift').classList.remove('show');
@@ -792,22 +805,37 @@ function fbReason(el){
   if(/^Стоимость выше/.test(el.value)){
     el.closest('.chk-label').insertAdjacentElement('afterend', gift);
     gift.classList.add('show');
-  } else {
-    gift.classList.remove('show');
+    fbSave();
+    return;                                  // ждём: согласится на другие условия или нет
   }
-  done.textContent='Спасибо за ответ — записали. Звонить не будем, если понадобимся — мы на связи.';
-  done.classList.add('show');
+  gift.classList.remove('show');
   fbSave();
+  fbClose('Поняли, спасибо за ответ.', 'Звонить не будем. Если понадобимся — мы на связи.');
+}
+
+/* Отказался и от пересмотра условий — тоже понятный конец. */
+function fbDecline(){
+  fbState.offer=false;
+  fbSave();
+  fbClose('Поняли, спасибо за ответ.', 'Звонить не будем. Если понадобимся — мы на связи.');
 }
 
 function askConsult(){
   fbState.offer=true;
-  G('fb-gift').classList.remove('show');
-  var done=G('fb-done');
-  done.textContent='Готово. Специалист свяжется с вами в рабочее время и разберёт вашу ситуацию.';
-  done.classList.add('show');
   fbSave();
+  fbClose('Спасибо!', 'Свяжемся с вами и обсудим другие условия с учётом вашей ситуации.');
   track('calc_consult');
+}
+
+/* Сворачиваем блок: убираем варианты, вопрос и плашку, оставляем одну фразу. */
+function fbClose(title, text){
+  var live=G('fb-live'), fin=G('fb-final');
+  G('fb-gift').classList.remove('show');
+  fbGiftHome();
+  if(live) live.style.display='none';
+  var t=document.querySelector('.fb-title'); if(t) t.style.display='none';
+  G('fb-done').classList.remove('show');
+  if(fin){ fin.innerHTML='<b>'+title+'</b>'+text; fin.classList.add('show') }
 }
 
 /* Текст для таблицы: по нему скрипт таблицы ставит статус и цвет строки. */

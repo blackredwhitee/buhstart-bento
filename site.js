@@ -340,6 +340,27 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 
+/* ---------- карточки команды: размываем край только там, где текст не влез ---------- */
+document.addEventListener('DOMContentLoaded', function(){
+  var boxes = document.querySelectorAll('.p-scroll');
+  if(!boxes.length) return;
+  function mark(){
+    boxes.forEach(function(b){
+      b.classList.toggle('is-more', b.scrollHeight - b.clientHeight > 4);
+    });
+  }
+  mark();
+  window.addEventListener('resize', mark);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(mark);
+  // край не размываем, когда прокрутили до конца
+  boxes.forEach(function(b){
+    b.addEventListener('scroll', function(){
+      var atEnd = b.scrollTop + b.clientHeight >= b.scrollHeight - 4;
+      b.classList.toggle('is-more', !atEnd && b.scrollHeight - b.clientHeight > 4);
+    });
+  });
+});
+
 /* ---------- календарь отчётности: ближайшие сроки ----------
    Правила лежат в content/calendar.json, чтобы их можно было менять из редактора
    без правки кода. Если файл не открылся, работает встроенный набор — календарь

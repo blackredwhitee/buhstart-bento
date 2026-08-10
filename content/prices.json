@@ -1,0 +1,60 @@
+{
+  "null_ip": 2000,
+  "null_ooo": 3000,
+  "entity_ooo": 10000,
+  "tax": {
+    "patent": 1000,
+    "ausn_d": 5000,
+    "ausn_dr": 20000,
+    "usn6": 5000,
+    "usn15": 20000,
+    "osno": 30000
+  },
+  "vat": {
+    "не_облагается": 0,
+    "освобождение": 5000,
+    "nds0": 0,
+    "nds5": 5000,
+    "nds7": 5000,
+    "nds10": 5000,
+    "nds22": 10000
+  },
+  "niche": {
+    "marketplace": 20000,
+    "wb": 0,
+    "ozon": 5000,
+    "ya": 10000,
+    "mp_inventory": 15000,
+    "wholesale": 20000,
+    "wh_inventory": 10000,
+    "retail": 20000,
+    "rt_inventory": 15000,
+    "production": 60000,
+    "construction": 40000,
+    "catering": 30000,
+    "medicine": 50000,
+    "services": 20000
+  },
+  "staff": {
+    "rf_1_3": 5000,
+    "rf_per": 1500,
+    "foreign": 20000
+  },
+  "cash": {
+    "kassa": 15000,
+    "avans": 10000
+  },
+  "ved": 8000,
+  "reconcile": 15000,
+  "tax_mgmt": 20000,
+  "military_per": 2000,
+  "licenses": 10000,
+  "spot": 1000,
+  "invoice": {
+    "base": 10000,
+    "std": 12500,
+    "opt": 18000
+  },
+  "optima_base": 60000,
+  "visit_price": 7500
+}

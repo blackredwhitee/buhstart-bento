@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 require __DIR__ . '/lib.php';
+require __DIR__ . '/text.php';
+require __DIR__ . '/images.php';
 require_login();
 
 $page = $_GET['p'] ?? 'home';
@@ -32,6 +34,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $msg = 'Пароль изменён.';
                     $page = 'home';
                 }
+                break;
+
+            case 'texts':
+                $file = (string)($_POST['file'] ?? '');
+                $path = page_path($file);
+                if (!$path) {
+                    $err = 'Такой страницы нет.';
+                    break;
+                }
+                [$ok, $note] = apply_blocks($path, (array)($_POST['b'] ?? []), (string)($_POST['hash'] ?? ''));
+                if ($ok) {
+                    $msg = $note;
+                    log_action('тексты: ' . $file . ' — ' . $note);
+                } else {
+                    $err = $note;
+                }
+                $page = 'texts';
+                $_GET['f'] = $file;
+                break;
+
+            case 'image-replace':
+                [$ok, $note] = image_replace((string)($_POST['name'] ?? ''), (array)($_FILES['file'] ?? []));
+                $ok ? ($msg = $note) : ($err = $note);
+                if ($ok) { log_action('картинка заменена: ' . (string)($_POST['name'] ?? '')); }
+                $page = 'images';
+                break;
+
+            case 'image-add':
+                [$ok, $note] = image_add((string)($_POST['newname'] ?? ''), (array)($_FILES['file'] ?? []));
+                $ok ? ($msg = $note) : ($err = $note);
+                if ($ok) { log_action('картинка добавлена: ' . $note); }
+                $page = 'images';
+                break;
+
+            case 'prices':
+                $file = SITE_DIR . '/content/prices.json';
+                $cur = is_file($file) ? (json_decode((string)file_get_contents($file), true) ?: []) : [];
+                $in = (array)($_POST['p'] ?? []);
+                $set = function (array &$node, array $in) use (&$set) {
+                    foreach ($node as $k => $v) {
+                        if (is_array($v) && isset($in[$k]) && is_array($in[$k])) {
+                            $set($node[$k], $in[$k]);
+                        } elseif (isset($in[$k]) && $in[$k] !== '') {
+                            $node[$k] = max(0, (int)preg_replace('~\D~', '', (string)$in[$k]));
+                        }
+                    }
+                };
+                $set($cur, $in);
+                backup_file($file);
+                if (write_atomic($file, json_encode($cur, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n")) {
+                    log_action('цены калькулятора сохранены');
+                    $msg = 'Цены сохранены. В калькуляторе применятся сразу.';
+                } else {
+                    $err = 'Не удалось записать файл цен.';
+                }
+                $page = 'prices';
                 break;
 
             case 'calendar':
@@ -90,6 +148,7 @@ $SECTIONS = [
     'texts'    => ['Тексты страниц', 'Заголовки и абзацы на страницах сайта'],
     'articles' => ['Статьи и новости', 'Добавить, изменить, снять с публикации'],
     'cases'    => ['Кейсы', 'Истории клиентов с цифрами'],
+    'images'   => ['Фотографии и картинки', 'Заменить фото сотрудника, логотип, обложку'],
     'prices'   => ['Цены калькулятора', 'Стоимость услуг в расчёте'],
 ];
 
@@ -143,6 +202,26 @@ input:focus{outline:2px solid var(--orange);outline-offset:-1px}
 .ok{background:#E7F6EC;color:#1E6B3A}
 .bad{background:#FEE;color:#B3261E}
 .hint{color:var(--g500);font-size:13px;margin-top:6px}
+.blk{padding:12px 0;border-bottom:1px solid var(--g200)}
+.blk:last-of-type{border-bottom:0}
+.blk-tag{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);margin-bottom:5px}
+textarea{width:100%;padding:10px 12px;border:1px solid var(--g200);border-radius:11px;font:inherit;
+  background:#fff;resize:vertical;line-height:1.5}
+textarea:focus{outline:2px solid var(--orange);outline-offset:-1px}
+.imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+.img{background:#fff;border:1px solid var(--g200);border-radius:16px;padding:12px}
+.img-prev{height:110px;display:grid;place-items:center;background:var(--bg);border-radius:11px;overflow:hidden;margin-bottom:9px}
+.img-prev img{max-width:100%;max-height:110px;display:block}
+.img-name{font-size:12.5px;font-weight:600;word-break:break-all}
+.img-meta{font-size:11.5px;color:var(--g400);margin:2px 0 9px}
+.img-btn{display:block;text-align:center;font-size:13px;font-weight:600;color:var(--orange);cursor:pointer;
+  border:1px dashed var(--g200);border-radius:10px;padding:7px}
+.img-btn:hover{background:#FFF3EE;border-color:var(--orange)}
+.img-btn input{display:none}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:10px}
+.pitem{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.pitem span{font-size:13.5px;color:var(--g500)}
+.pitem input{width:104px;text-align:right}
 .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:20px}
 .small{width:90px}
 @media(max-width:700px){
@@ -229,6 +308,129 @@ input:focus{outline:2px solid var(--orange);outline-offset:-1px}
     tr.querySelector('input[name^=what]').focus();
   }
   </script>
+
+<?php elseif ($page === 'texts'):
+  $file = (string)($_GET['f'] ?? '');
+  $path = page_path($file);
+  if (!$path): ?>
+    <h1>Тексты страниц</h1>
+    <p class="lead">Выберите страницу. Правится только текст — вёрстку и оформление изменить нельзя.</p>
+    <div class="cards">
+      <?php foreach (editable_pages() as $f => $name): ?>
+        <a class="card" href="app.php?p=texts&amp;f=<?= h($f) ?>"><b><?= h($name) ?></b><span><?= h($f) ?></span></a>
+      <?php endforeach; ?>
+    </div>
+    <p class="hint" style="margin-top:20px">Статьи, новости и кейсы правятся в своих разделах — они собираются из данных,
+       и правка прямо в странице потерялась бы при следующей сборке.</p>
+  <?php else:
+    $html = (string)file_get_contents($path);
+    $blocks = find_blocks($html);
+    $names = editable_pages(); ?>
+    <h1><?= h($names[$file]) ?></h1>
+    <p class="lead">Найдено фрагментов: <?= count($blocks) ?>.
+       Пустое поле не сохраняется — так текст нельзя потерять случайно.
+       <a href="../<?= h($file) ?>" target="_blank">Посмотреть страницу ↗</a></p>
+    <form class="panel" method="post">
+      <input type="hidden" name="form" value="texts">
+      <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+      <input type="hidden" name="file" value="<?= h($file) ?>">
+      <input type="hidden" name="hash" value="<?= h(md5($html)) ?>">
+      <?php foreach ($blocks as $i => $b):
+        $isHead = in_array($b['tag'], ['h1','h2','h3','h4'], true);
+        $long = mb_strlen($b['text']) > 90; ?>
+        <div class="blk">
+          <div class="blk-tag"><?= h($b['tag'] === 'li' ? 'пункт списка' : ($isHead ? 'заголовок' : ($b['tag'] === 'blockquote' ? 'цитата' : ($b['tag'] === 'summary' ? 'подпись' : 'текст')))) ?></div>
+          <?php if ($isHead && !$long): ?>
+            <input type="text" name="b[<?= $i ?>]" value="<?= h($b['html']) ?>">
+          <?php else: ?>
+            <textarea name="b[<?= $i ?>]" rows="<?= $long ? 3 : 2 ?>"><?= h($b['html']) ?></textarea>
+          <?php endif; ?>
+        </div>
+      <?php endforeach; ?>
+      <div class="row"><button class="btn" type="submit">Сохранить страницу</button>
+        <a class="btn btn-g" href="app.php?p=texts" style="display:inline-flex;align-items:center;text-decoration:none">К списку страниц</a></div>
+    </form>
+  <?php endif; ?>
+
+<?php elseif ($page === 'images'): ?>
+  <h1>Фотографии и картинки</h1>
+  <p class="lead">Замена идёт под тем же именем файла — страницы менять не нужно, новое фото встанет на место старого.
+     Старое сохраняется в архиве.</p>
+
+  <form class="panel" method="post" enctype="multipart/form-data" style="margin-bottom:18px">
+    <input type="hidden" name="form" value="image-add">
+    <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+    <b>Загрузить новую картинку</b>
+    <div class="row">
+      <input type="file" name="file" accept=".jpg,.jpeg,.png,.svg,.webp" required style="flex:1;min-width:220px">
+      <input type="text" name="newname" placeholder="имя файла, необязательно" style="flex:1;min-width:180px">
+      <button class="btn" type="submit">Загрузить</button>
+    </div>
+  </form>
+
+  <div class="imgs">
+    <?php foreach (images_list() as $im): ?>
+      <form class="img" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="form" value="image-replace">
+        <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+        <input type="hidden" name="name" value="<?= h($im['name']) ?>">
+        <div class="img-prev"><img src="../uploads/<?= h(rawurlencode($im['name'])) ?>?t=<?= (int)$im['time'] ?>" alt="" loading="lazy"></div>
+        <div class="img-name"><?= h($im['name']) ?></div>
+        <div class="img-meta"><?= h(human_size((int)$im['size'])) ?><?= $im['dim'] ? ' · ' . h($im['dim']) : '' ?></div>
+        <label class="img-btn">Заменить<input type="file" name="file" accept=".jpg,.jpeg,.png,.svg,.webp" onchange="this.form.submit()"></label>
+      </form>
+    <?php endforeach; ?>
+  </div>
+
+<?php elseif ($page === 'prices'):
+  $pf = SITE_DIR . '/content/prices.json';
+  $pr = is_file($pf) ? (json_decode((string)file_get_contents($pf), true) ?: []) : [];
+  $LABEL = [
+    'null_ip' => 'Нулевая отчётность, ИП', 'null_ooo' => 'Нулевая отчётность, ООО',
+    'entity_ooo' => 'Надбавка за ООО', 'optima_base' => 'Тариф «Оптима», базовая часть',
+    'visit_price' => 'Один выезд бухгалтера в офис', 'ved' => 'ВЭД и валютные расчёты',
+    'reconcile' => 'Сверка с налоговой', 'tax_mgmt' => 'Налоговый менеджмент',
+    'military_per' => 'Воинский учёт, за сотрудника', 'licenses' => 'Лицензии', 'spot' => 'Обособленное подразделение',
+    'tax' => 'Система налогообложения', 'vat' => 'НДС', 'niche' => 'Вид деятельности',
+    'staff' => 'Сотрудники', 'cash' => 'Наличные расчёты', 'invoice' => 'Выставление счетов',
+  ];
+  $NAME = [
+    'patent'=>'Патент','ausn_d'=>'АУСН Доходы','ausn_dr'=>'АУСН Доходы-Расходы','usn6'=>'УСН 6%',
+    'usn15'=>'УСН 15%','osno'=>'ОСНО','не_облагается'=>'Не облагается','освобождение'=>'Освобождение (ст. 145)',
+    'nds0'=>'НДС 0%','nds5'=>'НДС 5%','nds7'=>'НДС 7%','nds10'=>'НДС 10%','nds22'=>'НДС 22%',
+    'marketplace'=>'Маркетплейсы','wb'=>'Wildberries','ozon'=>'Ozon','ya'=>'Яндекс Маркет',
+    'mp_inventory'=>'Учёт товара на маркетплейсе','wholesale'=>'Опт','wh_inventory'=>'Складской учёт',
+    'retail'=>'Розница','rt_inventory'=>'Учёт товара в рознице','production'=>'Производство',
+    'construction'=>'Строительство','catering'=>'Общепит','medicine'=>'Медицина','services'=>'Услуги',
+    'rf_1_3'=>'1–3 сотрудника','rf_per'=>'Каждый следующий','foreign'=>'Иностранный сотрудник',
+    'kassa'=>'Касса (ККМ)','avans'=>'Авансовые отчёты','base'=>'Базовая','std'=>'Стандарт','opt'=>'Оптима',
+  ]; ?>
+  <h1>Цены калькулятора</h1>
+  <p class="lead">Стоимость в рублях за месяц. Калькулятор берёт эти цифры сразу, пересобирать ничего не нужно.</p>
+  <form class="panel" method="post">
+    <input type="hidden" name="form" value="prices">
+    <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+    <?php
+    $simple = array_filter($pr, fn($v) => !is_array($v));
+    $groups = array_filter($pr, 'is_array'); ?>
+    <b>Основное</b>
+    <div class="pgrid">
+      <?php foreach ($simple as $k => $v): ?>
+        <label class="pitem"><span><?= h($LABEL[$k] ?? $k) ?></span>
+          <input type="text" inputmode="numeric" name="p[<?= h($k) ?>]" value="<?= (int)$v ?>"></label>
+      <?php endforeach; ?>
+    </div>
+    <?php foreach ($groups as $g => $items): ?>
+      <b style="display:block;margin-top:22px"><?= h($LABEL[$g] ?? $g) ?></b>
+      <div class="pgrid">
+        <?php foreach ($items as $k => $v): ?>
+          <label class="pitem"><span><?= h($NAME[$k] ?? $k) ?></span>
+            <input type="text" inputmode="numeric" name="p[<?= h($g) ?>][<?= h($k) ?>]" value="<?= (int)$v ?>"></label>
+        <?php endforeach; ?>
+      </div>
+    <?php endforeach; ?>
+    <div class="row"><button class="btn" type="submit">Сохранить цены</button></div>
+  </form>
 
 <?php elseif (isset($SECTIONS[$page])): ?>
   <h1><?= h($SECTIONS[$page][0]) ?></h1>

@@ -13,7 +13,7 @@
 <link rel="icon" href="uploads/favicon-32.png?v=4" sizes="32x32" type="image/png">
 <link rel="icon" href="uploads/favicon.png?v=4" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="uploads/favicon-180.png?v=4">
-<link rel="stylesheet" href="styles.css?v=63">
+<link rel="stylesheet" href="styles.css?v=65">
 
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Главная", "item": "https://buhstart.ru/index.html"}, {"@type": "ListItem", "position": 2, "name": "Калькулятор", "item": "https://buhstart.ru/calculator.html"}]}</script>
 <meta property="og:image" content="https://buhstart.ru/uploads/og-calc.png">
@@ -224,8 +224,9 @@ a{color:#F07828}
 .fb-opt.chosen{border-color:var(--or);box-shadow:0 0 0 3px var(--or-50)}
 .fb-opt.chosen .fb-opt-t::after{content:" ✓";color:var(--or);font-weight:700}
 .fb-opt--main.chosen .fb-opt-t::after{color:#fff}
-.fb-opt.faded{opacity:.4;filter:grayscale(1);pointer-events:none}
-.fb-opt.faded:hover{transform:none;box-shadow:none}
+/* невыбранный вариант приглушён, но остаётся нажимаемым — передумать можно */
+.fb-opt.faded{opacity:.45;filter:grayscale(.7)}
+.fb-opt.faded:hover{opacity:1;filter:none}
 @media(max-width:767px){.fb-row{grid-template-columns:1fr}}
 .fb-gift{display:none;margin-top:16px;padding:16px 18px;background:#FFEDD9;border-radius:16px}
 .fb-gift.show{display:block}
@@ -513,7 +514,7 @@ a{color:#F07828}
           </div>
 
           <div class="fb-why" id="fb-why">
-            <div class="fb-sub"><b style="color:#18181B">Подскажите, почему предложение не подошло?</b><br>Взамен разберём вашу ситуацию на консультации — возможно, подберём другой вариант обслуживания.</div>
+            <div class="fb-sub"><b style="color:#18181B">Подскажите, почему предложение не подошло?</b><br>Выберите причину — в благодарность за обратную связь подарим вам бесплатную консультацию специалиста и разберём вашу ситуацию.</div>
             <div class="fb-reasons">
               <label class="chk-label"><input type="radio" name="fb-reason" value="Стоимость выше, чем рассчитывал(а)" onchange="fbReason(this)"><span>Стоимость выше, чем рассчитывал(а)</span></label>
               <label class="chk-label"><input type="radio" name="fb-reason" value="Не подходят условия или состав услуг" onchange="fbReason(this)"><span>Не подходят условия или состав услуг</span></label>
@@ -522,8 +523,8 @@ a{color:#F07828}
               <label class="chk-label"><input type="radio" name="fb-reason" value="Другое" onchange="fbReason(this)"><span>Другое</span></label>
             </div>
             <div class="fb-gift" id="fb-gift">
-              <div class="fb-gift-title" id="fb-gift-text">Возможно, мы сможем подобрать другой вариант или индивидуальные условия.</div>
-              <button class="btn btn-primary" type="button" onclick="askConsult()">Получить консультацию</button>
+              <div class="fb-gift-title" id="fb-gift-text"><b>Давайте попробуем подобрать другой вариант</b><br>Мы можем пересмотреть состав услуг и обсудить индивидуальные условия с учётом вашей ситуации.</div>
+              <button class="btn btn-primary" type="button" onclick="askConsult()">Подобрать другой вариант</button>
               <p style="font-size:12px;color:var(--g400);margin-top:10px">Телефон у нас уже есть — вводить заново не нужно.</p>
             </div>
           </div>
@@ -585,7 +586,7 @@ a{color:#F07828}
 <div class="fab"><button class="top" aria-label="Наверх"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button><button class="ask" data-ask><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5Z"/></svg>Задать вопрос</button></div><div class="mobile-bar"><button class="btn btn-p" data-lead>Записаться</button><a class="call" href="tel:+74957788168" aria-label="Позвонить"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L15 12l5 2v3a2 2 0 0 1-2.2 2A16 16 0 0 1 4 5.2 2 2 0 0 1 6 3Z"/></svg></a></div>
 <div class="modal"><div class="box"><form data-form="lead" style="display:flex;flex-direction:column;gap:12px"><div class="kicker m-kicker">Вопрос бухгалтеру</div><h3 class="m-title" style="font-size:24px;font-weight:700;letter-spacing:-0.02em">Спросите — ответим</h3><p class="cardtext m-sub"></p><textarea class="field m-question" name="comment" placeholder="Ваш вопрос"></textarea><input class="field" name="name" placeholder="Имя" required><input class="field" name="phone" placeholder="Телефон или Telegram" required><label class="agree"><input type="checkbox" name="agree"> Я даю <a href="soglasie.html" target="_blank">согласие на обработку персональных данных</a> и принимаю <a href="privacy.html" target="_blank">политику конфиденциальности</a></label><div class="formerr">Без согласия на обработку данных отправить нельзя</div><button class="btn btn-p btn-block" type="submit">Отправить</button></form><div class="done"><div class="ok">✓</div><div style="font-size:17px;font-weight:600;margin-top:16px">Отправлено</div><p class="cardtext" style="margin-top:8px">Ответим в течение 15 минут в рабочее время.</p><button class="btn btn-s" style="margin-top:20px" data-close>Закрыть</button></div></div></div>
 <script src="vendor-jszip.min.js"></script>
-<script src="site.js?v=63"></script>
+<script src="site.js?v=65"></script>
 <script>
 const BITRIX_WEBHOOK = '';
 const SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzTep7vEAUp2TdSNvvbpWTDGcAyswlh9GUszIcMUTs0naEwNfH-724KCPBC6lLCcp0ziw/exec';
@@ -735,12 +736,16 @@ function fbPick(v){
   opts.forEach(function(o){ o.classList.remove('chosen','faded'); o.classList.add(o===picked?'chosen':'faded') });
   if(v==='yes'){
     why.classList.remove('show');
+    G('fb-gift').classList.remove('show');
+    document.querySelectorAll('input[name=fb-reason]').forEach(function(r){r.checked=false});
+    fbReasons=[];
     done.textContent='Спасибо! Передали ваш расчёт менеджеру — он свяжется с вами и уточнит детали.';
     done.classList.add('show');
     // «Интересно» в начале строки — по нему скрипт таблицы ставит статус «Интересно, ждёт звонка»
     sendFeedback('Интересно, хочет обсудить предложение');
   } else {
     why.classList.add('show'); done.classList.remove('show');
+    G('fb-gift').classList.remove('show');
     G('fb-why').scrollIntoView({behavior:'smooth',block:'center'});
   }
 }

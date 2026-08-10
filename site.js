@@ -27,6 +27,27 @@ function send(payload){
     .then(function(t){ if(!/ok/i.test(t)) throw new Error(t.slice(0,120)); return true; });
 }
 
+/* Человеческое название страницы для таблицы: «Главная», «Услуга: Аудит»,
+   «Статья: ООО или ИП» — вместо index.html, которое менеджеру ни о чём не говорит. */
+function pageName(){
+  var file = (location.pathname.split('/').pop() || 'index.html').split('?')[0];
+  var MAP = {
+    'index.html':'Главная', '':'Главная',
+    'uslugi.html':'Услуги — список', 'keysy.html':'Кейсы', 'calculator.html':'Калькулятор',
+    'blog.html':'Блог — список статей', 'novosti.html':'Новости — список',
+    'team.html':'Команда', 'contacts.html':'Контакты', 'vacancy.html':'Работа у нас',
+    'privacy.html':'Политика конфиденциальности', 'soglasie.html':'Согласие на обработку данных',
+    '404.html':'Страница не найдена'
+  };
+  if(MAP[file] !== undefined) return MAP[file];
+  var t = document.title.replace(/\s*[—|]\s*Доверительная Бухгалтерия.*$/, '').trim();
+  if(/^usluga-/.test(file)) return 'Услуга: ' + t;
+  if(/^article-novosti-/.test(file)) return 'Новости: ' + t.replace(/^Новости законодательства\s*/, '');
+  if(/^article-/.test(file)) return 'Статья: ' + t;
+  if(/^keys-/.test(file)) return 'Кейс: ' + t;
+  return t || file;
+}
+
 document.addEventListener('DOMContentLoaded', function(){
   // мобильное меню
   var burger = document.querySelector('.burger'), menu = document.querySelector('.mobile-menu');
@@ -114,12 +135,12 @@ document.addEventListener('DOMContentLoaded', function(){
       // раньше встроенная форма без своей подписи подхватывала подпись от модалки
       var inModal = !!form.closest('.modal') && !!modal;
       var src = inModal ? (modal.dataset.source || 'Всплывающая форма')
-                        : (form.dataset.source || document.title);
+                        : (form.dataset.source || 'Форма в конце страницы');
       var kind = inModal ? (modal.dataset.kind || 'Консультация')
                         : (form.dataset.kind || (data.type === 'vacancy' ? 'Анкета кандидата' : 'Консультация'));
       data.kind = kind;                                       // тип обращения
       data.source = src;                                      // конкретная форма или кнопка
-      data.page = location.pathname.replace(/^\//, '') || 'index.html';
+      data.page = pageName();
       data.message = data.comment || '';                      // только то, что написал человек
       data.extra = inModal ? (modal.dataset.extra || '') : (form.dataset.extra || '');
       // старый скрипт таблицы читает всё из «Комментария» — оставляем, пока он не заменён

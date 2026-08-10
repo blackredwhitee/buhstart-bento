@@ -181,10 +181,10 @@ function addCalcFeedback(data) {
   var interested = /^интересно/i.test(text);
   sheet.getRange(target, cfg.statusCol).setValue(interested ? 'Интересно, ждёт звонка' : 'Не подошло');
 
+  // заметку перезаписываем, а не копим строками: две записи об одном человеке путают
   var noteCol = cfg.headers.length;                             // «Заметки» — последний столбец
-  var cell = sheet.getRange(target, noteCol);
   var stamp = Utilities.formatDate(new Date(), TZ, 'dd.MM HH:mm');
-  cell.setValue([cell.getValue(), stamp + ' — ' + text].filter(String).join('\n'));
+  sheet.getRange(target, noteCol).setValue(stamp + ' — ' + text);
   sheet.getRange(target, 1, 1, cfg.headers.length).setWrap(true);
 
   notify('Калькулятор — обратная связь', ['Клиент', 'Телефон', 'Ответ'], [data.name || '', data.phone || '', text]);

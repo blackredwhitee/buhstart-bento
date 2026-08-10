@@ -21,7 +21,7 @@ var BRAND = {
   lightOrange:'#FEF0E6', border:'#E8E4DF', white:'#FFFFFF'
 };
 
-var STATUSES = ['Новая', 'В работе', 'Ждём ответ клиента', 'Договор', 'Отказ', 'Спам'];
+var STATUSES = ['Новая', 'Интересно, ждёт звонка', 'В работе', 'Ждём ответ клиента', 'Договор', 'Не подошло', 'Отказ', 'Спам'];
 
 var SHEETS_CONFIG = {
   'Заявки': {
@@ -49,6 +49,13 @@ var TYPE_MAP = { lead:'Заявки', calculator:'Калькулятор', vacan
 function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
+
+    // обратная связь по расчёту дописывается в ту же строку калькулятора,
+    // чтобы не искать клиента на двух листах
+    if (data.kind === 'Обратная связь по расчёту' && addCalcFeedback(data)) {
+      return ContentService.createTextOutput('ok');
+    }
+
     var sheetName = TYPE_MAP[data.type] || 'Заявки';
     var cfg = SHEETS_CONFIG[sheetName];
     var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
@@ -123,6 +130,42 @@ function cleanComment(comment) {
   return String(comment).split('|').filter(function (part) {
     return !/^\s*(Тип|Источник|Страница)\s*:/.test(part);
   }).join('|').replace(/\s*\|\s*$/, '').trim();
+}
+
+function digits(v) { return String(v === undefined || v === null ? '' : v).replace(/\D/g, '').replace(/^8(?=\d{10}$)/, '7'); }
+
+/**
+ * Ищет в «Калькуляторе» последнюю строку с тем же телефоном и пишет туда результат.
+ * Возвращает false, если строки нет — тогда обращение уйдёт обычной заявкой.
+ */
+function addCalcFeedback(data) {
+  var want = digits(data.phone);
+  if (!want) return false;
+  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName('Калькулятор');
+  if (!sheet) return false;
+  var last = sheet.getLastRow();
+  if (last < 2) return false;
+
+  var phones = sheet.getRange(2, 4, last - 1, 1).getValues();   // столбец «Телефон»
+  var target = -1;
+  for (var r = phones.length - 1; r >= 0; r--) {
+    if (digits(phones[r][0]) === want) { target = r + 2; break; }
+  }
+  if (target < 0) return false;
+
+  var cfg = SHEETS_CONFIG['Калькулятор'];
+  var text = data.message || '';
+  var interested = /^интересно/i.test(text);
+  sheet.getRange(target, cfg.statusCol).setValue(interested ? 'Интересно, ждёт звонка' : 'Не подошло');
+
+  var noteCol = cfg.headers.length;                             // «Заметки» — последний столбец
+  var cell = sheet.getRange(target, noteCol);
+  var stamp = Utilities.formatDate(new Date(), TZ, 'dd.MM HH:mm');
+  cell.setValue([cell.getValue(), stamp + ' — ' + text].filter(String).join('\n'));
+  sheet.getRange(target, 1, 1, cfg.headers.length).setWrap(true);
+
+  notify('Калькулятор — обратная связь', ['Клиент', 'Телефон', 'Ответ'], [data.name || '', data.phone || '', text]);
+  return true;
 }
 
 function saveFile(b64, name, mime, folderName) {

@@ -3,6 +3,7 @@ declare(strict_types=1);
 require __DIR__ . '/lib.php';
 require __DIR__ . '/text.php';
 require __DIR__ . '/images.php';
+require __DIR__ . '/build.php';
 require_login();
 
 $page = $_GET['p'] ?? 'home';
@@ -90,6 +91,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $err = 'Не удалось записать файл цен.';
                 }
                 $page = 'prices';
+                break;
+
+            case 'article':
+                if (($_POST['act'] ?? '') === 'delete') {
+                    [$ok, $note] = article_delete((string)($_POST['orig'] ?? ''));
+                } else {
+                    [$ok, $note] = article_save($_POST, ($_POST['orig'] ?? '') !== '' ? (string)$_POST['orig'] : null);
+                }
+                $ok ? ($msg = $note) : ($err = $note);
+                if ($ok) { log_action('статья: ' . (string)($_POST['title'] ?? $_POST['orig'] ?? '') . ' — ' . $note); }
+                $page = 'articles';
+                break;
+
+            case 'case':
+                if (($_POST['act'] ?? '') === 'delete') {
+                    [$ok, $note] = case_delete((string)($_POST['orig'] ?? ''));
+                } else {
+                    [$ok, $note] = case_save($_POST, ($_POST['orig'] ?? '') !== '' ? (string)$_POST['orig'] : null);
+                }
+                $ok ? ($msg = $note) : ($err = $note);
+                if ($ok) { log_action('кейс: ' . (string)($_POST['title'] ?? '') . ' — ' . $note); }
+                $page = 'cases';
+                break;
+
+            case 'rebuild':
+                $rep = build_all();
+                log_action('пересборка сайта');
+                $msg = 'Сайт пересобран: ' . implode(', ', $rep);
+                $page = 'home';
                 break;
 
             case 'calendar':
@@ -222,6 +252,18 @@ textarea:focus{outline:2px solid var(--orange);outline-offset:-1px}
 .pitem{display:flex;align-items:center;gap:10px;justify-content:space-between}
 .pitem span{font-size:13.5px;color:var(--g500)}
 .pitem input{width:104px;text-align:right}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:14px}
+.fgrid label,label.full{display:block;font-size:13px;font-weight:600}
+label.full{margin-bottom:14px}
+.fgrid input,.fgrid select,label.full textarea{margin-top:5px;font-weight:400}
+select{width:100%;height:42px;padding:0 10px;border:1px solid var(--g200);border-radius:11px;font:inherit;background:#fff}
+input[type=date]{width:100%;height:42px;padding:0 12px;border:1px solid var(--g200);border-radius:11px;font:inherit}
+.lrow{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--g200)}
+.lrow:last-child{border-bottom:0}
+.lrow a{font-weight:600;text-decoration:none}
+.lrow a:hover{text-decoration:underline}
+.lmeta{font-size:12.5px;color:var(--g400);margin-top:2px}
+.lopen{font-size:13px;white-space:nowrap}
 .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:20px}
 .small{width:90px}
 @media(max-width:700px){
@@ -350,6 +392,117 @@ textarea:focus{outline:2px solid var(--orange);outline-offset:-1px}
       <div class="row"><button class="btn" type="submit">Сохранить страницу</button>
         <a class="btn btn-g" href="app.php?p=texts" style="display:inline-flex;align-items:center;text-decoration:none">К списку страниц</a></div>
     </form>
+  <?php endif; ?>
+
+<?php elseif ($page === 'articles'):
+  $items = articles_all();
+  $edit = null;
+  if (($_GET['f'] ?? '') !== '') {
+    foreach ($items as $it) { if ($it['_file'] === basename((string)$_GET['f'])) { $edit = $it; break; } }
+  }
+  $isNew = ($_GET['new'] ?? '') !== '';
+  if ($edit || $isNew): ?>
+    <h1><?= $edit ? 'Правка статьи' : 'Новая статья или новость' ?></h1>
+    <p class="lead">Абзацы разделяются пустой строкой. Заголовок внутри текста — строка,
+       начинающаяся с <b>##</b>. Пункт списка — с <b>-</b>. Цитата — с <b>&gt;</b>.</p>
+    <form class="panel" method="post">
+      <input type="hidden" name="form" value="article">
+      <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+      <input type="hidden" name="orig" value="<?= h($edit['_file'] ?? '') ?>">
+      <div class="fgrid">
+        <label>Заголовок<input type="text" name="title" required value="<?= h($edit['title'] ?? '') ?>"></label>
+        <label>Раздел<select name="tag">
+          <?php foreach (TAGS as $t): ?>
+            <option<?= ($edit['tag'] ?? '') === $t ? ' selected' : '' ?>><?= h($t) ?></option>
+          <?php endforeach; ?>
+        </select></label>
+        <label>Дата<input type="date" name="isoDate" value="<?= h($edit['isoDate'] ?? date('Y-m-d')) ?>"></label>
+        <label>Адрес страницы (латиницей, можно оставить пустым)
+          <input type="text" name="slug" value="<?= h($edit['slug'] ?? '') ?>" placeholder="составится из заголовка"></label>
+      </div>
+      <label class="full">Короткое описание для списков и поиска
+        <textarea name="preview" rows="2"><?= h($edit['preview'] ?? '') ?></textarea></label>
+      <label class="full">Текст
+        <textarea name="body" rows="18" required><?= h($edit ? blocks_to_text((array)$edit['blocks']) : '') ?></textarea></label>
+      <div class="row">
+        <button class="btn" type="submit">Сохранить и опубликовать</button>
+        <a class="btn btn-g" href="app.php?p=articles" style="display:inline-flex;align-items:center;text-decoration:none">Отмена</a>
+        <?php if ($edit): ?>
+          <button class="btn btn-g" type="submit" name="act" value="delete" style="margin-left:auto;color:#B3261E"
+            onclick="return confirm('Снять статью с публикации? Копия останется в архиве.')">Снять с публикации</button>
+        <?php endif; ?>
+      </div>
+    </form>
+  <?php else: ?>
+    <h1>Статьи и новости</h1>
+    <p class="lead">Всего материалов: <?= count($items) ?>. Страница, списки и карта сайта обновляются сами при сохранении.</p>
+    <div class="row" style="margin:0 0 18px">
+      <a class="btn" href="app.php?p=articles&amp;new=1" style="display:inline-flex;align-items:center;text-decoration:none;color:#fff">Добавить материал</a>
+      <form method="post" style="display:inline">
+        <input type="hidden" name="form" value="rebuild">
+        <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+        <button class="btn btn-g" type="submit">Пересобрать сайт</button>
+      </form>
+    </div>
+    <div class="panel">
+      <?php foreach ($items as $it): ?>
+        <div class="lrow">
+          <div><a href="app.php?p=articles&amp;f=<?= h(rawurlencode($it['_file'])) ?>"><?= h($it['title'] ?? '') ?></a>
+            <div class="lmeta"><?= h($it['tag'] ?? '') ?> · <?= h($it['date'] ?? '') ?></div></div>
+          <a class="lopen" href="../article-<?= h($it['slug'] ?? '') ?>.html" target="_blank">на сайте ↗</a>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  <?php endif; ?>
+
+<?php elseif ($page === 'cases'):
+  $items = cases_all();
+  $edit = null;
+  if (($_GET['f'] ?? '') !== '') {
+    foreach ($items as $it) { if ($it['_file'] === basename((string)$_GET['f'])) { $edit = $it; break; } }
+  }
+  $isNew = ($_GET['new'] ?? '') !== '';
+  if ($edit || $isNew): ?>
+    <h1><?= $edit ? 'Правка кейса' : 'Новый кейс' ?></h1>
+    <p class="lead">Кейс из трёх частей: что было, что сделали, результат. Цифра результата выносится крупно.</p>
+    <form class="panel" method="post">
+      <input type="hidden" name="form" value="case">
+      <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+      <input type="hidden" name="orig" value="<?= h($edit['_file'] ?? '') ?>">
+      <div class="fgrid">
+        <label>Заголовок<input type="text" name="title" required value="<?= h($edit['title'] ?? '') ?>"></label>
+        <label>Отрасль или тема<input type="text" name="tag" value="<?= h($edit['tag'] ?? '') ?>" placeholder="Например: Общепит"></label>
+        <label>Цифра результата<input type="text" name="metric" value="<?= h($edit['metric'] ?? '') ?>" placeholder="Например: 11,7 млн ₽"></label>
+        <label>Подпись к цифре<input type="text" name="metricNote" value="<?= h($edit['metricNote'] ?? '') ?>" placeholder="сэкономлено за год"></label>
+        <label>Дата<input type="date" name="isoDate" value="<?= h($edit['isoDate'] ?? date('Y-m-d')) ?>"></label>
+        <label>Адрес (латиницей, необязательно)<input type="text" name="slug" value="<?= h($edit['slug'] ?? '') ?>"></label>
+      </div>
+      <label class="full">Что было<textarea name="was" rows="3"><?= h($edit['was'] ?? '') ?></textarea></label>
+      <label class="full">Что сделали<textarea name="did" rows="4"><?= h($edit['did'] ?? '') ?></textarea></label>
+      <label class="full">Результат<textarea name="result" rows="3"><?= h($edit['result'] ?? '') ?></textarea></label>
+      <div class="row">
+        <button class="btn" type="submit">Сохранить и опубликовать</button>
+        <a class="btn btn-g" href="app.php?p=cases" style="display:inline-flex;align-items:center;text-decoration:none">Отмена</a>
+        <?php if ($edit): ?>
+          <button class="btn btn-g" type="submit" name="act" value="delete" style="margin-left:auto;color:#B3261E"
+            onclick="return confirm('Убрать кейс с сайта? Копия останется в архиве.')">Убрать с сайта</button>
+        <?php endif; ?>
+      </div>
+    </form>
+  <?php else: ?>
+    <h1>Кейсы</h1>
+    <p class="lead">Всего кейсов: <?= count($items) ?>. Первые три показываются на главной, все — на странице «Кейсы».</p>
+    <div class="row" style="margin:0 0 18px">
+      <a class="btn" href="app.php?p=cases&amp;new=1" style="display:inline-flex;align-items:center;text-decoration:none;color:#fff">Добавить кейс</a>
+    </div>
+    <div class="panel">
+      <?php foreach ($items as $it): ?>
+        <div class="lrow">
+          <div><a href="app.php?p=cases&amp;f=<?= h(rawurlencode($it['_file'])) ?>"><?= h($it['title'] ?? '') ?></a>
+            <div class="lmeta"><?= h($it['tag'] ?? '') ?><?= !empty($it['metric']) ? ' · ' . h($it['metric']) : '' ?></div></div>
+        </div>
+      <?php endforeach; ?>
+    </div>
   <?php endif; ?>
 
 <?php elseif ($page === 'images'): ?>

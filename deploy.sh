@@ -13,7 +13,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 HOST=buhstart-hosting
-DEST=/var/www/u3524441/data/www/public_html/bento
+DEST=/var/www/u3524441/data/www/public_html/db
 
 FLAGS=(-az --delete --human-readable --itemize-changes)
 [[ "${1:-}" == "--go" ]] || FLAGS+=(--dry-run)
@@ -24,12 +24,14 @@ rsync "${FLAGS[@]}" \
   --exclude '.git/' --exclude '.github/' --exclude '.gitignore' \
   --exclude '_articles/' --exclude '_cases/' --exclude '_pages/' \
   --exclude 'admin/' --exclude 'README.md' --exclude 'deploy.sh' \
+  --filter 'protect content/***' --filter 'protect uploads/upload/***' \
   --exclude '.DS_Store' --exclude '.nojekyll' \
+  --filter 'protect _old_wp/***' --filter 'protect .well-known/***' --filter 'protect .ftpquota' \
   ./ "$HOST:$DEST/"
 
 if [[ "${1:-}" == "--go" ]]; then
   echo
-  echo "Готово. Проверить: http://buhstart.prconsru.prconsr5.cp.regruhosting.ru/"
+  echo "Готово. Проверить: https://buhstart.prconsru.prconsr5.cp.regruhosting.ru/"
 else
   echo
   echo "Это была проверка без записи. Чтобы залить: ./deploy.sh --go"

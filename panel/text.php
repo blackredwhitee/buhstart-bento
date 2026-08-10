@@ -22,7 +22,7 @@ function editable_pages(): array
         'index.html'    => 'Главная',
         'uslugi.html'   => 'Услуги — список',
         'usluga-bukhgalterskie-uslugi.html' => 'Услуга: Бухгалтерские услуги',
-        'usluga-strahovka.html'             => 'Услуга: Бухгалтерская страховка',
+        'usluga-nadzor.html'                => 'Услуга: Бухгалтерский надзор',
         'usluga-audit.html'                 => 'Услуга: Аудит',
         'usluga-upravlencheskii-uchet.html' => 'Услуга: Управленческий учёт',
         'usluga-marketplace.html'           => 'Услуга: Маркетплейсы',

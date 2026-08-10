@@ -295,7 +295,7 @@ function build_all(): array
     write_atomic(SITE_DIR . '/articles.js', implode("\n", $lines) . "\n");
 
     // карта сайта
-    $static = ['index.html','uslugi.html','usluga-bukhgalterskie-uslugi.html','usluga-strahovka.html',
+    $static = ['index.html','uslugi.html','usluga-bukhgalterskie-uslugi.html','usluga-nadzor.html',
         'usluga-audit.html','usluga-upravlencheskii-uchet.html','usluga-marketplace.html','keysy.html',
         'calculator.html','blog.html','novosti.html','team.html','vacancy.html','contacts.html',
         'privacy.html','soglasie.html'];

@@ -204,7 +204,7 @@ fs.writeFileSync('articles.js', lines.join('\n') + '\n');
 
 /* ---------- карта сайта ---------- */
 
-const staticPages = ['index.html','uslugi.html','usluga-bukhgalterskie-uslugi.html','usluga-strahovka.html',
+const staticPages = ['index.html','uslugi.html','usluga-bukhgalterskie-uslugi.html','usluga-nadzor.html',
   'usluga-audit.html','usluga-upravlencheskii-uchet.html','keysy.html','calculator.html','blog.html',
   'novosti.html','team.html','vacancy.html','contacts.html','privacy.html','soglasie.html'];
 const urls = staticPages.map(p => `  <url><loc>${BASE}${p}</loc><changefreq>weekly</changefreq><priority>${p === 'index.html' ? '1.0' : '0.8'}</priority></url>`)

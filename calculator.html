@@ -13,7 +13,7 @@
 <link rel="icon" href="uploads/favicon-32.png?v=4" sizes="32x32" type="image/png">
 <link rel="icon" href="uploads/favicon.png?v=4" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="uploads/favicon-180.png?v=4">
-<link rel="stylesheet" href="styles.css?v=51">
+<link rel="stylesheet" href="styles.css?v=53">
 
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Главная", "item": "https://blackredwhitee.github.io/buhstart-bento/index.html"}, {"@type": "ListItem", "position": 2, "name": "Калькулятор", "item": "https://blackredwhitee.github.io/buhstart-bento/calculator.html"}]}</script>
 <meta property="og:image" content="https://blackredwhitee.github.io/buhstart-bento/uploads/og-calc.png">
@@ -209,7 +209,19 @@ a{color:#F07828}
 .fb-reasons{display:flex;flex-direction:column;gap:10px}
 .fb-done{display:none;margin-top:14px;font-size:14px;font-weight:600;color:#2D7A4F}
 .fb-done.show{display:block}
-.fb-hint{font-size:13px;color:var(--g500);margin-top:10px}
+/* два варианта — равнозначные карточки с пояснением, а не кнопка и текст рядом */
+.fb-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.fb-opt{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;
+  padding:18px 20px;border-radius:18px;background:#fff;border:1px solid var(--g200);cursor:pointer;
+  font-family:inherit;transition:transform .18s cubic-bezier(.22,.61,.36,1),box-shadow .18s,background .18s}
+.fb-opt:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(24,24,27,.08)}
+.fb-opt-t{font-size:16px;font-weight:600;color:#18181B;line-height:1.3}
+.fb-opt-d{font-size:13px;line-height:1.45;color:var(--g500)}
+.fb-opt--main{background:var(--orange);border-color:var(--orange)}
+.fb-opt--main .fb-opt-t{color:#fff}
+.fb-opt--main .fb-opt-d{color:rgba(255,255,255,.85)}
+.fb-opt--main:hover{background:#E06818}
+@media(max-width:767px){.fb-row{grid-template-columns:1fr}}
 .fb-gift{display:none;margin-top:16px;padding:16px 18px;background:#FFEDD9;border-radius:16px}
 .fb-gift.show{display:block}
 .fb-gift-title{font-size:14px;line-height:1.5;color:#18181B;margin-bottom:12px}
@@ -242,6 +254,11 @@ a{color:#F07828}
   <h1>Узнайте стоимость<br>бухгалтерского обслуживания</h1>
   <p>Ответьте на несколько вопросов о вашем бизнесе — подберём тариф и сформируем коммерческое предложение.</p>
   <button class="btn-start" onclick="startQuiz()">Рассчитать стоимость →</button>
+  <div class="calc-facts" style="margin-top:34px">
+    <div class="cf"><b>1 минута</b><span>восемь коротких вопросов, без анкет</span></div>
+    <div class="cf"><b>Три тарифа</b><span>с расшифровкой, что входит в каждый</span></div>
+    <div class="cf"><b>КП в Word</b><span>скачаете одной кнопкой, можно показать бухгалтеру</span></div>
+  </div>
 </section>
 
 <div class="quiz-wrap" id="quiz-wrap">
@@ -471,11 +488,6 @@ a{color:#F07828}
           <div class="sum-div"></div>
           <div class="tariff-cards" id="tariff-cards"></div>
         </div>
-        <div class="calc-facts">
-      <div class="cf"><b>1 минута</b><span>восемь коротких вопросов, без анкет</span></div>
-      <div class="cf"><b>Три тарифа</b><span>с расшифровкой, что входит в каждый</span></div>
-      <div class="cf"><b>КП в Word</b><span>скачаете одной кнопкой, можно показать бухгалтеру</span></div>
-    </div>
     <p class="calc-disclaimer">Стоимость предварительная. Финальная цена зависит от особенностей вашего бизнеса и уточняется после консультации.</p>
         <div class="sum-actions">
           <button class="btn btn-primary btn-xl" id="btn-kp" onclick="downloadKP()">Скачать коммерческое предложение</button>
@@ -485,23 +497,28 @@ a{color:#F07828}
         <div class="fb-block" id="fb-block">
           <div class="fb-title">Что дальше?</div>
           <div class="fb-row" id="fb-row">
-            <button class="btn btn-outline" type="button" onclick="fbPick('yes')">Хочу обсудить предложение</button>
-            <button class="btn btn-ghost" type="button" onclick="fbPick('no')">Пока не подходит</button>
+            <button class="fb-opt fb-opt--main" type="button" onclick="fbPick('yes')">
+              <span class="fb-opt-t">Хочу обсудить предложение</span>
+              <span class="fb-opt-d">Менеджер свяжется и уточнит финальную стоимость</span>
+            </button>
+            <button class="fb-opt" type="button" onclick="fbPick('no')">
+              <span class="fb-opt-t">Пока не подходит</span>
+              <span class="fb-opt-d">Подскажете причину — постараемся предложить другой вариант</span>
+            </button>
           </div>
-          <p class="fb-hint" id="fb-hint">Менеджер свяжется с вами и уточнит финальную стоимость.</p>
 
           <div class="fb-why" id="fb-why">
-            <div class="fb-sub">Подскажите, почему предложение не подошло — и мы подарим вам бесплатную налоговую консультацию.</div>
+            <div class="fb-sub">Подскажите, почему предложение не подошло?</div>
             <div class="fb-reasons">
               <label class="chk-label"><input type="radio" name="fb-reason" value="Стоимость выше, чем рассчитывал(а)" onchange="fbReason(this)"><span>Стоимость выше, чем рассчитывал(а)</span></label>
-              <label class="chk-label"><input type="radio" name="fb-reason" value="Не нашёл(ла) нужные услуги" onchange="fbReason(this)"><span>Не нашёл(ла) нужные услуги</span></label>
-              <label class="chk-label"><input type="radio" name="fb-reason" value="Хочу сравнить с другими предложениями" onchange="fbReason(this)"><span>Хочу сравнить с другими предложениями</span></label>
-              <label class="chk-label"><input type="radio" name="fb-reason" value="Пока не готов(а) принимать решение" onchange="fbReason(this)"><span>Пока не готов(а) принимать решение</span></label>
+              <label class="chk-label"><input type="radio" name="fb-reason" value="Не подходят условия или состав услуг" onchange="fbReason(this)"><span>Не подходят условия или состав услуг</span></label>
+              <label class="chk-label"><input type="radio" name="fb-reason" value="Хочу сравнить предложения" onchange="fbReason(this)"><span>Хочу сравнить предложения</span></label>
+              <label class="chk-label"><input type="radio" name="fb-reason" value="Пока не готов(а)" onchange="fbReason(this)"><span>Пока не готов(а)</span></label>
               <label class="chk-label"><input type="radio" name="fb-reason" value="Другое" onchange="fbReason(this)"><span>Другое</span></label>
             </div>
             <div class="fb-gift" id="fb-gift">
-              <div class="fb-gift-title">Спасибо за ответ. Дарим бесплатную консультацию со специалистом — возможно, подберём другой вариант обслуживания.</div>
-              <button class="btn btn-primary" type="button" onclick="askConsult()">Получить бесплатную консультацию</button>
+              <div class="fb-gift-title" id="fb-gift-text">Возможно, мы сможем подобрать другой вариант или индивидуальные условия.</div>
+              <button class="btn btn-primary" type="button" onclick="askConsult()">Получить консультацию</button>
               <p style="font-size:12px;color:var(--g400);margin-top:10px">Телефон у нас уже есть — вводить заново не нужно.</p>
             </div>
           </div>
@@ -522,7 +539,7 @@ a{color:#F07828}
 
 <div class="kp-sec" id="kp-sec">
   <div class="kp-header">
-    <div class="kp-company-line"><span class="kp-company-name">ООО «Профит-Консалт» — Доверительная Бухгалтерия</span><br>ИНН&nbsp;7709792856 · г. Москва, Денежный пер., д. 4 · +7 (495) 778-81-68 · info@buhstart.ru</div>
+    <div class="kp-company-line"><span class="kp-company-name">Доверительная Бухгалтерия</span><br>+7 (495) 778-81-68 · info@buhstart.ru · buhstart.ru</div>
     <div class="kp-meta-row">
       <div><div class="kp-num" id="kp-num"></div><div class="kp-client-name" id="kp-client"></div></div>
       <div style="font-size:13px;color:rgba(255,255,255,.5)" id="kp-date"></div>
@@ -563,7 +580,7 @@ a{color:#F07828}
 <div class="fab"><button class="top" aria-label="Наверх"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button><button class="ask" data-ask><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5Z"/></svg>Задать вопрос</button></div><div class="mobile-bar"><button class="btn btn-p" data-lead>Записаться</button><a class="call" href="tel:+74957788168" aria-label="Позвонить"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L15 12l5 2v3a2 2 0 0 1-2.2 2A16 16 0 0 1 4 5.2 2 2 0 0 1 6 3Z"/></svg></a></div>
 <div class="modal"><div class="box"><form data-form="lead" style="display:flex;flex-direction:column;gap:12px"><div class="kicker m-kicker">Вопрос бухгалтеру</div><h3 class="m-title" style="font-size:24px;font-weight:700;letter-spacing:-0.02em">Спросите — ответим</h3><p class="cardtext m-sub"></p><textarea class="field m-question" name="comment" placeholder="Ваш вопрос"></textarea><input class="field" name="name" placeholder="Имя" required><input class="field" name="phone" placeholder="Телефон или Telegram" required><label class="agree"><input type="checkbox" name="agree"> Я даю <a href="soglasie.html" target="_blank">согласие на обработку персональных данных</a> и принимаю <a href="privacy.html" target="_blank">политику конфиденциальности</a></label><div class="formerr">Без согласия на обработку данных отправить нельзя</div><button class="btn btn-p btn-block" type="submit">Отправить</button></form><div class="done"><div class="ok">✓</div><div style="font-size:17px;font-weight:600;margin-top:16px">Отправлено</div><p class="cardtext" style="margin-top:8px">Ответим в течение 15 минут в рабочее время.</p><button class="btn btn-s" style="margin-top:20px" data-close>Закрыть</button></div></div></div>
 <script src="vendor-jszip.min.js"></script>
-<script src="site.js?v=51"></script>
+<script src="site.js?v=53"></script>
 <script>
 const BITRIX_WEBHOOK = '';
 const SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzTep7vEAUp2TdSNvvbpWTDGcAyswlh9GUszIcMUTs0naEwNfH-724KCPBC6lLCcp0ziw/exec';
@@ -684,40 +701,47 @@ function track(g,p){try{if(window.YM_ID&&typeof ym==='function')ym(window.YM_ID,
 function startQuiz(){track('calc_start');G('calc-hero').style.display='none';G('quiz-wrap').style.display='block';showStep(1);G('quiz-wrap').scrollIntoView({behavior:'smooth',block:'start'})}
 function backToQuiz(){G('kp-sec').style.display='none';G('quiz-wrap').style.display='block';showStep(12);G('quiz-wrap').scrollIntoView({behavior:'smooth',block:'start'})}
 function restartQuiz(){Object.assign(A,{entity:'',isNull:false,tax:'',niches:[],addPatent:false,mp:[],mpInventory:false,vats:[],staffRf:'none',rfCount:4,staffForeign:'none',foreignCount:1,cashKassa:false,cashAvans:false,ved:false,reconcile:false,military:false,militaryCount:1,licenses:false,licenseCount:1,spot:false,spotCount:1,whInventory:false,rtInventory:false,priorityManager:'day',taxMgmt:false,officeBuhPresence:true,officeBuhVisits:4,mgmtAcc:false,name:'',phone:'',director:''});lastKP=null;resultReady=false;lastDocx=null;fbReasons=[];
-  G('fb-row').style.display='';G('fb-hint').style.display='';
+  G('fb-row').style.display='';
   G('fb-why').classList.remove('show');G('fb-gift').classList.remove('show');G('fb-done').classList.remove('show');
   document.querySelectorAll('input[name=fb-reason]').forEach(function(r){r.checked=false});
   G('success-sec').style.display='none';G('kp-sec').style.display='none';G('calc-hero').style.display='block';window.scrollTo({top:0,behavior:'smooth'})}
 
 var fbReasons=[];
 function fbPick(v){
-  var why=G('fb-why'),done=G('fb-done'),row=G('fb-row'),hint=G('fb-hint');
+  var why=G('fb-why'),done=G('fb-done'),row=G('fb-row');
   if(v==='yes'){
     why.classList.remove('show');
-    row.style.display='none'; hint.style.display='none';
+    row.style.display='none';
     done.textContent='Спасибо! Передали ваш расчёт менеджеру — он свяжется с вами и уточнит детали.';
     done.classList.add('show');
     // «Интересно» в начале строки — по нему скрипт таблицы ставит статус «Интересно, ждёт звонка»
     sendFeedback('Интересно, хочет обсудить предложение');
   } else {
     why.classList.add('show'); done.classList.remove('show');
-    hint.style.display='none';
     G('fb-why').scrollIntoView({behavior:'smooth',block:'center'});
   }
 }
 function fbReason(el){
   fbReasons=[el.value];
-  G('fb-gift').classList.add('show');
+  var gift=G('fb-gift'), done=G('fb-done');
+  // предложение подобрать другой вариант показываем только тому, кому дорого
+  if(/^Стоимость выше/.test(el.value)){
+    gift.classList.add('show'); done.classList.remove('show');
+  } else {
+    gift.classList.remove('show');
+    done.textContent='Спасибо за ответ — учтём. Если понадобимся, мы на связи.';
+    done.classList.add('show');
+  }
   sendFeedback('Не подошло: '+el.value);
 }
 function askConsult(){
   G('fb-row').style.display='none';
   G('fb-why').classList.remove('show');
   var done=G('fb-done');
-  done.textContent='Готово. Бесплатную консультацию согласуем при звонке — специалист свяжется с вами в рабочее время.';
+  done.textContent='Готово. Специалист свяжется с вами в рабочее время и разберёт вашу ситуацию.';
   done.classList.add('show');
   clearTimeout(fbTimer);   // иначе отложенная отправка причины перебила бы статус
-  sendFeedbackNow('Интересно, просит бесплатную консультацию. Не подошло: '+(fbReasons[0]||'причина не указана'));
+  sendFeedbackNow('Интересно, просит консультацию по цене. Не подошло: '+(fbReasons[0]||'причина не указана'));
   track('calc_consult');
 }
 var fbTimer=null;
@@ -956,8 +980,7 @@ function generateKP(){
     +'<div class="print-bar"><button class="btn btn-or" onclick="window.print()">Распечатать / Сохранить PDF</button><button class="btn btn-wh" onclick="window.close()">Закрыть</button><span class="hint">В диалоге печати выберите «Сохранить как PDF»</span></div>'
     +'<table style="margin-bottom:20px"><tr>'
     +'<td><div style="font-size:20pt;font-weight:800;color:#F07828">Доверительная Бухгалтерия</div>'
-    +'<div style="font-size:9pt;color:#888;margin-top:3px">ООО «Профит-Консалт» · ИНН 7709792856 · Москва, Денежный пер., д. 4</div>'
-    +'<div style="font-size:9pt;color:#888">+7 (495) 778-81-68 · info@buhstart.ru · buhstart.ru</div></td>'
+        +'<div style="font-size:9pt;color:#888">+7 (495) 778-81-68 · info@buhstart.ru · buhstart.ru</div></td>'
     +'<td style="text-align:right;vertical-align:top"><div style="font-size:9pt;color:#888">'+num+' от '+toDay()+'</div>'
     +'<div style="font-size:14pt;font-weight:700;margin-top:4px">'+esc(clientFull())+'</div>'
     +(A.phone?'<div style="font-size:9pt;color:#888">'+esc(A.phone)+'</div>':'')
@@ -987,7 +1010,7 @@ function generateKP(){
     +'</tr></tbody></table>'
     +'<div style="background:#F4F4F5;border-radius:4px;padding:10px 16px;font-size:10pt;color:#555;margin-bottom:16px">Предложение действует до: <strong>'+kpValid()+'</strong></div>'
     +'<div style="font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#F07828;margin:16px 0 6px">О компании</div>'
-    +'<p style="font-size:10pt;color:#444;line-height:1.6;margin-bottom:12px">Доверительная Бухгалтерия (ООО «Профит-Консалт») успешно работает с 2003 года. За более чем 20 лет мы накопили экспертизу в налоговом и бухгалтерском сопровождении ИП и ООО. Работаем удалённо по всей России на любых системах налогообложения.</p>'
+    +'<p style="font-size:10pt;color:#444;line-height:1.6;margin-bottom:12px">Доверительная Бухгалтерия успешно работает с 2003 года. За более чем 20 лет мы накопили экспертизу в налоговом и бухгалтерском сопровождении ИП и ООО. Работаем удалённо по всей России на любых системах налогообложения.</p>'
     +'<div style="font-size:9pt;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#F07828;margin:16px 0 6px">Условия сотрудничества</div>'
     +'<p style="font-size:10pt;color:#444;line-height:1.6;margin-bottom:20px">Оплата: 50% предоплата до начала работы, 50% — по итогам периода.<br>Срок начала: 1–3 рабочих дня после подписания договора.<br>Подробнее на сайте: <strong>buhstart.ru</strong></p>'
     +'<div style="margin-top:24px;font-size:10pt"><span style="border-top:1px solid #999;padding-top:4px;display:inline-block;min-width:220px">Руководитель _______________&nbsp; Горелкина Г.В.</span></div>'
@@ -1098,20 +1121,23 @@ async function generateDocx(r, num){
 
     // company info
     docXml=docXml.replace('{{COMPANY_LINE1}}','Доверительная Бухгалтерия');
-    docXml=docXml.replace('{{COMPANY_LINE2}}','ООО «Профит-Консалт» · ИНН 7709792856 · г. Москва, Денежный пер., д. 4');
+    docXml=docXml.replace('{{COMPANY_LINE2}}','Бухгалтерское сопровождение ИП и ООО с 2003 года');
     docXml=docXml.replace('{{COMPANY_PHONE}}','+7 (495) 778-81-68');
-    docXml=docXml.replace('{{COMPANY_SHORT}}','ООО «Профит-Консалт»');
+    docXml=docXml.replace('{{COMPANY_SHORT}}','Доверительная Бухгалтерия');
 
     // KP meta
     docXml=docXml.replace('{{KP_NUM}}',escXml(num));
     docXml=docXml.replace('{{KP_DATE}}',toDay());
     docXml=docXml.replace('{{CLIENT_NAME}}',escXml(clientFull()));
-    docXml=docXml.replace('{{CLIENT_DIRECTOR}}',escXml(A.director||''));
+    // руководителя мы не спрашиваем — строку «Руководителю:» из шаблона убираем целиком,
+    // иначе в КП остаётся пустая подпись
+    if(A.director) docXml=docXml.replace('{{CLIENT_DIRECTOR}}',escXml(A.director));
+    else docXml=docXml.replace(/<w:p>(?:(?!<\/w:p>)[\s\S])*\{\{CLIENT_DIRECTOR\}\}(?:(?!<\/w:p>)[\s\S])*<\/w:p>/,'');
     docXml=docXml.replace('{{VALID_DATE}}',escXml(kpValid()));
     docXml=docXml.replace('{{SIGNER}}','Горелкина Галина Викторовна');
 
     // about company
-    docXml=docXml.replace('{{ABOUT_TEXT}}','Доверительная Бухгалтерия (ООО «Профит-Консалт») успешно работает с 2003 года. За более 20 лет мы накопили экспертизу в налоговом и бухгалтерском сопровождении ИП и ООО. Работаем удалённо по всей России на любых системах налогообложения.');
+    docXml=docXml.replace('{{ABOUT_TEXT}}','Доверительная Бухгалтерия успешно работает с 2003 года. За более 20 лет мы накопили экспертизу в налоговом и бухгалтерском сопровождении ИП и ООО. Работаем удалённо по всей России на любых системах налогообложения.');
 
     // prices (no discount — show base price in all cells)
     docXml=docXml.replace('{{PRICE_BASE}}',fmtRub(r.baseTotal));

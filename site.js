@@ -17,10 +17,14 @@ function track(goal, params){
 }
 var ENDPOINT = 'https://script.google.com/macros/s/AKfycbxLWOlaftsjU3tG0r3q95i5zaj20uvtmTru9ZIHisSUIj5FTvn2oYAJKz3e4N2SDQa7jQ/exec';
 
+/* Отправка в таблицу. Раньше стоял mode:'no-cors' — ответ был не виден, и при
+   любой поломке скрипта таблицы сайт всё равно показывал «спасибо», а заявка
+   пропадала. Скрипт отвечает с Access-Control-Allow-Origin: *, поэтому читаем ответ
+   и умеем показать честную ошибку. */
 function send(payload){
-  try{
-    fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
-  }catch(e){}
+  return fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+    .then(function(r){ return r.text(); })
+    .then(function(t){ if(!/ok/i.test(t)) throw new Error(t.slice(0,120)); return true; });
 }
 
 document.addEventListener('DOMContentLoaded', function(){
@@ -76,10 +80,13 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // формы: согласие обязательно
   document.querySelectorAll('form[data-form]').forEach(function(form){
+    var errBase = null;
     form.addEventListener('submit', function(e){
       e.preventDefault();
       var agree = form.querySelector('input[type=checkbox][required], input[name=agree]');
       var err = form.querySelector('.formerr');
+      if(err && errBase === null) errBase = err.innerHTML;      // текст про галочку не теряем
+      if(err && errBase !== null) err.innerHTML = errBase;
       if(agree && !agree.checked){ if(err) err.classList.add('show'); return; }
       if(err) err.classList.remove('show');
       var data = {type: form.dataset.form || 'lead'};
@@ -94,17 +101,30 @@ document.addEventListener('DOMContentLoaded', function(){
       // контакт с собакой — это почта, а не телефон
       if(data.contact && data.contact.indexOf('@') > -1 && !data.email){ data.email = data.contact; }
       var box = form.closest('.formbox') || form.closest('.box') || form.parentNode;
-      data.comment = [data.comment, 'Источник: ' + (form.dataset.source || (modal && modal.dataset.source) || document.title)].filter(Boolean).join(' | ');
+      var src = form.dataset.source || (modal && modal.dataset.source) || document.title;
+      // в таблице должно быть видно и форму, и страницу, с которой пришла заявка
+      data.comment = [data.comment, 'Источник: ' + src, 'Страница: ' + location.pathname.replace(/^\//, '')]
+        .filter(Boolean).join(' | ');
 
       function finish(){
-        send(data);
-        var goal = data.type === 'vacancy' ? 'vacancy_sent'
-                 : (data.comment || '').indexOf('Вопрос бухгалтеру') > -1 ? 'question_sent' : 'lead_sent';
-        track(goal, {source: form.dataset.source || (modal && modal.dataset.source) || document.title});
-        form.style.display = 'none';
-        var done = box.querySelector('.done');
-        if(done) done.classList.add('show');
-        form.reset();
+        var btn = form.querySelector('button[type=submit],button:not([type])');
+        var btnText = btn && btn.textContent;
+        if(btn){ btn.disabled = true; btn.textContent = 'Отправляем…'; }
+        send(data).then(function(){
+          var goal = data.type === 'vacancy' ? 'vacancy_sent'
+                   : (data.comment || '').indexOf('Вопрос бухгалтеру') > -1 ? 'question_sent' : 'lead_sent';
+          track(goal, {source: src});
+          form.style.display = 'none';
+          var done = box.querySelector('.done');
+          if(done) done.classList.add('show');
+          form.reset();
+        })['catch'](function(){
+          // заявка не ушла — говорим прямо, а не показываем «спасибо»
+          if(err){
+            err.innerHTML = 'Не удалось отправить. Позвоните — <a href="tel:+74957788168" style="color:inherit;text-decoration:underline">+7 (495) 778-81-68</a> — или напишите в <a href="https://t.me/galanika888" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Telegram</a>.';
+            err.classList.add('show');
+          }
+        }).then(function(){ if(btn){ btn.disabled = false; btn.textContent = btnText; } });
       }
 
       var file = fileEl && fileEl.files && fileEl.files[0];

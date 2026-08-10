@@ -29,11 +29,10 @@ var SHEETS_CONFIG = {
     widths:[130,150,220,150,170,140,180,300,320,120,140,240],
     statusCol:10
   },
-  // порядок первых девяти столбцов не меняем — иначе поедут уже накопленные строки
   'Калькулятор': {
-    headers:['Дата','Имя','Компания','Телефон','Email','Тарифы','Сотрудники','Система','Ссылка на КП','Базовая','Стандарт','Оптима','№ КП','Статус','Ответственный','Заметки'],
-    widths:[130,170,120,140,180,260,150,130,260,100,100,100,130,120,140,240],
-    statusCol:14
+    headers:['Дата','Имя','Компания','Телефон','Email','Сотрудники','Система','Ссылка на КП','Базовая','Стандарт','Оптима','№ КП','Статус','Ответственный','Заметки'],
+    widths:[130,170,120,140,180,150,130,260,100,100,100,130,120,140,240],
+    statusCol:13
   },
   'Работа у нас': {
     headers:['Дата','Имя','Телефон','Контакт','Направление','Опыт','Навыки','О себе','Резюме','Статус','Заметки'],
@@ -73,7 +72,7 @@ function doPost(e) {
         data.source || fromComment(data.comment, 'Источник') || '',
         data.page   || fromComment(data.comment, 'Страница') || '',
         data.name || '',
-        data.phone || '',
+        txt(data.phone),
         data.email || '',
         data.message !== undefined ? data.message : cleanComment(data.comment),
         data.extra || '',
@@ -83,8 +82,8 @@ function doPost(e) {
     } else if (sheetName === 'Калькулятор') {
       row = [
         now,
-        data.name || '', data.company || '', data.phone || '', data.email || '',
-        data.tariff || '', data.employees || '', data.system || '',
+        data.name || '', data.company || '', txt(data.phone), data.email || '',
+        data.employees || '', data.system || '',
         saveFile(data.kpBase64, data.kpName, data.kpMime, 'КП — Доверительная'),
         num(data.priceBase), num(data.priceStd), num(data.priceOpt),
         data.kpNum || '',
@@ -94,7 +93,7 @@ function doPost(e) {
     } else {
       row = [
         now,
-        data.name || '', data.phone || '', data.contact || '', data.role || '',
+        data.name || '', txt(data.phone), txt(data.contact), data.role || '',
         data.exp || '', data.skills || '', data.about || '',
         saveFile(data.resumeBase64, data.resumeName, data.resumeMime, 'Резюме — Доверительная') || (data.resumeLink || ''),
         'Новая', ''
@@ -133,6 +132,30 @@ function cleanComment(comment) {
 }
 
 function digits(v) { return String(v === undefined || v === null ? '' : v).replace(/\D/g, '').replace(/^8(?=\d{10}$)/, '7'); }
+
+/**
+ * Телефон «+7 999 …» таблица принимала за формулу и показывала #ERROR!.
+ * Апостроф впереди означает «это текст», в самой ячейке он не виден.
+ */
+function txt(v) {
+  var s = (v === undefined || v === null) ? '' : String(v).trim();
+  return /^[=+\-@]/.test(s) ? "'" + s : s;
+}
+
+// возвращает номера, которые уже успели превратиться в #ERROR!: значение осталось в формуле
+function repairPhones(sheet, col) {
+  var last = sheet.getLastRow();
+  if (last < 2 || col > sheet.getLastColumn()) return 0;
+  var rng = sheet.getRange(2, col, last - 1, 1);
+  var formulas = rng.getFormulas(), values = rng.getValues(), out = [], fixed = 0;
+  for (var i = 0; i < values.length; i++) {
+    var f = formulas[i][0];
+    if (f) { out.push(["'" + String(f).replace(/^=/, '')]); fixed++; }
+    else { out.push([values[i][0]]); }
+  }
+  if (fixed) rng.setValues(out);
+  return fixed;
+}
 
 /**
  * Ищет в «Калькуляторе» последнюю строку с тем же телефоном и пишет туда результат.
@@ -270,15 +293,17 @@ function setupSheets() {
     ensureTail(s, SHEETS_CONFIG['Заявки']);
   }
 
-  // 2. Калькулятор — три числовых столбца с ценами дописываются справа,
-  //    порядок старых столбцов не трогаем, цены старых строк вытаскиваем из «Тарифов»
+  // 2. Калькулятор: цены из старой строки «Тарифы» раскладываем на три столбца,
+  //    сам столбец «Тарифы» после этого убираем — он больше ничего не хранит
   var c = ss.getSheetByName('Калькулятор');
   if (c) {
+    var cfgC = SHEETS_CONFIG['Калькулятор'];
     var lastC = c.getLastRow();
-    ensureTail(c, SHEETS_CONFIG['Калькулятор']);
-    if (lastC > 1) {
-      var old = c.getRange(2, 6, lastC - 1, 1).getValues();
-      var prices = old.map(function (row) {
+    var headC = c.getRange(1, 1, 1, Math.max(c.getLastColumn(), 1)).getValues()[0];
+    var tarCol = headC.indexOf('Тарифы') + 1 || headC.indexOf('Тариф') + 1;
+    var prices = [];
+    if (tarCol && lastC > 1) {
+      prices = c.getRange(2, tarCol, lastC - 1, 1).getValues().map(function (row) {
         var t = String(row[0] || '');
         function grab(label) {
           var m = t.match(new RegExp(label + ':\\s*([\\d\\s.,]+)'));
@@ -286,16 +311,29 @@ function setupSheets() {
         }
         return [grab('Базовая'), grab('Стандарт'), grab('Оптима')];
       });
-      c.getRange(2, 10, prices.length, 3).setValues(prices);
-      report.push('«Калькулятор»: цены разложены на Базовая / Стандарт / Оптима');
     }
+    if (tarCol) {
+      c.deleteColumn(tarCol);
+      report.push('«Калькулятор»: столбец «Тарифы» убран, цены лежат в Базовая / Стандарт / Оптима');
+    }
+    ensureTail(c, cfgC);
+    var baseCol = cfgC.headers.indexOf('Базовая') + 1;
+    if (prices.length) c.getRange(2, baseCol, prices.length, 3).setValues(prices);
   }
 
   // 3. Работа у нас
   var v = ss.getSheetByName('Работа у нас');
   if (v) ensureTail(v, SHEETS_CONFIG['Работа у нас']);
 
-  // 4. новые листы, если каких-то нет
+  // 4. возвращаем телефоны, которые таблица превратила в #ERROR!
+  var repaired = 0;
+  [['Заявки', 6], ['Калькулятор', 4], ['Работа у нас', 3], ['Работа у нас', 4]].forEach(function (pair) {
+    var sh = ss.getSheetByName(pair[0]);
+    if (sh) repaired += repairPhones(sh, pair[1]);
+  });
+  if (repaired) report.push('восстановлено телефонов из #ERROR!: ' + repaired);
+
+  // 5. новые листы, если каких-то нет
   Object.keys(SHEETS_CONFIG).forEach(function (name) {
     if (!ss.getSheetByName(name)) {
       initSheet(ss.insertSheet(name), SHEETS_CONFIG[name]);
@@ -311,6 +349,10 @@ function ensureTail(sheet, cfg) {
   var need = cfg.headers.length;
   if (sheet.getMaxColumns() < need) sheet.insertColumnsAfter(sheet.getMaxColumns(), need - sheet.getMaxColumns());
   sheet.getRange(1, 1, 1, need).setValues([cfg.headers]);
+  // подписи справа от нужных столбцов чистим, иначе остаётся хвост от прежней структуры
+  if (sheet.getLastColumn() > need) {
+    sheet.getRange(1, need + 1, 1, sheet.getLastColumn() - need).clearContent().setBackground(null);
+  }
   headerStyle(sheet, cfg);
   var last = sheet.getLastRow();
   for (var r = 2; r <= last; r++) styleRow(sheet, r, cfg);

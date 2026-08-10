@@ -15,7 +15,7 @@ function track(goal, params){
     if(window.dataLayer) window.dataLayer.push(Object.assign({event: goal}, params || {}));
   }catch(e){}
 }
-var ENDPOINT = 'https://script.google.com/macros/s/AKfycbxLWOlaftsjU3tG0r3q95i5zaj20uvtmTru9ZIHisSUIj5FTvn2oYAJKz3e4N2SDQa7jQ/exec';
+var ENDPOINT = 'https://script.google.com/macros/s/AKfycbzTep7vEAUp2TdSNvvbpWTDGcAyswlh9GUszIcMUTs0naEwNfH-724KCPBC6lLCcp0ziw/exec';
 
 /* Отправка в таблицу. Раньше стоял mode:'no-cors' — ответ был не виден, и при
    любой поломке скрипта таблицы сайт всё равно показывал «спасибо», а заявка

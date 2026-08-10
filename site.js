@@ -189,6 +189,9 @@ document.addEventListener('DOMContentLoaded', function(){
     var end = parseFloat(target.replace(',', '.'));
     if(!(end > 0)) return;
     var t0 = null, dur = 900;
+    // в скрытой вкладке requestAnimationFrame не идёт: цифра застыла бы на «1+» вместо «20+»
+    if(document.hidden) return;
+    document.addEventListener('visibilitychange', function(){ if(document.hidden) el.textContent = raw; });
     function frame(ts){
       if(t0 === null) t0 = ts;
       var p = Math.min(1, (ts - t0) / dur);
@@ -270,7 +273,9 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     draw();
     var timer = setInterval(draw, 2600);
+    // пауза только пока курсор над тизером — раньше анимация умирала после первого наведения
     ct.addEventListener('pointerenter', function(){ clearInterval(timer); });
+    ct.addEventListener('pointerleave', function(){ clearInterval(timer); timer = setInterval(draw, 2600); });
   }
 });
 

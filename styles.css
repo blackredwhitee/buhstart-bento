@@ -425,6 +425,9 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 .risk-q{font:700 24px/1.3 Onest,sans-serif;letter-spacing:-.02em;color:#fff;min-height:66px;transition:opacity .16s}
 .risk-nav{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
 .risk-nav .btn{height:50px;padding:0 26px}
+/* три варианта ответа одинаковые: ховер был только у «Да», у остальных фон стоял инлайном и перебивал его */
+.rbtn{background:rgba(255,255,255,.12);color:#fff;transition:background .18s,transform .18s cubic-bezier(.22,.61,.36,1)}
+.rbtn:hover{background:var(--orange);color:#fff;transform:translateY(-2px)}
 .risk-prog{height:5px;border-radius:3px;background:rgba(255,255,255,.16);margin-top:26px;overflow:hidden}
 .risk-prog span{display:block;height:5px;border-radius:3px;background:var(--orange);width:0;transition:width .4s cubic-bezier(.22,.61,.36,1)}
 .risk-count{font:600 13px/1 Onest,sans-serif;color:rgba(255,255,255,.5);margin-top:12px}

@@ -178,6 +178,21 @@ ${row('Результат', c.result)}
 
 if (cases.length) replaceInside('keysy.html', 'cases', cases.map(caseHtml).join('\n'));
 
+
+/* ---------- кейсы на главной: три компактные плитки ---------- */
+function caseTeaser(c, i) {
+  const metric = c.metric
+    ? `<div class="ct-metric">${esc(c.metric)}</div><div class="ct-note">${esc(c.metricNote || '')}</div>`
+    : '';
+  return `<a class="case-teaser${i === 0 ? ' dark' : ''}" href="keysy.html">
+${c.tag ? `<span class="pill">${esc(c.tag)}</span>` : ''}
+${metric}
+<div class="ct-title">${esc(c.title || '')}</div>
+<div class="more">Смотреть кейс →</div>
+</a>`;
+}
+if (cases.length) replaceInside('index.html', 'cases-home', cases.slice(0, 3).map(caseTeaser).join(''));
+
 /* ---------- тизеры для главной ---------- */
 
 const lines = ['window.BUHSTART_ARTICLES = {};'];

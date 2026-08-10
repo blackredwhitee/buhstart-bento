@@ -355,7 +355,6 @@ document.addEventListener('DOMContentLoaded', function(){
     {day:25, months:[0],        what:'Уведомление по ЕНП',                         who:'все режимы'},
     {day:28, months:[0],        what:'Уплата налогов по ЕНП',                      who:'все режимы'},
     {day:25, months:[0],        what:'Персонифицированные сведения о физлицах',    who:'с сотрудниками'},
-    {day:25, months:[1],        what:'Декларация по УСН за прошлый год: ООО до 25.03, ИП до 25.04', who:'УСН'},
     {day:25, months:[3],        what:'Декларация по УСН за год — ООО',             who:'УСН, ООО'},
     {day:25, months:[4],        what:'Декларация по УСН за год — ИП',              who:'УСН, ИП'},
     {day:31, months:[3],        what:'Бухгалтерская отчётность за прошлый год',    who:'ООО'},
@@ -366,6 +365,17 @@ document.addEventListener('DOMContentLoaded', function(){
   var MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
   var now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
+  // Федеральные нерабочие дни (ст. 112 ТК): срок с такого дня переносится вперёд,
+  // как требует п. 7 ст. 6.1 НК. Переносы выходных, которые правительство назначает
+  // на каждый год отдельно, здесь не учтены — их надо дописывать вручную.
+  var HOLIDAYS = ['01-01','01-02','01-03','01-04','01-05','01-06','01-07','01-08',
+                  '02-23','03-08','05-01','05-09','06-12','11-04'];
+  function isDayOff(d){
+    if(d.getDay() === 0 || d.getDay() === 6) return true;
+    var mm = ('0' + (d.getMonth() + 1)).slice(-2), dd = ('0' + d.getDate()).slice(-2);
+    return HOLIDAYS.indexOf(mm + '-' + dd) > -1;
+  }
+
   function nextDate(rule){
     for(var add = 0; add < 14; add++){
       var d = new Date(today.getFullYear(), today.getMonth() + add, 1);
@@ -374,8 +384,8 @@ document.addEventListener('DOMContentLoaded', function(){
       var last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
       var day = Math.min(rule.day, last);
       var when = new Date(d.getFullYear(), d.getMonth(), day);
-      // срок переносится с выходного на ближайший рабочий день
-      while(when.getDay() === 0 || when.getDay() === 6) when.setDate(when.getDate() + 1);
+      // срок переносится с выходного или праздника на ближайший рабочий день
+      while(isDayOff(when)) when.setDate(when.getDate() + 1);
       if(when >= today) return when;
     }
     return null;

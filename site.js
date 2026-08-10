@@ -340,81 +340,98 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 
-/* ---------- календарь отчётности: ближайшие сроки ---------- */
+/* ---------- календарь отчётности: ближайшие сроки ----------
+   Правила лежат в content/calendar.json, чтобы их можно было менять из редактора
+   без правки кода. Если файл не открылся, работает встроенный набор — календарь
+   не должен пропадать со страницы из-за одного файла. */
 document.addEventListener('DOMContentLoaded', function(){
   var box = document.getElementById('cal');
   if(!box) return;
 
-  // повторяющиеся сроки: день месяца → что сдавать. Месяцы: 1–12, 0 = каждый месяц
-  var RULES = [
-    {day:25, months:[1,4,7,10], what:'НДС — уплата 1/3 за квартал',                who:'ОСНО'},
-    {day:25, months:[1,4,7,10], what:'Декларация по НДС за квартал',               who:'ОСНО'},
-    {day:25, months:[4,7,10],   what:'Аванс по УСН за квартал',                    who:'УСН'},
-    {day:25, months:[4,7,10],   what:'Расчёт по страховым взносам (РСВ)',          who:'с сотрудниками'},
-    {day:25, months:[4,7,10],   what:'6-НДФЛ за квартал',                          who:'с сотрудниками'},
-    {day:25, months:[0],        what:'Уведомление по ЕНП',                         who:'все режимы'},
-    {day:28, months:[0],        what:'Уплата налогов по ЕНП',                      who:'все режимы'},
-    {day:25, months:[0],        what:'Персонифицированные сведения о физлицах',    who:'с сотрудниками'},
-    {day:25, months:[3],        what:'Декларация по УСН за год — ООО',             who:'УСН, ООО'},
-    {day:25, months:[4],        what:'Декларация по УСН за год — ИП',              who:'УСН, ИП'},
-    {day:31, months:[3],        what:'Бухгалтерская отчётность за прошлый год',    who:'ООО'},
-    {day:15, months:[0],        what:'Взносы на травматизм и ЕФС-1 (при событиях)',who:'с сотрудниками'},
-    {day:31, months:[12],       what:'Фиксированные взносы ИП за себя',           who:'ИП'}
-  ];
+  var FALLBACK = {
+    holidays: ['01-01','01-02','01-03','01-04','01-05','01-06','01-07','01-08',
+               '02-23','03-08','05-01','05-09','06-12','11-04'],
+    horizonDays: 60, maxRows: 5,
+    // повторяющиеся сроки: день месяца → что сдавать. Месяцы: 1–12, 0 = каждый месяц
+    rules: [
+      {day:25, months:[1,4,7,10], what:'НДС — уплата 1/3 за квартал',                who:'ОСНО'},
+      {day:25, months:[1,4,7,10], what:'Декларация по НДС за квартал',               who:'ОСНО'},
+      {day:25, months:[4,7,10],   what:'Аванс по УСН за квартал',                    who:'УСН'},
+      {day:25, months:[4,7,10],   what:'Расчёт по страховым взносам (РСВ)',          who:'с сотрудниками'},
+      {day:25, months:[4,7,10],   what:'6-НДФЛ за квартал',                          who:'с сотрудниками'},
+      {day:25, months:[0],        what:'Уведомление по ЕНП',                         who:'все режимы'},
+      {day:28, months:[0],        what:'Уплата налогов по ЕНП',                      who:'все режимы'},
+      {day:25, months:[0],        what:'Персонифицированные сведения о физлицах',    who:'с сотрудниками'},
+      {day:25, months:[3],        what:'Декларация по УСН за год — ООО',             who:'УСН, ООО'},
+      {day:25, months:[4],        what:'Декларация по УСН за год — ИП',              who:'УСН, ИП'},
+      {day:31, months:[3],        what:'Бухгалтерская отчётность за прошлый год',    who:'ООО'},
+      {day:15, months:[0],        what:'Взносы на травматизм и ЕФС-1 (при событиях)',who:'с сотрудниками'},
+      {day:31, months:[12],       what:'Фиксированные взносы ИП за себя',            who:'ИП'}
+    ]
+  };
 
   var MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
   var now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  // Федеральные нерабочие дни (ст. 112 ТК): срок с такого дня переносится вперёд,
-  // как требует п. 7 ст. 6.1 НК. Переносы выходных, которые правительство назначает
-  // на каждый год отдельно, здесь не учтены — их надо дописывать вручную.
-  var HOLIDAYS = ['01-01','01-02','01-03','01-04','01-05','01-06','01-07','01-08',
-                  '02-23','03-08','05-01','05-09','06-12','11-04'];
-  function isDayOff(d){
-    if(d.getDay() === 0 || d.getDay() === 6) return true;
-    var mm = ('0' + (d.getMonth() + 1)).slice(-2), dd = ('0' + d.getDate()).slice(-2);
-    return HOLIDAYS.indexOf(mm + '-' + dd) > -1;
-  }
+  function render(cfg){
+    var rules = (cfg && cfg.rules && cfg.rules.length) ? cfg.rules : FALLBACK.rules;
+    var holidays = (cfg && cfg.holidays) || FALLBACK.holidays;
+    var horizon = (cfg && cfg.horizonDays) || FALLBACK.horizonDays;
+    var maxRows = (cfg && cfg.maxRows) || FALLBACK.maxRows;
 
-  function nextDate(rule){
-    for(var add = 0; add < 14; add++){
-      var d = new Date(today.getFullYear(), today.getMonth() + add, 1);
-      var m = d.getMonth() + 1;
-      if(rule.months[0] !== 0 && rule.months.indexOf(m) < 0) continue;
-      var last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-      var day = Math.min(rule.day, last);
-      var when = new Date(d.getFullYear(), d.getMonth(), day);
-      // срок переносится с выходного или праздника на ближайший рабочий день
-      while(isDayOff(when)) when.setDate(when.getDate() + 1);
-      if(when >= today) return when;
+    // федеральные нерабочие дни: срок с такого дня переносится вперёд (п. 7 ст. 6.1 НК)
+    function isDayOff(d){
+      if(d.getDay() === 0 || d.getDay() === 6) return true;
+      var mm = ('0' + (d.getMonth() + 1)).slice(-2), dd = ('0' + d.getDate()).slice(-2);
+      return holidays.indexOf(mm + '-' + dd) > -1;
     }
-    return null;
+
+    function nextDate(rule){
+      for(var add = 0; add < 14; add++){
+        var d = new Date(today.getFullYear(), today.getMonth() + add, 1);
+        var m = d.getMonth() + 1;
+        if(rule.months[0] !== 0 && rule.months.indexOf(m) < 0) continue;
+        var last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+        var day = Math.min(rule.day, last);
+        var when = new Date(d.getFullYear(), d.getMonth(), day);
+        while(isDayOff(when)) when.setDate(when.getDate() + 1);
+        if(when >= today) return when;
+      }
+      return null;
+    }
+
+    var all = rules.map(function(r){ return {when: nextDate(r), r: r} })
+                   .filter(function(x){ return x.when })
+                   .sort(function(a, b){ return a.when - b.when });
+    // показываем ближайшие 60 дней, но не меньше трёх строк
+    var near = all.filter(function(x){ return (x.when - today) / 86400000 <= horizon });
+    var items = (near.length >= 3 ? near : all).slice(0, maxRows);
+
+    function plural(n){
+      var a = n % 10, b = n % 100;
+      if(b > 10 && b < 20) return 'дней';
+      if(a === 1) return 'день';
+      if(a > 1 && a < 5) return 'дня';
+      return 'дней';
+    }
+
+    function esc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    box.innerHTML = items.map(function(x){
+      var left = Math.round((x.when - today) / 86400000);
+      var urgent = left <= 7;
+      return '<div class="cal-row' + (urgent ? ' cal-hot' : '') + '">'
+        + '<div class="cal-date"><b>' + x.when.getDate() + '</b><span>' + MONTHS[x.when.getMonth()] + '</span></div>'
+        + '<div class="cal-what"><div class="cal-title">' + esc(x.r.what) + '</div><div class="cal-who">' + esc(x.r.who) + '</div></div>'
+        + '<div class="cal-left">' + (left === 0 ? 'сегодня' : 'через ' + left + ' ' + plural(left)) + '</div>'
+        + '</div>';
+    }).join('');
   }
 
-  var all = RULES.map(function(r){ return {when: nextDate(r), r: r} })
-                 .filter(function(x){ return x.when })
-                 .sort(function(a, b){ return a.when - b.when });
-  // показываем ближайшие 60 дней, но не меньше трёх строк
-  var near = all.filter(function(x){ return (x.when - today) / 86400000 <= 60 });
-  var items = (near.length >= 3 ? near : all).slice(0, 5);
-
-  function plural(n){
-    var a = n % 10, b = n % 100;
-    if(b > 10 && b < 20) return 'дней';
-    if(a === 1) return 'день';
-    if(a > 1 && a < 5) return 'дня';
-    return 'дней';
-  }
-
-  box.innerHTML = items.map(function(x){
-    var left = Math.round((x.when - today) / 86400000);
-    var urgent = left <= 7;
-    return '<div class="cal-row' + (urgent ? ' cal-hot' : '') + '">'
-      + '<div class="cal-date"><b>' + x.when.getDate() + '</b><span>' + MONTHS[x.when.getMonth()] + '</span></div>'
-      + '<div class="cal-what"><div class="cal-title">' + x.r.what + '</div><div class="cal-who">' + x.r.who + '</div></div>'
-      + '<div class="cal-left">' + (left === 0 ? 'сегодня' : 'через ' + left + ' ' + plural(left)) + '</div>'
-      + '</div>';
-  }).join('');
+  fetch('content/calendar.json', {cache: 'no-cache'})
+    .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+    .then(render)
+    ['catch'](function(){ render(FALLBACK); });
 });
 
 /* ---------- тест «риск налоговой проверки» по открытым критериям ФНС ---------- */

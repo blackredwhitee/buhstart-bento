@@ -10,7 +10,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE = 'https://blackredwhitee.github.io/buhstart-bento/';
+const BASE = 'https://buhstart.ru/';
 const COVERS = {
   'Налоги': 'uploads/cover-nalogi.svg',
   'Налоговая': 'uploads/cover-nalogovaya.svg',

@@ -571,3 +571,18 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 .p-more-t{color:var(--green-ink)}
 .risk-res .risk-light.low{background:var(--green)}
 .fb-save.ok,.formerr.ok{color:var(--green)}
+
+/* зелёная версия крупной плашки: там, где речь о результате, а не о призыве */
+.statement.green{background:var(--green)}
+.statement.green::after{background:rgba(255,255,255,.12)}
+.nrow .d{color:var(--green)}
+.tile-green .check b{color:var(--green-ink)}
+.tile-green .cardtext,.tile-green p{color:var(--ink2)}
+.p-exp{color:var(--green)}
+.mark-green{background-image:linear-gradient(var(--green),var(--green));background-repeat:no-repeat;
+  background-size:100% .16em;background-position:0 88%}
+.cards-green .card-top{border-top-color:var(--green)}
+/* «Почему выбирают нас»: чётные пункты зелёным контуром — ритм двух цветов */
+.why .r:nth-child(even) .n{-webkit-text-stroke-color:var(--green-light)}
+.faq .item.open .q{color:var(--green-ink)}
+.p-certs li::before{background:var(--green)}

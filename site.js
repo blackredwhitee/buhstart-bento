@@ -67,9 +67,18 @@ document.addEventListener('DOMContentLoaded', function(){
       : (isAsk ? 'Короткий вопрос по учёту, налогам или отчётности. Отвечаем в рабочее время.'
                : 'Оставьте контакты — перезвоним в течение 2 часов в рабочее время.');
     modal.querySelector('.m-question').style.display = (isAsk || isPersonal) ? 'block' : 'none';
+    var isRisk = situation === 'Тест на риск проверки';
     modal.dataset.source = isPersonal ? 'Личное обращение к руководителю'
+      : isRisk ? 'Тест на риск проверки'
       : situation ? ('Уточнить цену: ' + situation)
       : (isAsk ? 'Вопрос бухгалтеру' : 'Записаться на консультацию');
+    // тип обращения — отдельным столбцом в таблице, чтобы не разбирать комментарий глазами
+    modal.dataset.kind = isPersonal ? 'Руководителю лично'
+      : isRisk ? 'Риск проверки'
+      : isAsk ? 'Вопрос бухгалтеру'
+      : situation ? 'Уточнить цену'
+      : 'Консультация';
+    modal.dataset.extra = (isRisk && modal.dataset.riskResult) ? modal.dataset.riskResult : '';
   }
   document.querySelectorAll('[data-ask]').forEach(function(b){ b.addEventListener('click', function(){ openModal('ask'); track('lead_open', {kind:'question'}); }); });
   document.querySelectorAll('[data-lead]').forEach(function(b){ b.addEventListener('click', function(){ openModal('lead', b.dataset.lead || ''); track('lead_open', {kind: b.dataset.lead || 'lead'}); }); });
@@ -101,9 +110,20 @@ document.addEventListener('DOMContentLoaded', function(){
       // контакт с собакой — это почта, а не телефон
       if(data.contact && data.contact.indexOf('@') > -1 && !data.email){ data.email = data.contact; }
       var box = form.closest('.formbox') || form.closest('.box') || form.parentNode;
-      var src = form.dataset.source || (modal && modal.dataset.source) || document.title;
-      // в таблице должно быть видно и форму, и страницу, с которой пришла заявка
-      data.comment = [data.comment, 'Источник: ' + src, 'Страница: ' + location.pathname.replace(/^\//, '')]
+      // форма во всплывающем окне и форма на странице — это разные источники;
+      // раньше встроенная форма без своей подписи подхватывала подпись от модалки
+      var inModal = !!form.closest('.modal') && !!modal;
+      var src = inModal ? (modal.dataset.source || 'Всплывающая форма')
+                        : (form.dataset.source || document.title);
+      var kind = inModal ? (modal.dataset.kind || 'Консультация')
+                        : (form.dataset.kind || (data.type === 'vacancy' ? 'Анкета кандидата' : 'Консультация'));
+      data.kind = kind;                                       // тип обращения
+      data.source = src;                                      // конкретная форма или кнопка
+      data.page = location.pathname.replace(/^\//, '') || 'index.html';
+      data.message = data.comment || '';                      // только то, что написал человек
+      data.extra = inModal ? (modal.dataset.extra || '') : (form.dataset.extra || '');
+      // старый скрипт таблицы читает всё из «Комментария» — оставляем, пока он не заменён
+      data.comment = [data.message, 'Тип: ' + kind, 'Источник: ' + src, 'Страница: ' + data.page, data.extra]
         .filter(Boolean).join(' | ');
 
       function finish(){
@@ -380,7 +400,7 @@ document.addEventListener('DOMContentLoaded', function(){
     'Есть контрагенты, о которых почти ничего не известно: нет сайта, массовый адрес, нет договора на руках?'
   ];
 
-  var i = 0, score = 0;
+  var i = 0, score = 0, answers = [];
   var qEl = document.getElementById('risk-q'), body = document.getElementById('risk-body'),
       res = document.getElementById('risk-res'), fill = document.getElementById('risk-fill'),
       cnt = document.getElementById('risk-count');
@@ -394,6 +414,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   function answer(points){
     score += points;
+    answers.push(QS[i] + ' — ' + (points === 1 ? 'да' : points === 0 ? 'нет' : 'не знаю'));
     i++;
     if(i < QS.length){ draw(); return; }
     body.style.display = 'none';
@@ -416,9 +437,9 @@ document.addEventListener('DOMContentLoaded', function(){
     light.textContent = score + ' из ' + QS.length;
     verdict.textContent = text;
     advice.textContent = tip;
-    // фиксируем результат, чтобы менеджер видел контекст обращения
+    // результат теста уходит в заявку целиком: вердикт и все ответы
     var m = document.querySelector('.modal');
-    if(m) m.dataset.riskScore = score;
+    if(m) m.dataset.riskResult = text + ' (' + score + ' из ' + QS.length + '). ' + answers.join('; ');
     track('risk_done', {score: score, level: level});
   }
 
@@ -426,7 +447,7 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('risk-no').addEventListener('click', function(){ answer(0) });
   document.getElementById('risk-idk').addEventListener('click', function(){ answer(0.5) });
   document.getElementById('risk-again').addEventListener('click', function(){
-    i = 0; score = 0; res.classList.remove('show'); body.style.display = ''; draw();
+    i = 0; score = 0; answers = []; res.classList.remove('show'); body.style.display = ''; draw();
   });
   draw();
 });

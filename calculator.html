@@ -13,7 +13,7 @@
 <link rel="icon" href="uploads/favicon-32.png?v=4" sizes="32x32" type="image/png">
 <link rel="icon" href="uploads/favicon.png?v=4" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="uploads/favicon-180.png?v=4">
-<link rel="stylesheet" href="styles.css?v=44">
+<link rel="stylesheet" href="styles.css?v=45">
 
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Главная", "item": "https://blackredwhitee.github.io/buhstart-bento/index.html"}, {"@type": "ListItem", "position": 2, "name": "Калькулятор", "item": "https://blackredwhitee.github.io/buhstart-bento/calculator.html"}]}</script>
 <meta property="og:image" content="https://blackredwhitee.github.io/buhstart-bento/uploads/og-calc.png">
@@ -554,7 +554,7 @@ a{color:#F07828}
 <div class="modal"><div class="box"><form data-form="lead" style="display:flex;flex-direction:column;gap:12px"><div class="kicker m-kicker">Вопрос бухгалтеру</div><h3 class="m-title" style="font-size:24px;font-weight:700;letter-spacing:-0.02em">Спросите — ответим</h3><p class="cardtext m-sub"></p><textarea class="field m-question" name="comment" placeholder="Ваш вопрос"></textarea><input class="field" name="name" placeholder="Имя" required><input class="field" name="phone" placeholder="Телефон или Telegram" required><label class="agree"><input type="checkbox" name="agree"> Я даю <a href="soglasie.html" target="_blank">согласие на обработку персональных данных</a> и принимаю <a href="privacy.html" target="_blank">политику конфиденциальности</a></label><div class="formerr">Без согласия на обработку данных отправить нельзя</div><button class="btn btn-p btn-block" type="submit">Отправить</button></form><div class="done"><div class="ok">✓</div><div style="font-size:17px;font-weight:600;margin-top:16px">Отправлено</div><p class="cardtext" style="margin-top:8px">Ответим в течение 15 минут в рабочее время.</p><button class="btn btn-s" style="margin-top:20px" data-close>Закрыть</button></div></div>
 <div class="modal"><div class="box"><form data-form="lead" style="display:flex;flex-direction:column;gap:12px"><div class="kicker m-kicker">Вопрос бухгалтеру</div><h3 class="m-title" style="font-size:24px;font-weight:700;letter-spacing:-0.02em">Спросите — ответим</h3><p class="cardtext m-sub"></p><textarea class="field m-question" name="comment" placeholder="Ваш вопрос"></textarea><input class="field" name="name" placeholder="Имя" required><input class="field" name="phone" placeholder="Телефон или Telegram" required><label class="agree"><input type="checkbox" name="agree"> Я даю <a href="soglasie.html" target="_blank">согласие на обработку персональных данных</a> и принимаю <a href="privacy.html" target="_blank">политику конфиденциальности</a></label><div class="formerr">Без согласия на обработку данных отправить нельзя</div><button class="btn btn-p btn-block" type="submit">Отправить</button></form><div class="done"><div class="ok">✓</div><div style="font-size:17px;font-weight:600;margin-top:16px">Отправлено</div><p class="cardtext" style="margin-top:8px">Ответим в течение 15 минут в рабочее время.</p><button class="btn btn-s" style="margin-top:20px" data-close>Закрыть</button></div></div></div>
 <script src="vendor-jszip.min.js"></script>
-<script src="site.js?v=44"></script>
+<script src="site.js?v=45"></script>
 <script>
 const BITRIX_WEBHOOK = '';
 const SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbxLWOlaftsjU3tG0r3q95i5zaj20uvtmTru9ZIHisSUIj5FTvn2oYAJKz3e4N2SDQa7jQ/exec';
@@ -693,7 +693,9 @@ function sendFeedback(text){
   try{
     fetch(SHEETS_WEBHOOK,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
       body:JSON.stringify({type:'lead',name:A.name||'Калькулятор',phone:A.phone||'',
-        comment:'Обратная связь по расчёту: '+text+' | Источник: Калькулятор | Страница: calculator.html'})}).catch(function(){});
+        kind:'Обратная связь по расчёту', source:'Калькулятор стоимости', page:'calculator.html',
+        message:text, extra:'', 
+        comment:'Обратная связь по расчёту: '+text+' | Тип: Обратная связь по расчёту | Источник: Калькулятор стоимости | Страница: calculator.html'})}).catch(function(){});
   }catch(e){}
 }
 function goNext(){if(!validate(curStep))return;collect(curStep);goingBack=false;showStep(nxStep(curStep))}
@@ -950,9 +952,14 @@ async function saveToSheets(r, num, kpB64){
   if(A.staffForeign==='yes'){staffParts.push('Иностр.: '+(A.foreignCount||1)+' чел.')}
   const payload = JSON.stringify({
       type:'calculator',
+      kind: 'Расчёт с калькулятора',
+      source: 'Калькулятор стоимости',
+      page: 'calculator.html',
       name: A.name, phone: A.phone, email: '',
       company: A.entity||'',
       tariff: 'Базовая: '+fmt(r.baseTotal)+' | Стандарт: '+fmt(r.stdTotal)+' | Оптима: '+fmt(r.optTotal),
+      priceBase: r.baseTotal, priceStd: r.stdTotal, priceOpt: r.optTotal,
+      kpNum: num,
       employees: staffParts.join(', ')||'—',
       system: A.isNull?'Нулевая':(taxN[A.tax]||A.tax||''),
       kpBase64: kpB64||'',

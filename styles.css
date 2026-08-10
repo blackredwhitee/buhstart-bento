@@ -380,9 +380,9 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 .person .b{padding:18px 20px 22px}
 /* ---------- кейс ---------- */
 .case{position:relative;background:var(--tile);border-radius:var(--r-tile);padding:36px 38px;overflow:hidden}
-.case-tag{position:absolute;right:26px;top:26px}
-.case-title{font:800 27px/1.18 Onest,sans-serif;letter-spacing:-.03em;max-width:80%;margin-bottom:6px}
-.case-metric{font:800 54px/1 Onest,sans-serif;letter-spacing:-.05em;color:var(--orange);margin:18px 0 4px}
+.case-tag{display:inline-block;margin-bottom:14px}
+.case-title{font:800 22px/1.25 Onest,sans-serif;letter-spacing:-.02em;margin-bottom:4px}
+.case-metric{font:800 36px/1.1 Onest,sans-serif;letter-spacing:-.04em;color:var(--orange);margin:16px 0 4px}
 .case-metric small{display:block;font:600 14px/1.45 Onest,sans-serif;letter-spacing:0;color:var(--ink2);margin-top:10px}
 .case-row{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
 .case-label{font:600 12px/1 Onest,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--orange);margin-bottom:8px}
@@ -390,9 +390,9 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 .case-text{font-size:15px;line-height:1.6;color:var(--ink2)}
 @media(max-width:767px){
   .case{padding:26px 22px}
-  .case-title{font-size:22px;max-width:100%}
-  .case-metric{font-size:40px}
-  .case-tag{position:static;display:inline-block;margin-bottom:14px}
+  .case-title{font-size:20px}
+  .case-metric{font-size:30px}
+
 }
   .tilt-l,.tilt-r,.bento .dark,.statement{transform:none}
 }

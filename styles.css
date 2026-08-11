@@ -178,7 +178,7 @@ form .btn{height:52px}
 .person{background:var(--tile);border-radius:var(--r-card);overflow:hidden;
   box-shadow:0 1px 2px rgba(26,22,20,.04),0 8px 22px rgba(26,22,20,.05)}
 .person img{width:100%;height:280px;object-fit:cover;object-position:50% 15%;display:block;background:var(--line)}
-.person .b{padding:18px 20px 22px}
+.person .b{padding:16px 18px 18px}
 .person .n{font:600 16px/1.3 Onest,sans-serif}
 
 .post{display:block;background:var(--tile);border-radius:var(--r-card);overflow:hidden;color:var(--ink);transition:transform .2s}
@@ -363,8 +363,8 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 /* Карточки равняются по высоте за счёт ФОТО, а не за счёт растягивания текста —
    иначе под текстом появлялись большие пустоты. */
 .person{display:flex;flex-direction:column}
-.person .p-photo{position:relative;flex:1 1 auto;min-height:250px;display:flex;overflow:hidden}
-.person .p-photo img{width:100%;height:100%;flex:1;object-fit:cover;object-position:50% 15%}
+.person .p-photo{position:relative;flex:none;height:280px;display:flex;overflow:hidden}
+.person .p-photo img{width:100%;height:280px;flex:1;object-fit:cover;object-position:50% 15%}
 .person .b{flex:none;display:flex;flex-direction:column}
 /* «Также в команде» — компактные строки без фото */
 .tm-list{margin-top:18px;display:flex;flex-direction:column}
@@ -378,9 +378,9 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 @media(max-width:767px){.tm-row{grid-template-columns:1fr;gap:10px}}
 
 /* специализация лежит на фотографии, а не отдельной плашкой в тексте */
-.p-spec{position:absolute;left:12px;right:12px;bottom:12px;padding:8px 12px;border-radius:12px;
-  background:rgba(255,255,255,.94);color:var(--ink);font:600 12px/1.25 Onest,sans-serif;
-  text-align:center;box-shadow:0 4px 16px rgba(24,20,18,.22);backdrop-filter:blur(4px)}
+.p-spec{position:absolute;top:10px;right:10px;max-width:72%;padding:6px 10px;border-radius:10px;
+  background:rgba(255,255,255,.93);color:var(--ink);font:600 11px/1.3 Onest,sans-serif;
+  text-align:right;box-shadow:0 3px 12px rgba(24,20,18,.18);backdrop-filter:blur(4px)}
 
 /* Регалии видны всегда и занимают одинаковую высоту у всех: у кого текста больше —
    область прокручивается внутри карточки. Размытие края включается только тогда,
@@ -403,7 +403,7 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 .p-certs{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
 .p-certs li{position:relative;padding-left:14px;font-size:12px;line-height:1.45;color:var(--ink3)}
 .p-certs li::before{content:"";position:absolute;left:0;top:.5em;width:5px;height:5px;border-radius:50%;background:var(--orange)}
-.person .b{padding:18px 20px 22px}
+.person .b{padding:16px 18px 18px}
 
 /* ---------- кейсы на главной ---------- */
 .case-teaser{display:flex;flex-direction:column;background:var(--tile);border-radius:var(--r-tile);padding:28px 30px;color:var(--ink);transition:transform .18s}

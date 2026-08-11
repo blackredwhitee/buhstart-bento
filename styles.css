@@ -578,3 +578,7 @@ figure.card blockquote{flex:1}
   background:var(--pill-bg);color:var(--pill-ink);font:700 14px/1 Onest,sans-serif}
 .rev-name{font-size:13.5px;font-weight:600;line-height:1.3}
 .rate-link{display:inline-flex;align-items:center;gap:6px;font:600 13px/1 Onest,sans-serif;margin-top:6px}
+
+/* у Курбатовой лицо ниже центра кадра: сдвигаем область показа вниз,
+   иначе снимок обрезается по плечи */
+.person .p-photo img[src*="kurbatova"]{object-position:50% 45%}

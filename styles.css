@@ -4,7 +4,7 @@
 @font-face{font-family:Onest;src:url('uploads/Onest-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;font-weight:400 800;font-display:swap}
 
 :root{
-  --bg:#ECECEF; --tile:#FFFFFF; --dark:#1A1614; --orange:#F07828; --orange-h:#E56800;
+  --bg:#F2EFEA; --tile:#FFFFFF; --dark:#1A1614; --orange:#F07828; --orange-h:#E56800;
   --ink:#18181B; --ink2:#52525B; --ink3:#71717A; --line:#E4E4E7; --inset:#F4F4F5;
   --pill-bg:#FFEDD9; --pill-ink:#B4530F; --ok:#2D7A4F; --err:#C4453A;
   --green:#0E8A67; --green-soft:#E6F4EF; --green-ink:#0A6249; --green-light:#5FCFAB;
@@ -23,12 +23,14 @@ h3{font-size:17px;line-height:1.35;font-weight:600;letter-spacing:0}
 p{margin:0;text-wrap:pretty}
 p,li,td,h1,h2,h3,blockquote{overflow-wrap:break-word}
 .wrap{max-width:1100px;margin:0 auto;padding:0 24px}
-.tile{background:var(--tile);border-radius:var(--r-tile);padding:40px}
+.tile{background:var(--tile);border-radius:var(--r-tile);padding:40px;
+  box-shadow:0 1px 2px rgba(26,22,20,.04),0 10px 28px rgba(26,22,20,.055)}
 .tile-tight{padding:28px}
 .tile-dark{color:#fff;border-radius:var(--r-tile);padding:48px 44px}
 .tile-dark h2{color:#fff}
 .tile-dark p{color:rgba(255,255,255,.6)}
-.card{background:var(--tile);border-radius:var(--r-card);padding:24px}
+.card{background:var(--tile);border-radius:var(--r-card);padding:24px;
+  box-shadow:0 1px 2px rgba(26,22,20,.035),0 6px 18px rgba(26,22,20,.045)}
 .card-top{border-top:3px solid var(--orange)}
 .grid{display:grid;gap:var(--gap)}
 .g2{grid-template-columns:repeat(2,1fr)}
@@ -173,7 +175,8 @@ form .btn{height:52px}
 .why h3{font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.2;color:#fff}
 .why p{font-size:15px;line-height:1.6}
 
-.person{background:var(--tile);border-radius:var(--r-card);overflow:hidden}
+.person{background:var(--tile);border-radius:var(--r-card);overflow:hidden;
+  box-shadow:0 1px 2px rgba(26,22,20,.04),0 8px 22px rgba(26,22,20,.05)}
 .person img{width:100%;height:280px;object-fit:cover;object-position:50% 15%;display:block;background:var(--line)}
 .person .b{padding:18px 20px 22px}
 .person .n{font:600 16px/1.3 Onest,sans-serif}
@@ -559,3 +562,13 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 .check b{color:var(--green)}
 .tile-dark .check b{color:var(--green-light)}
 .cmp .c.us i{color:var(--green-light)}
+
+/* карточки внутри плиток не поднимаем: тень нужна плитке, а не её содержимому */
+.tile .card,.tile-dark .card,.tile figure.card{box-shadow:none}
+
+/* Отзыв — от человека: кружок с инициалами вместо безымянной цитаты */
+.rev-who{display:flex;align-items:center;gap:11px;margin-top:16px}
+.rev-ava{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:var(--pill-bg);color:var(--pill-ink);font:700 14px/1 Onest,sans-serif}
+.rev-name{font-size:13.5px;font-weight:600}
+.rate-link{display:inline-flex;align-items:center;gap:6px;font:600 13px/1 Onest,sans-serif}

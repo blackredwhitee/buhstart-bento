@@ -76,6 +76,7 @@ function find_blocks(string $html): array
     [$from, $to] = main_range($html);
     $blocks = [];
     $pos = $from;
+    $section = 'Начало страницы';
     $tagsRe = implode('|', EDIT_TAGS);
 
     while ($pos < $to && preg_match('~<(' . $tagsRe . ')(\s[^>]*)?>~i', $html, $m, PREG_OFFSET_CAPTURE, $pos)) {
@@ -111,12 +112,18 @@ function find_blocks(string $html): array
         $isLeaf = !preg_match('~<\s*/?\s*(div|section|article|ul|ol|table|tr|td|form|script|style|h[1-6]|p|button|img|svg|input|textarea|details|figure|iframe|main|nav|header|footer)\b~i', $inner);
 
         if ($isLeaf && trim(strip_tags($inner)) !== '') {
+            $plain = trim(preg_replace('~\s+~u', ' ', strip_tags($inner)) ?? '');
+            // заголовки запоминаем: по ним человек поймёт, к какому блоку относится текст
+            if (in_array($tag, ['h1', 'h2', 'h3'], true) && $plain !== '') {
+                $section = $plain;
+            }
             $blocks[] = [
-                'tag'   => $tag,
-                'start' => $innerAt,
-                'end'   => $closeAt,
-                'html'  => $inner,
-                'text'  => trim(preg_replace('~\s+~u', ' ', strip_tags($inner)) ?? ''),
+                'tag'     => $tag,
+                'start'   => $innerAt,
+                'end'     => $closeAt,
+                'html'    => $inner,
+                'text'    => $plain,
+                'section' => $section ?? 'Начало страницы',
             ];
             $pos = $closeAt;                            // внутрь листа не заходим
         } else {
@@ -124,6 +131,43 @@ function find_blocks(string $html): array
         }
     }
     return $blocks;
+}
+
+/**
+ * Разметку показываем человеку в понятном виде и возвращаем обратно при сохранении:
+ *   ==текст==            — выделение оранжевым
+ *   **текст**            — жирный
+ *   [текст](адрес)       — ссылка
+ *   перенос строки       — <br>
+ * Так в поле не видно ни одного тега, и стереть их случайно нельзя.
+ */
+function html_to_simple(string $html): string
+{
+    $t = $html;
+    $t = preg_replace('~<span class="mark">(.*?)</span>~is', '==$1==', $t) ?? $t;
+    $t = preg_replace('~<(?:b|strong)>(.*?)</(?:b|strong)>~is', '**$1**', $t) ?? $t;
+    $t = preg_replace('~<a[^>]*href="([^"]*)"[^>]*>(.*?)</a>~is', '[$2]($1)', $t) ?? $t;
+    $t = preg_replace('~<br\s*/?>~i', "\n", $t) ?? $t;
+    // остальное оформление оставляем как есть: лучше показать редкий тег,
+    // чем молча потерять, например, белое выделение на тёмной плитке
+    $keep = implode('|', KEEP_TAGS);
+    $t = preg_replace('~<(?!/?(?:' . $keep . ')\b)[^>]+>~i', '', $t) ?? $t;
+    return trim(html_entity_decode($t, ENT_QUOTES, 'UTF-8'));
+}
+
+function simple_to_html(string $text): string
+{
+    $t = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
+    $t = preg_replace('~\[([^\]]+)\]\(([^)\s]+)\)~u', '<a href="$2">$1</a>', $t) ?? $t;
+    $t = preg_replace('~==(.+?)==~us', '<span class="mark">$1</span>', $t) ?? $t;
+    $t = preg_replace('~\*\*(.+?)\*\*~us', '<b>$1</b>', $t) ?? $t;
+    $t = preg_replace('~\R~u', '<br>', $t) ?? $t;
+    // возвращаем теги, которые человек не трогал: они были экранированы выше
+    $keep = implode('|', KEEP_TAGS);
+    $t = preg_replace_callback('~&lt;(/?)(' . $keep . ')((?:(?!&gt;).)*)&gt;~i', function ($m) {
+        return '<' . $m[1] . strtolower($m[2]) . html_entity_decode($m[3], ENT_QUOTES, 'UTF-8') . '>';
+    }, $t) ?? $t;
+    return trim($t);
 }
 
 /** Оставляем только оформление: ссылки, выделение, перенос строки. */
@@ -183,7 +227,7 @@ function apply_blocks(string $file, array $values, string $expectHash): array
             continue;
         }
         $new = (string)($values[$i] ?? $values[(string)$i]);
-        $new = sanitize_inline(trim($new));
+        $new = sanitize_inline(simple_to_html(trim($new)));
         if ($new === '' || $new === $blocks[$i]['html']) {
             continue;                                  // пусто не пишем: так текст не потеряется
         }
@@ -199,4 +243,38 @@ function apply_blocks(string $file, array $values, string $expectHash): array
         return [false, 'Не удалось записать файл страницы.'];
     }
     return [true, 'Сохранено. Изменено фрагментов: ' . $changed . '. Копия старой версии сохранена.'];
+}
+
+/** Поиск фразы по всем правимым страницам: возвращает страницу, раздел и кусок текста. */
+function search_pages(string $q): array
+{
+    $q = trim($q);
+    if (mb_strlen($q) < 2) {
+        return [];
+    }
+    $out = [];
+    foreach (editable_pages() as $file => $name) {
+        $path = SITE_DIR . '/' . $file;
+        if (!is_file($path)) {
+            continue;
+        }
+        $html = (string)file_get_contents($path);
+        foreach (find_blocks($html) as $i => $b) {
+            if (mb_stripos($b['text'], $q) === false) {
+                continue;
+            }
+            $pos = mb_stripos($b['text'], $q);
+            $from = max(0, $pos - 40);
+            $cut  = mb_substr($b['text'], $from, mb_strlen($q) + 90);
+            $snippet = htmlspecialchars($cut, ENT_QUOTES, 'UTF-8');
+            $snippet = preg_replace('~(' . preg_quote(htmlspecialchars($q, ENT_QUOTES, 'UTF-8'), '~') . ')~ui',
+                                    '<mark>$1</mark>', $snippet) ?? $snippet;
+            $out[] = ['file' => $file, 'name' => $name, 'i' => $i,
+                      'section' => $b['section'], 'snippet' => ($from ? '…' : '') . $snippet . '…'];
+            if (count($out) >= 40) {
+                return $out;
+            }
+        }
+    }
+    return $out;
 }

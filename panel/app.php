@@ -115,6 +115,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $page = 'cases';
                 break;
 
+            case 'restore':
+                [$ok, $note] = backup_restore((string)($_POST['file'] ?? ''));
+                $ok ? ($msg = $note) : ($err = $note);
+                if ($ok) { log_action('откат: ' . (string)($_POST['file'] ?? '')); }
+                $page = 'history';
+                break;
+
             case 'rebuild':
                 $rep = build_all();
                 log_action('пересборка сайта');
@@ -125,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             case 'calendar':
                 $rules = [];
                 $days   = (array)($_POST['day'] ?? []);
-                $months = (array)($_POST['months'] ?? []);
+                $months = (array)($_POST['m'] ?? []);
                 $whats  = (array)($_POST['what'] ?? []);
                 $whos   = (array)($_POST['who'] ?? []);
                 foreach ($whats as $i => $what) {
@@ -135,8 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     $day = max(1, min(31, (int)($days[$i] ?? 1)));
                     $mm = [];
-                    foreach (preg_split('/\D+/', (string)($months[$i] ?? '')) ?: [] as $m) {
-                        if ($m === '') { continue; }
+                    foreach ((array)($months[$i] ?? []) as $m) {
                         $m = (int)$m;
                         if ($m >= 0 && $m <= 12) { $mm[] = $m; }
                     }
@@ -180,6 +186,7 @@ $SECTIONS = [
     'cases'    => ['Кейсы', 'Истории клиентов с цифрами'],
     'images'   => ['Фотографии и картинки', 'Заменить фото сотрудника, логотип, обложку'],
     'prices'   => ['Цены калькулятора', 'Стоимость услуг в расчёте'],
+    'history'  => ['История правок', 'Вернуть страницу к прежней версии'],
 ];
 
 function calendar_data(): array
@@ -235,6 +242,12 @@ input:focus{outline:2px solid var(--orange);outline-offset:-1px}
 .blk{padding:12px 0;border-bottom:1px solid var(--g200)}
 .blk:last-of-type{border-bottom:0}
 .blk-tag{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);margin-bottom:5px}
+.sec-title{margin:22px 0 6px;padding-top:14px;border-top:2px solid var(--orange);
+  font:700 14px/1.3 inherit;color:var(--ink)}
+.sec-title:first-child{margin-top:0;padding-top:0;border-top:0}
+.blk.found{background:#FFF6EC;border-radius:12px;padding:12px;margin:6px -12px}
+code{background:var(--bg);padding:2px 6px;border-radius:6px;font-size:12.5px}
+mark{background:#FFE7C7;padding:0 2px}
 textarea{width:100%;padding:10px 12px;border:1px solid var(--g200);border-radius:11px;font:inherit;
   background:#fff;resize:vertical;line-height:1.5}
 textarea:focus{outline:2px solid var(--orange);outline-offset:-1px}
@@ -264,6 +277,14 @@ input[type=date]{width:100%;height:42px;padding:0 12px;border:1px solid var(--g2
 .lrow a:hover{text-decoration:underline}
 .lmeta{font-size:12.5px;color:var(--g400);margin-top:2px}
 .lopen{font-size:13px;white-space:nowrap}
+.months{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-top:6px}
+.mchk{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:400;color:var(--g500);cursor:pointer}
+.mchk input{width:14px;height:14px;accent-color:var(--orange);margin:0}
+.mevery{font-weight:600;color:var(--ink)}
+.tools{display:flex;gap:8px;align-items:center;margin:6px 0 8px;flex-wrap:wrap}
+.tools button{height:32px;padding:0 12px;border:1px solid var(--g200);border-radius:9px;background:#fff;
+  font:600 13px/1 inherit;color:var(--ink);cursor:pointer}
+.tools button:hover{border-color:var(--orange);color:var(--orange)}
 .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:20px}
 .small{width:90px}
 @media(max-width:700px){
@@ -320,15 +341,21 @@ input[type=date]{width:100%;height:42px;padding:0 12px;border:1px solid var(--g2
       <?php $i = 0; foreach ($cal['rules'] as $r): ?>
         <tr>
           <td data-l="Число"><input type="number" name="day[<?= $i ?>]" min="1" max="31" value="<?= (int)$r['day'] ?>"></td>
-          <td data-l="Месяцы"><input type="text" name="months[<?= $i ?>]" value="<?= h(implode(',', (array)$r['months'])) ?>"></td>
+          <td data-l="Месяцы"><?php $mm = (array)$r['months']; $every = in_array(0, $mm, true); ?>
+            <label class="mchk mevery"><input type="checkbox" data-every value="0" name="m[<?= $i ?>][]"<?= $every ? ' checked' : '' ?>> каждый месяц</label>
+            <div class="months"<?= $every ? ' hidden' : '' ?>>
+              <?php foreach (['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'] as $k => $mn): ?>
+                <label class="mchk"><input type="checkbox" name="m[<?= $i ?>][]" value="<?= $k + 1 ?>"<?= in_array($k + 1, $mm, true) ? ' checked' : '' ?>><?= $mn ?></label>
+              <?php endforeach; ?>
+            </div>
+          </td>
           <td data-l="Что"><input type="text" name="what[<?= $i ?>]" value="<?= h($r['what']) ?>"></td>
           <td data-l="Кого касается"><input type="text" name="who[<?= $i ?>]" value="<?= h($r['who'] ?? '') ?>"></td>
         </tr>
       <?php $i++; endforeach; ?>
       </tbody>
     </table>
-    <p class="hint">Месяцы — через запятую: <b>1,4,7,10</b>. Каждый месяц — просто <b>0</b>.
-       Чтобы удалить строку, очистите поле «Что сдавать».</p>
+    <p class="hint">Отметьте месяцы, в которых наступает срок. Чтобы удалить строку — очистите поле «Что сдавать».</p>
     <div class="row">
       <label>Показывать на <input class="small" type="number" name="horizon" min="7" max="365" value="<?= (int)$cal['horizonDays'] ?>"> дней вперёд</label>
       <label>не больше <input class="small" type="number" name="maxrows" min="1" max="20" value="<?= (int)$cal['maxRows'] ?>"> строк</label>
@@ -340,10 +367,20 @@ input[type=date]{width:100%;height:42px;padding:0 12px;border:1px solid var(--g2
   </form>
   <script>
   var next = <?= (int)$i ?>;
+  document.addEventListener('change', function(e){
+    var el = e.target;
+    if(!el.matches('input[data-every]')) return;
+    var box = el.closest('td').querySelector('.months');
+    box.hidden = el.checked;
+    if(el.checked) box.querySelectorAll('input').forEach(function(i){ i.checked=false });
+  });
   function addRow(){
     var tb = document.getElementById('rows'), tr = document.createElement('tr');
+    var MN=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+    var boxes=MN.map(function(m,k){return '<label class="mchk"><input type="checkbox" name="m['+next+'][]" value="'+(k+1)+'">'+m+'</label>'}).join('');
     tr.innerHTML = '<td data-l="Число"><input type="number" name="day['+next+']" min="1" max="31" value="25"></td>'
-      + '<td data-l="Месяцы"><input type="text" name="months['+next+']" value="0"></td>'
+      + '<td data-l="Месяцы"><label class="mchk mevery"><input type="checkbox" data-every name="m['+next+'][]" value="0" checked> каждый месяц</label>'
+      + '<div class="months" hidden>'+boxes+'</div></td>'
       + '<td data-l="Что"><input type="text" name="what['+next+']" placeholder="Например: Декларация по НДС"></td>'
       + '<td data-l="Кого касается"><input type="text" name="who['+next+']" placeholder="Например: ОСНО"></td>';
     tb.appendChild(tr); next++;
@@ -356,7 +393,31 @@ input[type=date]{width:100%;height:42px;padding:0 12px;border:1px solid var(--g2
   $path = page_path($file);
   if (!$path): ?>
     <h1>Тексты страниц</h1>
-    <p class="lead">Выберите страницу. Правится только текст — вёрстку и оформление изменить нельзя.</p>
+    <p class="lead">Выберите страницу или найдите нужную фразу по всему сайту.
+       Правится только текст — вёрстку и оформление изменить нельзя.</p>
+    <form class="panel" method="get" style="margin-bottom:18px">
+      <input type="hidden" name="p" value="texts">
+      <div class="row" style="margin:0">
+        <input type="text" name="q" value="<?= h((string)($_GET['q'] ?? '')) ?>"
+               placeholder="Например: 15 минут" style="flex:1;min-width:220px">
+        <button class="btn" type="submit">Найти</button>
+      </div>
+    </form>
+    <?php $q = trim((string)($_GET['q'] ?? ''));
+    if ($q !== ''):
+      $found = search_pages($q); ?>
+      <div class="panel" style="margin-bottom:18px">
+        <b>Нашли совпадений: <?= count($found) ?></b>
+        <?php foreach ($found as $r): ?>
+          <div class="lrow">
+            <div><a href="app.php?p=texts&amp;f=<?= h(rawurlencode($r['file'])) ?>&amp;q=<?= h(rawurlencode($q)) ?>#b<?= (int)$r['i'] ?>"><?= h($r['name']) ?></a>
+              <div class="lmeta"><?= h($r['section']) ?></div>
+              <div style="font-size:13.5px;margin-top:4px"><?= $r['snippet'] ?></div></div>
+          </div>
+        <?php endforeach; ?>
+        <?php if (!$found): ?><p class="hint">Ничего не нашли. Попробуйте другое слово.</p><?php endif; ?>
+      </div>
+    <?php endif; ?>
     <div class="cards">
       <?php foreach (editable_pages() as $f => $name): ?>
         <a class="card" href="app.php?p=texts&amp;f=<?= h($f) ?>"><b><?= h($name) ?></b><span><?= h($f) ?></span></a>
@@ -369,29 +430,46 @@ input[type=date]{width:100%;height:42px;padding:0 12px;border:1px solid var(--g2
     $blocks = find_blocks($html);
     $names = editable_pages(); ?>
     <h1><?= h($names[$file]) ?></h1>
-    <p class="lead">Найдено фрагментов: <?= count($blocks) ?>.
-       Пустое поле не сохраняется — так текст нельзя потерять случайно.
-       <a href="../<?= h($file) ?>" target="_blank">Посмотреть страницу ↗</a></p>
+    <p class="lead">Фрагментов на странице: <?= count($blocks) ?>. Они идут в том же порядке, что и на сайте,
+       и сгруппированы по разделам. Пустое поле не сохраняется — потерять текст нельзя.
+       <a href="../<?= h($file) ?>" target="_blank">Открыть страницу ↗</a></p>
+    <div class="panel" style="margin-bottom:16px;font-size:13.5px;color:var(--g500)">
+      <b style="color:var(--ink)">Как оформить текст</b><br>
+      <code>==текст==</code> — выделить оранжевым · <code>**текст**</code> — жирным ·
+      <code>[текст](contacts.html)</code> — ссылка. Тегов писать не нужно.
+    </div>
     <form class="panel" method="post">
       <input type="hidden" name="form" value="texts">
       <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
       <input type="hidden" name="file" value="<?= h($file) ?>">
       <input type="hidden" name="hash" value="<?= h(md5($html)) ?>">
-      <?php foreach ($blocks as $i => $b):
+      <?php $lastSection = null;
+      foreach ($blocks as $i => $b):
+        if ($b['section'] !== $lastSection): $lastSection = $b['section']; ?>
+          <div class="sec-title"><?= h($lastSection) ?></div>
+        <?php endif;
         $isHead = in_array($b['tag'], ['h1','h2','h3','h4'], true);
-        $long = mb_strlen($b['text']) > 90; ?>
-        <div class="blk">
-          <div class="blk-tag"><?= h($b['tag'] === 'li' ? 'пункт списка' : ($isHead ? 'заголовок' : ($b['tag'] === 'blockquote' ? 'цитата' : ($b['tag'] === 'summary' ? 'подпись' : 'текст')))) ?></div>
+        $val = html_to_simple($b['html']);
+        $long = mb_strlen($val) > 90; ?>
+        <div class="blk" id="b<?= $i ?>">
+          <div class="blk-tag"><?= h($b['tag'] === 'li' ? 'пункт списка'
+              : ($isHead ? 'заголовок' : ($b['tag'] === 'blockquote' ? 'цитата'
+              : ($b['tag'] === 'summary' ? 'подпись' : 'абзац')))) ?></div>
           <?php if ($isHead && !$long): ?>
-            <input type="text" name="b[<?= $i ?>]" value="<?= h($b['html']) ?>">
+            <input type="text" name="b[<?= $i ?>]" value="<?= h($val) ?>">
           <?php else: ?>
-            <textarea name="b[<?= $i ?>]" rows="<?= $long ? 3 : 2 ?>"><?= h($b['html']) ?></textarea>
+            <textarea name="b[<?= $i ?>]" rows="<?= $long ? 3 : 2 ?>"><?= h($val) ?></textarea>
           <?php endif; ?>
         </div>
       <?php endforeach; ?>
       <div class="row"><button class="btn" type="submit">Сохранить страницу</button>
         <a class="btn btn-g" href="app.php?p=texts" style="display:inline-flex;align-items:center;text-decoration:none">К списку страниц</a></div>
     </form>
+    <script>
+    // подсвечиваем найденный фрагмент, если пришли из поиска
+    (function(){ var h=location.hash; if(!h) return; var el=document.querySelector(h);
+      if(el){ el.classList.add('found'); el.scrollIntoView({block:'center'}); } })();
+    </script>
   <?php endif; ?>
 
 <?php elseif ($page === 'articles'):
@@ -423,7 +501,26 @@ input[type=date]{width:100%;height:42px;padding:0 12px;border:1px solid var(--g2
       <label class="full">Короткое описание для списков и поиска
         <textarea name="preview" rows="2"><?= h($edit['preview'] ?? '') ?></textarea></label>
       <label class="full">Текст
-        <textarea name="body" rows="18" required><?= h($edit ? blocks_to_text((array)$edit['blocks']) : '') ?></textarea></label>
+        <div class="tools">
+          <button type="button" onclick="ins('## ','','заголовок внутри текста')">Заголовок</button>
+          <button type="button" onclick="ins('- ','','пункт списка')">Список</button>
+          <button type="button" onclick="ins('&gt; ','','цитата')">Цитата</button>
+          <span class="hint" style="margin:0 0 0 auto">Абзацы разделяются пустой строкой</span>
+        </div>
+        <textarea id="body" name="body" rows="18" required><?= h($edit ? blocks_to_text((array)$edit['blocks']) : '') ?></textarea></label>
+      <script>
+      function ins(pre, post, hintText){
+        var t = document.getElementById('body');
+        var s = t.selectionStart, e = t.selectionEnd, v = t.value;
+        // работаем со всей строкой, а не с куском слова
+        var lineStart = v.lastIndexOf('\n', s - 1) + 1;
+        var sel = v.slice(s, e) || hintText;
+        t.value = v.slice(0, lineStart) + pre + v.slice(lineStart, s) + sel + post + v.slice(e);
+        t.focus();
+        t.selectionStart = lineStart + pre.length + (s - lineStart);
+        t.selectionEnd = t.selectionStart + sel.length;
+      }
+      </script>
       <div class="row">
         <button class="btn" type="submit">Сохранить и опубликовать</button>
         <a class="btn btn-g" href="app.php?p=articles" style="display:inline-flex;align-items:center;text-decoration:none">Отмена</a>
@@ -504,6 +601,29 @@ input[type=date]{width:100%;height:42px;padding:0 12px;border:1px solid var(--g2
       <?php endforeach; ?>
     </div>
   <?php endif; ?>
+
+<?php elseif ($page === 'history'): ?>
+  <h1>История правок</h1>
+  <p class="lead">Перед каждым изменением сохраняется копия страницы. Здесь можно вернуть любую —
+     текущая версия при этом тоже сохранится, так что откат всегда обратим.</p>
+  <div class="panel">
+    <?php $bk = backups_list(); if (!$bk): ?>
+      <p class="hint">Пока ничего не менялось — копий нет.</p>
+    <?php endif; ?>
+    <?php foreach ($bk as $b): ?>
+      <div class="lrow">
+        <div><b><?= h($b['target']) ?></b>
+          <div class="lmeta">версия от <?= h($b['when']) ?> · <?= h(human_size((int)$b['size'])) ?></div></div>
+        <form method="post" style="margin:0">
+          <input type="hidden" name="form" value="restore">
+          <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+          <input type="hidden" name="file" value="<?= h($b['file']) ?>">
+          <button class="btn btn-g" type="submit"
+            onclick="return confirm('Вернуть версию от <?= h($b['when']) ?>?')">Вернуть</button>
+        </form>
+      </div>
+    <?php endforeach; ?>
+  </div>
 
 <?php elseif ($page === 'images'): ?>
   <h1>Фотографии и картинки</h1>

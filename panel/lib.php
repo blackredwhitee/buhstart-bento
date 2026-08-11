@@ -84,7 +84,9 @@ function backup_file(string $path): ?string
         return null;
     }
     ensure_dirs();
-    $name = date('Y-m-d_H-i-s') . '__' . str_replace(['/', '\\'], '-', ltrim(substr($path, strlen(realpath(SITE_DIR) ?: SITE_DIR)), '/'));
+    // путь кладём в имя через «@», чтобы потом однозначно понять, куда возвращать копию
+    $rel = ltrim(str_replace(realpath(SITE_DIR) ?: SITE_DIR, '', realpath($path) ?: $path), '/');
+    $name = date('Y-m-d_H-i-s') . '__' . str_replace(['/', '\\'], '@', $rel);
     $dest = data_path('backups/' . $name);
     return copy($path, $dest) ? $dest : null;
 }
@@ -235,4 +237,73 @@ function log_action(string $what): void
     $line = date('Y-m-d H:i:s') . "\t" . ($_SESSION['user'] ?? '-') . "\t"
           . ($_SERVER['REMOTE_ADDR'] ?? '-') . "\t" . $what . "\n";
     file_put_contents(data_path('actions.log'), $line, FILE_APPEND);
+}
+
+/* ---------------------------------------------------- история и откат */
+
+/**
+ * Копии, которые снимаются перед каждой правкой. Имя файла хранит дату и путь,
+ * поэтому отдельная база не нужна.
+ */
+function backups_list(int $limit = 60): array
+{
+    $out = [];
+    foreach (glob(data_path('backups/*')) ?: [] as $p) {
+        $name = basename($p);
+        if (!preg_match('~^(\d{4}-\d{2}-\d{2})_(\d{2})-(\d{2})-(\d{2})__(.+)$~', $name, $m)) {
+            continue;
+        }
+        $target = str_replace('@', '/', preg_replace('~^(\.\.[@-])+~', '', $m[5]) ?? $m[5]);
+        $out[] = [
+            'file'   => $name,
+            'when'   => $m[1] . ' ' . $m[2] . ':' . $m[3],
+            'stamp'  => strtotime($m[1] . ' ' . $m[2] . ':' . $m[3] . ':' . $m[4]) ?: 0,
+            'target' => $target,
+            'size'   => filesize($p) ?: 0,
+        ];
+    }
+    usort($out, fn($a, $b) => $b['stamp'] <=> $a['stamp']);
+    return array_slice($out, 0, $limit);
+}
+
+/** Куда возвращать копию: путь зашит в имя файла после «__». */
+function backup_target_path(string $name): ?string
+{
+    if (!preg_match('~__(.+)$~', $name, $m)) {
+        return null;
+    }
+    $root = realpath(SITE_DIR) ?: SITE_DIR;
+    $rel  = str_replace('@', '/', $m[1]);
+    $rel  = str_replace('..', '', $rel);
+    $p = $root . '/' . ltrim($rel, '/');
+    if (is_file($p)) {
+        return $p;
+    }
+    // копии, снятые до перехода на «@»: разделителем был дефис
+    $old = preg_replace('~^(\.\.-)+~', '', $m[1]) ?? $m[1];
+    foreach ([$old, str_replace('-', '/', $old)] as $cand) {
+        $p = $root . '/' . ltrim(str_replace('..', '', $cand), '/');
+        if (is_file($p)) {
+            return $p;
+        }
+    }
+    return null;
+}
+
+function backup_restore(string $name): array
+{
+    $name = basename($name);
+    $src  = data_path('backups/' . $name);
+    if (!is_file($src)) {
+        return [false, 'Копия не найдена.'];
+    }
+    $dest = backup_target_path($name);
+    if (!$dest) {
+        return [false, 'Не удалось определить, куда возвращать эту копию.'];
+    }
+    backup_file($dest);                          // текущую версию тоже сохраняем
+    if (!write_atomic($dest, (string)file_get_contents($src))) {
+        return [false, 'Не удалось записать файл.'];
+    }
+    return [true, 'Вернули версию от ' . substr($name, 0, 10) . ' — файл ' . basename($dest) . '.'];
 }

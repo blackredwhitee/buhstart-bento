@@ -72,7 +72,7 @@ main>section:first-child{margin-bottom:20px}   /* бегущая строка б
 .hr{height:1px;background:var(--line);margin:26px 0}
 .checks{display:grid;gap:8px}
 .check{display:flex;gap:10px;font-size:15px;line-height:1.6;color:var(--ink2)}
-.check b{color:var(--green)}
+.check b{color:var(--orange)}
 .minus{display:flex;gap:10px;font-size:14px;line-height:1.5;color:var(--ink3)}
 
 header.site{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line)}
@@ -160,7 +160,7 @@ form .btn{height:52px}
 .cmp .c{padding:16px 14px;border-top:1px solid var(--line);color:var(--ink2)}
 .cmp .c.q{font-weight:600;color:var(--ink)}
 .cmp .c.us{background:var(--dark);color:#fff;border-top-color:rgba(255,255,255,.14)}
-.cmp .c.us i{color:var(--green-light);font-style:normal;font-weight:700;margin-right:8px}
+.cmp .c.us i{color:var(--orange);font-style:normal;font-weight:700;margin-right:8px}
 .cmp .c.us:nth-last-child(3){border-radius:0 0 14px 14px}
 .cmp-cards{display:none;flex-direction:column;gap:14px}
 .cmp-cards .cc{background:var(--bg);border-radius:var(--r-card);padding:20px}
@@ -422,7 +422,7 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 .case-metric small{display:block;font:600 14px/1.45 Onest,sans-serif;letter-spacing:0;color:var(--ink2);margin-top:10px}
 .case-row{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
 .case-label{font:600 12px/1 Onest,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--orange);margin-bottom:8px}
-.case-row:nth-of-type(3) .case-label,.case-row:last-child .case-label{color:var(--ok)}
+.case-row:nth-of-type(3) .case-label,.case-row:last-child .case-label{color:var(--orange)}
 .case-text{font-size:15px;line-height:1.6;color:var(--ink2)}
 @media(max-width:767px){
   .case{padding:26px 22px}
@@ -554,21 +554,8 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
-/* Зелёный держим по минимуму: только там, где он несёт смысл —
-   успешное действие и «риск низкий». Всё остальное — оранжевый. */
+/* Зелёный остался в двух местах, где он значит «получилось» и «низкий риск»:
+   кружок подтверждения после отправки и светофор в тесте на проверку. */
 .risk-light.low,.risk-res .risk-light.low{background:var(--green)}
 .formbox .done .ok,.done .ok{background:var(--green)}
 .fb-save.ok{color:var(--green)}
-.check b{color:var(--green)}
-.tile-dark .check b{color:var(--green-light)}
-.cmp .c.us i{color:var(--green-light)}
-
-/* карточки внутри плиток не поднимаем: тень нужна плитке, а не её содержимому */
-.tile .card,.tile-dark .card,.tile figure.card{box-shadow:none}
-
-/* Отзыв — от человека: кружок с инициалами вместо безымянной цитаты */
-.rev-who{display:flex;align-items:center;gap:11px;margin-top:16px}
-.rev-ava{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;
-  background:var(--pill-bg);color:var(--pill-ink);font:700 14px/1 Onest,sans-serif}
-.rev-name{font-size:13.5px;font-weight:600}
-.rate-link{display:inline-flex;align-items:center;gap:6px;font:600 13px/1 Onest,sans-serif}

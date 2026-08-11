@@ -363,8 +363,8 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 /* Карточки равняются по высоте за счёт ФОТО, а не за счёт растягивания текста —
    иначе под текстом появлялись большие пустоты. */
 .person{display:flex;flex-direction:column}
-.p-photo{position:relative;flex:1 1 auto;min-height:250px;display:flex;overflow:hidden}
-.p-photo img{width:100%;height:100%;flex:1;object-fit:cover;object-position:50% 15%}
+.person .p-photo{position:relative;flex:1 1 auto;min-height:250px;display:flex;overflow:hidden}
+.person .p-photo img{width:100%;height:100%;flex:1;object-fit:cover;object-position:50% 15%}
 .person .b{flex:none;display:flex;flex-direction:column}
 /* «Также в команде» — компактные строки без фото */
 .tm-list{margin-top:18px;display:flex;flex-direction:column}

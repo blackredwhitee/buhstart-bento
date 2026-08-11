@@ -432,8 +432,9 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 
 
 /* ---------- тест «риск проверки» ---------- */
-.risk-body{margin-top:28px;max-width:660px}
-.risk-q{font:700 24px/1.3 Onest,sans-serif;letter-spacing:-.02em;color:#fff;min-height:66px;transition:opacity .16s}
+/* вопрос отделяем от вводного абзаца: раньше он читался как его продолжение */
+.risk-body{margin-top:34px;padding-top:28px;border-top:1px solid rgba(255,255,255,.14);max-width:660px}
+.risk-q{font:700 24px/1.35 Onest,sans-serif;letter-spacing:-.02em;color:#fff;min-height:62px;transition:opacity .16s}
 .risk-nav{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
 .risk-nav .btn{height:50px;padding:0 26px}
 /* три варианта ответа одинаковые: ховер был только у «Да», у остальных фон стоял инлайном и перебивал его */

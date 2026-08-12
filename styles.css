@@ -656,3 +656,8 @@ figure.card blockquote{flex:1}
 .rate-link{display:inline-flex;align-items:center;gap:6px;font:600 13px/1 Onest,sans-serif;
   color:#fff;text-decoration:underline;margin-top:6px}
 .rate-link:hover{color:#fff}
+
+/* метки-пилюли без пастельной заливки */
+.pill{background:var(--tile);color:var(--orange);border:1px solid var(--orange)}
+.teaser-out .pill{background:var(--tile);color:var(--orange)}
+.tile-fill .pill{background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.5)}

@@ -503,7 +503,7 @@ document.addEventListener('DOMContentLoaded', function(){
       tip = 'Совпадений много — по таким признакам инспекция как раз и отбирает компании для выездной проверки. Стоит разобраться в отчётности не откладывая.';
     }
     light.className = 'risk-light ' + level;
-    light.textContent = score + ' из ' + QS.length;
+    light.innerHTML = score + ' <span class="of">из ' + QS.length + '</span>';
     verdict.textContent = text;
     advice.textContent = tip;
     // результат теста уходит в заявку целиком: вердикт и все ответы

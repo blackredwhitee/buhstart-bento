@@ -448,7 +448,8 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 .risk-count{font:600 13px/1 Onest,sans-serif;color:rgba(255,255,255,.5);margin-top:12px}
 .risk-res{display:none;margin-top:28px;max-width:680px}
 .risk-res.show{display:block}
-.risk-light{display:inline-flex;align-items:center;justify-content:center;min-width:96px;height:96px;border-radius:50%;font:800 26px/1 Onest,sans-serif;color:#fff}
+.risk-light{display:inline-flex;align-items:baseline;gap:8px;padding:14px 22px;border-radius:var(--r-card);font:800 34px/1 Onest,sans-serif;color:#fff}
+.risk-light .of{font:600 15px/1 Onest,sans-serif;color:rgba(255,255,255,.85)}
 .risk-light.low{background:#2D7A4F}
 .risk-light.mid{background:var(--orange)}
 .risk-light.high{background:#C4453A}

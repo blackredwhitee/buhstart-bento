@@ -549,7 +549,7 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
   .num{font-size:32px}
   main .tile[style*="padding:28px"]{padding:20px 22px!important}
   footer.site .cols{grid-template-columns:1fr}
-  footer.site .wrap{padding:32px 48px 100px}
+  footer.site .wrap{padding:32px 24px 100px}
   .blocklink{justify-content:stretch}
   .linkbtn{width:100%;justify-content:center}
 }

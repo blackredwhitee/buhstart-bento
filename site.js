@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function(){
       ? 'Обращение читает лично Горелкина Галина Викторовна, руководитель компании.'
       : situation ? ('Ситуация: ' + situation)
       : (isAsk ? 'Короткий вопрос по учёту, налогам или отчётности. Отвечаем в рабочее время.'
-               : 'Оставьте контакты — перезвоним в течение 2 часов в рабочее время.');
+               : 'Оставьте контакты — перезвоним в течение 15 минут в рабочее время.');
     modal.querySelector('.m-question').style.display = (isAsk || isPersonal) ? 'block' : 'none';
     var isRisk = situation === 'Тест на риск проверки';
     modal.dataset.source = isPersonal ? 'Личное обращение к руководителю'

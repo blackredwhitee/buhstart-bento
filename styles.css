@@ -125,7 +125,7 @@ footer.site .soc a:hover,.soc a:hover{background:var(--orange);color:#fff}
 .mobile-bar .btn{flex:1}
 .mobile-bar .call{width:48px;height:48px;border-radius:var(--r-btn);background:var(--bg);display:flex;align-items:center;justify-content:center;flex:none}
 
-.field{height:48px;width:100%;border-radius:var(--r-field);border:1px solid var(--line);background:#fff;padding:0 16px;font:400 15px/1 Onest,sans-serif;outline:none}
+.field{height:48px;width:100%;border-radius:var(--r-field);border:1px solid var(--line);background:var(--inset);padding:0 16px;font:400 15px/1 Onest,sans-serif;outline:none}
 textarea.field{height:auto;min-height:96px;padding:14px 16px;line-height:1.5;resize:vertical}
 .field:focus{border-color:var(--dark)}
 .agree{display:block;position:relative;padding-left:28px;font-size:13px;line-height:1.55;color:var(--ink2);cursor:pointer}
@@ -136,7 +136,7 @@ form .btn{height:52px}
 .done{display:none;flex-direction:column;align-items:center;text-align:center;padding:20px 0}
 .done.show{display:flex}
 .done .ok{width:56px;height:56px;border-radius:50%;background:var(--ok);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px}
-.formbox{background:var(--bg);border-radius:var(--r-card);padding:28px}
+.formbox{background:var(--tile);border-radius:var(--r-card);padding:28px;box-shadow:inset 0 0 0 2px var(--orange)}
 .formbox form{display:flex;flex-direction:column;gap:12px}
 
 .faq .q{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 0;cursor:pointer;font:600 16px/1.4 Onest,sans-serif;border-top:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-bottom:0;text-align:left;color:var(--ink)}
@@ -172,7 +172,7 @@ form .btn{height:52px}
 .cmp-cards .val{font-size:14px;color:var(--ink2);margin-top:4px}
 
 .why .r{display:grid;grid-template-columns:96px 1fr 1fr;gap:20px;padding:26px 0;border-top:1px solid rgba(255,255,255,.15)}
-.why .n{font:700 42px/1 Onest,sans-serif;letter-spacing:-.035em;color:transparent;-webkit-text-stroke:1.5px var(--orange)}
+.why .n{font:700 42px/1 Onest,sans-serif;letter-spacing:-.035em;color:var(--orange)}
 .why h3{font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.2;color:#fff}
 .why p{font-size:15px;line-height:1.6}
 
@@ -200,6 +200,7 @@ form .btn{height:52px}
 .cardbtn span,.cardbtn .small{overflow-wrap:break-word}
 .cardbtn:hover{background:var(--orange)!important;color:#fff!important}
 .cardbtn:hover .iconbox{background:#fff!important}
+.cardbtn:hover .iconbox svg{stroke:var(--orange)}
 .cardbtn:hover .small{color:rgba(255,255,255,.85)!important}
 .linkinline{background:none;border:0;padding:0;font:inherit;color:var(--orange);cursor:pointer;text-decoration:none}
 .linkinline:hover{color:var(--orange-h)}
@@ -291,7 +292,7 @@ a.post.dark:hover{background:#000}
 
 /* крупные номера в «Почему выбирают нас» */
 .why .r{grid-template-columns:130px 1fr 1fr}
-.why .n{font-size:64px;-webkit-text-stroke:2px var(--orange)}
+.why .n{font-size:64px}
 
 /* рейтинг отзывов — оранжевая плитка */
 .rate{display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin:22px 0 28px;background:var(--orange);color:#fff;border-radius:var(--r-card);padding:20px 24px}
@@ -465,7 +466,7 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 /* ---------- шаги «как это работает» ---------- */
 .steps{display:grid;grid-template-columns:repeat(2,1fr);gap:22px 34px;margin-top:26px}
 .step{display:grid;grid-template-columns:66px 1fr;gap:18px;align-items:start;padding-top:20px;border-top:1px solid var(--line)}
-.step-n{font:800 34px/1 Onest,sans-serif;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.5px var(--orange)}
+.step-n{font:800 34px/1 Onest,sans-serif;letter-spacing:-.04em;color:var(--orange)}
 .step h3{font-size:18px;font-weight:700;letter-spacing:-.01em}
 @media(max-width:767px){
   .steps{grid-template-columns:1fr;gap:16px}
@@ -660,3 +661,6 @@ figure.card blockquote{flex:1}
 footer.site .soc a{background:var(--tile);color:var(--ink);border:1px solid var(--line)}
 footer.site .soc a:hover{background:var(--orange);color:#fff;border-color:var(--orange)}
 footer.site h4{color:var(--orange)}
+
+/* кейсы: обводка появляется при наведении */
+.case-teaser:hover{box-shadow:inset 0 0 0 2px var(--orange)}

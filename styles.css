@@ -4,7 +4,7 @@
 @font-face{font-family:Onest;src:url('uploads/Onest-latin.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;font-weight:400 800;font-display:swap}
 
 :root{
-  --bg:#F2EFEA; --tile:#FFFFFF; --dark:#1A1614; --orange:#F07828; --orange-h:#E56800;
+  --bg:#F2EFEA; --tile:#FFFFFF; --dark:#3F2415; --orange:#F07828; --orange-h:#E56800;
   --ink:#18181B; --ink2:#52525B; --ink3:#71717A; --line:#E4E4E7; --inset:#F4F4F5;
   --pill-bg:#FFEDD9; --pill-ink:#B4530F; --ok:#2D7A4F; --err:#C4453A;
   --green:#0E8A67; --green-soft:#E6F4EF; --green-ink:#0A6249; --green-light:#5FCFAB;
@@ -435,8 +435,7 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
   .case{padding:26px 22px}
   .case-title{font-size:20px}
   .case-metric{font-size:30px}
-
-}
+  /* на телефоне наклон плиток отключаем, иначе они цепляют края экрана */
   .tilt-l,.tilt-r,.bento .dark,.statement{transform:none}
 }
 
@@ -444,7 +443,8 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 /* ---------- тест «риск проверки» ---------- */
 /* вопрос отделяем от вводного абзаца: раньше он читался как его продолжение */
 .risk-body{margin-top:34px;padding-top:28px;border-top:1px solid var(--line);max-width:660px}
-.risk-q{font:700 24px/1.35 Onest,sans-serif;letter-spacing:-.02em;color:var(--ink);min-height:62px;transition:opacity .16s}
+.risk-q{font:700 24px/1.35 Onest,sans-serif;letter-spacing:-.02em;color:var(--ink);
+  min-height:62px;margin-top:6px;max-width:640px;transition:opacity .16s}
 .risk-nav{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
 .risk-nav .btn{height:50px;padding:0 26px}
 /* три варианта ответа одинаковые: ховер был только у «Да», у остальных фон стоял инлайном и перебивал его */
@@ -586,3 +586,10 @@ figure.card blockquote{flex:1}
 /* у Курбатовой лицо ниже центра кадра: сдвигаем область показа вниз,
    иначе снимок обрезается по плечи */
 .person .p-photo img[src*="kurbatova"]{object-position:50% 45%}
+
+/* Блок теста — светлый и тёплый, чтобы выделялся, но не чернел */
+.tile.risk{background:linear-gradient(180deg,#FFF6EF,#FFEFE3)}
+.tile.risk .rbtn{background:#fff;border-color:#F6DCC6}
+.tile.risk .risk-prog{background:#F6DCC6}
+.tile.risk .risk-body{border-top-color:#F1D2B8}
+.tile.risk .risk-q{margin-top:8px}

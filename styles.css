@@ -56,8 +56,8 @@ main>section:first-child{margin-bottom:20px}   /* бегущая строка б
 .btn-s{background:var(--dark);color:#fff}
 .btn-s:hover{background:#000;color:#fff}
 .btn-s svg{stroke:#fff}
-.btn-w{background:#fff;color:var(--ink)}
-.btn-w:hover{background:var(--orange);color:#fff}
+.btn-w{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn-w:hover{background:var(--orange);color:#fff;box-shadow:inset 0 0 0 1.5px var(--orange)}
 .btn-w:hover svg{stroke:#fff}
 .btn-sm{height:48px;padding:0 24px}
 .btn-block{width:100%}
@@ -260,9 +260,9 @@ h2{font-size:38px}
 .facts .num{font-size:46px}
 .facts .fl{font-size:14px;color:rgba(255,255,255,.9);margin-top:8px}
 /* цифры на страницах-разделах: чередование тёмных и оранжевых плиток */
-.stats .card:nth-child(1){background:var(--dark)!important;color:#fff}
+.stats .card:nth-child(1){background:var(--tile)!important;color:var(--ink);box-shadow:inset 0 0 0 2px var(--orange)}
 .stats .card:nth-child(2){background:var(--orange)!important;color:#fff}
-.stats .card:nth-child(1) .small,.stats .card:nth-child(2) .small{color:rgba(255,255,255,.75)}
+.stats .card:nth-child(2) .small{color:rgba(255,255,255,.75)}
 .stats .card .num{letter-spacing:-.03em}
 
 .bento .wide3{grid-column:span 3}
@@ -638,9 +638,6 @@ figure.card blockquote{flex:1}
 a.post:not(.dark):hover,.pick:hover,.rel:hover{background:var(--tile);color:var(--ink);
   box-shadow:inset 0 0 0 2px var(--orange)}
 a.post:hover h3,.pick:hover *,.rel:hover *{color:inherit}
-.stats .card:nth-child(1){background:var(--tile)!important;color:var(--ink);
-  box-shadow:inset 0 0 0 2px var(--orange)}
-
 /* отзывы: нейтрально-серые карточки */
 figure.card{background:var(--inset)!important;border:1px solid var(--line);box-shadow:none;
   display:flex;flex-direction:column}

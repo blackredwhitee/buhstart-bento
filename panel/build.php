@@ -241,7 +241,7 @@ function case_teaser(array $c, int $i): string
 {
     $metric = !empty($c['metric'])
         ? '<div class="ct-metric">' . e($c['metric']) . '</div><div class="ct-note">' . e($c['metricNote'] ?? '') . '</div>' : '';
-    return '<a class="case-teaser' . ($i === 0 ? ' teaser-out' : '') . '" href="keysy.html">' . "\n"
+    return '<a class="case-teaser" href="keysy.html">' . "\n"
         . (!empty($c['tag']) ? '<span class="pill">' . e($c['tag']) . '</span>' : '') . "\n"
         . $metric . "\n"
         . '<div class="ct-title">' . e($c['title'] ?? '') . '</div>' . "\n"

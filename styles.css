@@ -340,9 +340,10 @@ footer.site{background-image:
 .cal-title{font:600 15px/1.35 Onest,sans-serif}
 .cal-who{font-size:13px;color:var(--ink3);margin-top:3px}
 .cal-left{font:600 13px/1 Onest,sans-serif;color:var(--ink3);white-space:nowrap}
-.cal-hot{background:var(--dark);color:#fff}
+.cal-hot{background:var(--pill-bg)}
+.cal-hot .cal-title{color:var(--ink)}
 .cal-hot .cal-date b{color:var(--orange)}
-.cal-hot .cal-who{color:rgba(255,255,255,.6)}
+.cal-hot .cal-who{color:var(--ink2)}
 .cal-hot .cal-left{color:var(--orange)}
 @media(max-width:767px){
   .cal-row{grid-template-columns:58px 1fr;gap:14px;padding:14px 16px}
@@ -442,24 +443,27 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 
 /* ---------- тест «риск проверки» ---------- */
 /* вопрос отделяем от вводного абзаца: раньше он читался как его продолжение */
-.risk-body{margin-top:40px;padding-top:34px;border-top:1px solid rgba(255,255,255,.16);max-width:660px}
-.risk-q{font:700 24px/1.35 Onest,sans-serif;letter-spacing:-.02em;color:#fff;min-height:62px;transition:opacity .16s}
+.risk-body{margin-top:34px;padding-top:28px;border-top:1px solid var(--line);max-width:660px}
+.risk-q{font:700 24px/1.35 Onest,sans-serif;letter-spacing:-.02em;color:var(--ink);min-height:62px;transition:opacity .16s}
 .risk-nav{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
 .risk-nav .btn{height:50px;padding:0 26px}
 /* три варианта ответа одинаковые: ховер был только у «Да», у остальных фон стоял инлайном и перебивал его */
-.rbtn{background:rgba(255,255,255,.12);color:#fff;transition:background .18s,transform .18s cubic-bezier(.22,.61,.36,1)}
-.rbtn:hover{background:var(--orange);color:#fff;transform:translateY(-2px)}
-.risk-prog{height:5px;border-radius:3px;background:rgba(255,255,255,.16);margin-top:26px;overflow:hidden}
+.rbtn{background:var(--inset);color:var(--ink);border:1px solid var(--line);
+  transition:background .18s,border-color .18s,color .18s,transform .18s cubic-bezier(.22,.61,.36,1)}
+.rbtn:hover{background:var(--orange);border-color:var(--orange);color:#fff;transform:translateY(-2px)}
+.btn-g2{background:var(--inset);color:var(--ink);border:1px solid var(--line)}
+.btn-g2:hover{background:var(--bg);color:var(--ink)}
+.risk-prog{height:5px;border-radius:3px;background:var(--line);margin-top:26px;overflow:hidden}
 .risk-prog span{display:block;height:5px;border-radius:3px;background:var(--orange);width:0;transition:width .4s cubic-bezier(.22,.61,.36,1)}
-.risk-count{font:600 13px/1 Onest,sans-serif;color:rgba(255,255,255,.5);margin-top:12px}
+.risk-count{font:600 13px/1 Onest,sans-serif;color:var(--ink3);margin-top:12px}
 .risk-res{display:none;margin-top:28px;max-width:680px}
 .risk-res.show{display:block}
 .risk-light{display:inline-flex;align-items:center;justify-content:center;min-width:96px;height:96px;border-radius:50%;font:800 26px/1 Onest,sans-serif;color:#fff}
 .risk-light.low{background:#2D7A4F}
 .risk-light.mid{background:var(--orange)}
 .risk-light.high{background:#C4453A}
-.risk-verdict{font:800 32px/1.1 Onest,sans-serif;letter-spacing:-.03em;color:#fff;margin-top:20px}
-.risk-advice{font-size:16px;line-height:1.6;color:rgba(255,255,255,.7);margin-top:12px}
+.risk-verdict{font:800 32px/1.1 Onest,sans-serif;letter-spacing:-.03em;color:var(--ink);margin-top:20px}
+.risk-advice{font-size:16px;line-height:1.6;color:var(--ink2);margin-top:12px}
 @media(max-width:767px){
   .risk-q{font-size:20px;min-height:84px}
   .risk-nav .btn{flex:1;min-width:96px}

@@ -588,25 +588,28 @@ figure.card blockquote{flex:1}
 .person .p-photo img[src*="kurbatova"]{object-position:50% 45%}
 
 /* Блок теста — светлый и тёплый, чтобы выделялся, но не чернел */
-.tile.risk{background:linear-gradient(180deg,#FFF6EF,#FFEFE3)}
+.tile.risk{background:#fff}
 .tile.risk .rbtn{background:#fff;border-color:#F6DCC6}
 .tile.risk .risk-prog{background:#F6DCC6}
 .tile.risk .risk-body{border-top-color:#F1D2B8}
 .tile.risk .risk-q{margin-top:8px}
 
-/* ЧИСТАЯ СВЕТЛАЯ СХЕМА. Тёмных поверхностей нет. Ярко-оранжевый оставлен
-   в одном месте на страницу — плитка с цифрами на первом экране. Остальные
-   акцентные блоки — тёплые светлые, с оранжевым только в деталях. */
+/* БЕЛОЕ И ОРАНЖЕВОЕ. Тёмных поверхностей нет, пастельных подложек нет.
+   Блоки белые; акцент — тонкая оранжевая обводка, которая проявляется
+   при наведении. Оранжевый остаётся чистым: только в линиях, тексте и кнопках. */
 
-.tile-dark,.dark-tile,.bento .dark{background-color:#FDF6F0!important;color:var(--ink);
-  box-shadow:0 1px 2px rgba(26,22,20,.04),0 10px 28px rgba(26,22,20,.05)}
+.tile-dark,.dark-tile,.bento .dark{background-color:#fff!important;color:var(--ink);
+  box-shadow:0 1px 2px rgba(26,22,20,.04),0 10px 28px rgba(26,22,20,.05);
+  transition:box-shadow .2s}
+.tile-dark:hover,.dark-tile:hover,.bento .dark:hover{
+  box-shadow:inset 0 0 0 2px var(--orange),0 10px 28px rgba(240,120,40,.14)}
 .tile-dark h2,.tile-dark h3{color:var(--ink)}
 .tile-dark p,.tile-dark .lead{color:var(--ink2)}
 .tile-dark .kicker{color:var(--orange)}
 .tile-dark .mark-w{background-image:linear-gradient(var(--orange),var(--orange))}
 .tile-dark .small{color:var(--ink3)}
 
-/* плитка с цифрами на первом экране — единственная яркая */
+/* плитка с цифрами на первом экране — единственная заливка оранжевым */
 .facts{background:var(--orange)!important;color:#fff}
 .facts .num,.facts .fl{color:#fff}
 
@@ -615,24 +618,41 @@ footer.site{background:#fff;color:var(--ink);border-top:1px solid var(--line)}
 footer.site h4{color:var(--orange)}
 footer.site a,footer.site .fitem,footer.site .about{color:var(--ink2)}
 footer.site a:hover{color:var(--orange)}
-footer.site .soc a{background:var(--bg);color:var(--ink)}
+footer.site .soc a{background:#fff;color:var(--ink);border:1px solid var(--line)}
+footer.site .soc a:hover{border-color:var(--orange);color:var(--orange)}
 footer.site .reqs,footer.site .links a{color:var(--ink3)}
 
-/* мелкие детали */
-.iconbox{background:var(--orange);color:#fff}
-.btn-s{background:var(--inset);color:var(--ink)}
-.btn-s:hover{background:var(--bg);color:var(--ink)}
-.btn-s svg{stroke:var(--ink)}
-.stats .card:nth-child(1){background:#FDF6F0!important;color:var(--ink)}
-.cmp .c.us{background:var(--pill-bg);color:var(--ink);border-top-color:#F6DCC6}
+/* никаких персиковых подложек: белое + оранжевая линия */
+.pill{background:#fff;color:var(--orange);border:1px solid var(--orange)}
+.cmp .c.us{background:#fff;color:var(--ink);border-top-color:var(--line);
+  box-shadow:inset 2px 0 0 var(--orange),inset -2px 0 0 var(--orange)}
+.cmp .c.us:nth-last-child(3){box-shadow:inset 2px 0 0 var(--orange),inset -2px 0 0 var(--orange),inset 0 -2px 0 var(--orange)}
 .cmp .c.us i{color:var(--orange)}
-.case-teaser.dark{background:var(--tile);color:var(--ink)}
-.case-teaser.dark .ct-metric{color:var(--orange)}
-.case-teaser.dark .ct-title{color:var(--ink)}
-.case-teaser.dark .pill{background:var(--pill-bg);color:var(--pill-ink)}
-.next-steps{background:#FDF6F0;color:var(--ink);border-left:3px solid var(--orange)}
+.next-steps{background:#fff;color:var(--ink);border:1px solid var(--line);border-left:3px solid var(--orange)}
 .next-steps .ns-title{color:var(--ink)}
 .next-steps .ns-text{color:var(--ink2)}
-a.post:not(.dark):hover,.pick:hover,.rel:hover{background:#FDF6F0;color:var(--ink)}
-.cal-hot{background:var(--pill-bg)}
-.why .r .n{-webkit-text-stroke-color:#F1D2B8}
+.cal-row{background:#fff;border:1px solid var(--line)}
+.cal-hot{background:#fff;border-color:var(--orange);box-shadow:inset 0 0 0 1px var(--orange)}
+.tile.risk{background:#fff}
+.tile.risk .rbtn{background:#fff;border-color:var(--line)}
+.tile.risk .risk-prog{background:var(--line)}
+.tile.risk .risk-body{border-top-color:var(--line)}
+
+/* наведение на карточки — белое с оранжевой обводкой, без заливок */
+a.post,.pick,.rel,.person,.card{transition:box-shadow .2s,transform .18s}
+a.post:not(.dark):hover,.pick:hover,.rel:hover{background:#fff;color:var(--ink);
+  box-shadow:inset 0 0 0 2px var(--orange)}
+.case-teaser{background:#fff;color:var(--ink);transition:box-shadow .2s}
+.case-teaser:hover{box-shadow:inset 0 0 0 2px var(--orange)}
+.case-teaser.dark{background:#fff;color:var(--ink)}
+.case-teaser .ct-metric,.case-teaser.dark .ct-metric{color:var(--orange)}
+.case-teaser .ct-title,.case-teaser.dark .ct-title{color:var(--ink)}
+
+/* мелкие детали */
+.iconbox{background:#fff;color:var(--orange);border:1.5px solid var(--orange)}
+.iconbox svg{stroke:var(--orange)}
+.btn-s{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn-s:hover{background:#fff;border-color:var(--orange);color:var(--orange)}
+.btn-s svg{stroke:currentColor}
+.stats .card:nth-child(1){background:#fff!important;color:var(--ink)}
+.why .r .n{-webkit-text-stroke-color:var(--orange)}

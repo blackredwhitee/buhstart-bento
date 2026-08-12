@@ -260,9 +260,9 @@ h2{font-size:38px}
 .facts .num{font-size:46px}
 .facts .fl{font-size:14px;color:rgba(255,255,255,.9);margin-top:8px}
 /* цифры на страницах-разделах: чередование тёмных и оранжевых плиток */
-.stats .card:nth-child(1){background:var(--tile)!important;color:var(--ink);box-shadow:inset 0 0 0 2px var(--orange)}
+.stats .card:nth-child(1){background:var(--dark)!important;color:#fff}
 .stats .card:nth-child(2){background:var(--orange)!important;color:#fff}
-.stats .card:nth-child(2) .small{color:rgba(255,255,255,.75)}
+.stats .card:nth-child(1) .small,.stats .card:nth-child(2) .small{color:rgba(255,255,255,.75)}
 .stats .card .num{letter-spacing:-.03em}
 
 .bento .wide3{grid-column:span 3}

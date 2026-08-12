@@ -10,3 +10,16 @@ ErrorDocument 404 /404.html
     Header set Cache-Control "no-cache, must-revalidate"
   </FilesMatch>
 </IfModule>
+
+# Пока сайт живёт на тестовом адресе — прячем его от поиска, чтобы в выдачу
+# не попали дубли. На основном домене buhstart.ru заголовок не выставляется.
+<IfModule mod_setenvif.c>
+  SetEnvIf Host "(^new\.buhstart\.ru$|regruhosting)" NOINDEX_HOST=1
+</IfModule>
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow" env=NOINDEX_HOST
+</IfModule>
+
+# Служебные заготовки страниц: отдаём вместо них настоящие разделы.
+Redirect 301 /usluga.html /uslugi.html
+Redirect 301 /article.html /blog.html

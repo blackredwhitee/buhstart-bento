@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // --- наклон и подсветка: только кликабельные карточки ---
   if(!reduce && fine){
-    document.querySelectorAll('a.post, a.card, a.person, .nrow').forEach(function(card){
+    document.querySelectorAll('a.post, a.card:not(.cardbtn), a.person, .nrow').forEach(function(card){
       card.classList.add('tiltable');
       card.addEventListener('pointermove', function(e){
         var r = card.getBoundingClientRect();

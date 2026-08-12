@@ -313,7 +313,7 @@ a.post.dark:hover{background:#000}
 
 
 /* ---------- текстура тёмных блоков: сетка точек + мягкое оранжевое свечение ---------- */
-.tile-dark,.bento .dark,footer.site,.dark-tile{
+.tile-dark,.bento .dark,.dark-tile{
   position:relative;overflow:hidden;
   background-color:var(--dark);
   background-image:
@@ -321,7 +321,7 @@ a.post.dark:hover{background:#000}
     radial-gradient(rgba(255,255,255,.055) 1px,transparent 1px);
   background-size:auto,22px 22px;
   background-repeat:no-repeat,repeat}
-.tile-dark>*,.bento .dark>*,footer.site>*,.dark-tile>*{position:relative;z-index:1}
+.tile-dark>*,.bento .dark>*,.dark-tile>*{position:relative;z-index:1}
 .dark-tile{color:#fff}
 .dark-tile h3{color:#fff}
 /* текстуру убрали: подвал светлый */

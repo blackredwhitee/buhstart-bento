@@ -184,7 +184,7 @@ function caseTeaser(c, i) {
   const metric = c.metric
     ? `<div class="ct-metric">${esc(c.metric)}</div><div class="ct-note">${esc(c.metricNote || '')}</div>`
     : '';
-  return `<a class="case-teaser${i === 0 ? ' dark' : ''}" href="keysy.html">
+  return `<a class="case-teaser${i === 0 ? ' teaser-out' : ''}" href="keysy.html">
 ${c.tag ? `<span class="pill">${esc(c.tag)}</span>` : ''}
 ${metric}
 <div class="ct-title">${esc(c.title || '')}</div>

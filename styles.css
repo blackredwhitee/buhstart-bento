@@ -64,7 +64,8 @@ main>section:first-child{margin-bottom:20px}   /* бегущая строка б
 .blocklink{display:flex;justify-content:flex-end;margin-top:20px}
 .linkbtn{height:48px;padding:0 24px;border:2px solid var(--orange);border-radius:var(--r-btn);background:none;color:var(--orange);font:600 15px/1 Onest,sans-serif;display:inline-flex;align-items:center;cursor:pointer;transition:background .2s,color .2s}
 .linkbtn:hover{background:var(--orange)!important;color:#fff!important;border-color:var(--orange)}
-.iconbox{width:44px;height:44px;border-radius:12px;background:var(--dark);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.iconbox{width:44px;height:44px;border-radius:12px;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.iconbox svg{stroke:#fff}
 .iconbox-l{background:var(--bg);color:var(--ink)}
 .crumbs{font-size:13px;color:var(--ink3);margin-bottom:18px}
 .crumbs a{color:var(--ink3)}
@@ -98,20 +99,20 @@ nav.main a.on{color:var(--orange)}
 .mobile-menu a{display:block;padding:14px 0;font:700 22px/1.2 Onest,sans-serif;color:var(--ink);border-bottom:1px solid var(--line)}
 .mobile-menu .sub{font:500 16px/1.2 Onest,sans-serif;padding-left:14px;color:var(--ink2)}
 
-footer.site{background:var(--dark);color:#fff;margin-top:var(--gap)}
+footer.site{background:var(--tile);color:var(--ink);border-top:1px solid var(--line);margin-top:var(--gap)}
 footer.site .wrap{padding:48px 24px 40px}
 footer.site .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px}
 footer.site h4{margin:0 0 16px;font:600 13px/1 Onest,sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--orange)}
-footer.site a,footer.site .fitem{display:block;font-size:14px;color:rgba(255,255,255,.6);margin-bottom:10px}
-footer.site a:hover{color:#fff}
-footer.site .about{font-size:14px;line-height:1.6;color:rgba(255,255,255,.6)}
+footer.site a,footer.site .fitem{display:block;font-size:14px;color:var(--ink2);margin-bottom:10px}
+footer.site a:hover{color:var(--orange)}
+footer.site .about{font-size:14px;line-height:1.6;color:var(--ink2)}
 .soc{display:flex;gap:10px;margin-top:20px}
 .soc a{height:46px;padding:0 22px;border-radius:var(--r-btn);border:0;background:var(--bg);color:var(--ink);font:600 14px/1 Onest,sans-serif;display:inline-flex;align-items:center;justify-content:center;margin:0;transition:background .2s,color .2s}
 footer.site .soc a{display:inline-flex;align-items:center;justify-content:center;
   height:46px;padding:0 22px;margin:0;color:var(--ink);background:var(--bg);border-radius:var(--r-btn)}
 footer.site .soc a:hover,.soc a:hover{background:var(--orange);color:#fff}
-.fbot{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.45);border-top:1px solid rgba(255,255,255,.15);margin-top:32px;padding-top:20px}
-.fbot a{color:rgba(255,255,255,.45);display:inline;margin:0}
+.fbot{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;font-size:13px;color:var(--ink3);border-top:1px solid var(--line);margin-top:32px;padding-top:20px}
+.fbot a{color:var(--ink3);display:inline;margin:0}
 .fbot .links{display:flex;gap:20px;flex-wrap:wrap}
 .reqs{display:flex;flex-wrap:wrap;gap:4px 16px}
 .reqs span{white-space:nowrap}
@@ -268,21 +269,17 @@ h2{font-size:38px}
 .all-svc .iconbox{margin-bottom:0!important}
 .all-svc h3{font-size:20px}
 .all-svc::after{content:"→";margin-left:auto;font:600 24px/1 Onest,sans-serif;color:var(--orange)}
-.all-svc:hover::after{color:#fff}
-.bento .dark{color:#fff}
-.bento .dark h3{color:#fff;font-size:26px;letter-spacing:-.02em}
-.bento .dark .cardtext{color:rgba(255,255,255,.6);font-size:16px}
-.bento .dark .iconbox{background:var(--orange)}
-.bento .dark .more{color:var(--orange)}
+.all-svc:hover::after{color:var(--orange)}
+.bento .card-out h3{font-size:26px;letter-spacing:-.02em}
+.bento .card-out .cardtext{font-size:16px}
 
 /* карточка при наведении темнеет — цепляет глаз */
 /* фон меняем мгновенно: при плавном фоне текст успевал побелеть раньше и пропадал */
 a.post{transition:transform .18s}
-a.post:not(.dark):hover{background:var(--dark);color:#fff}
-a.post:not(.dark):hover h3{color:#fff}
-a.post:not(.dark):hover .cardtext{color:rgba(255,255,255,.65)}
-a.post:not(.dark):hover .iconbox{background:var(--orange)}
-a.post:not(.dark):hover .small{color:rgba(255,255,255,.5)}
+a.post:hover{background:var(--tile);box-shadow:inset 0 0 0 2px var(--orange)}
+a.post:hover h3{color:var(--ink)}
+a.post:hover .cardtext{color:var(--ink2)}
+a.post:hover .small{color:var(--ink3)}
 a.post.dark:hover{background:#000}
 .iconbox-or{background:var(--orange)}
 
@@ -326,9 +323,8 @@ a.post.dark:hover{background:#000}
 .tile-dark>*,.bento .dark>*,footer.site>*,.dark-tile>*{position:relative;z-index:1}
 .dark-tile{color:#fff}
 .dark-tile h3{color:#fff}
-footer.site{background-image:
-  radial-gradient(760px circle at 100% 0%,rgba(240,120,40,.12),transparent 60%),
-  radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px)}
+/* текстуру убрали: подвал светлый */
+
 
 
 /* ---------- календарь отчётности ---------- */
@@ -413,9 +409,7 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 .ct-note{font-size:13px;line-height:1.45;color:var(--ink3);margin-top:8px}
 .ct-title{font:700 18px/1.35 Onest,sans-serif;letter-spacing:-.02em;margin-top:20px;padding-top:18px;border-top:1px solid var(--line);flex:1}
 .case-teaser .more{font:600 14px/1 Onest,sans-serif;color:var(--orange);margin-top:18px}
-.case-teaser.dark{background:var(--dark);color:#fff;
-  background-image:radial-gradient(420px circle at 100% 0%,rgba(240,120,40,.16),transparent 60%),radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);
-  background-size:auto,20px 20px}
+
 .case-teaser.dark .ct-title{color:#fff;border-top-color:rgba(255,255,255,.16)}
 .case-teaser.dark .ct-note{color:rgba(255,255,255,.6)}
 .case-teaser.dark:hover{background-color:#000}
@@ -607,7 +601,7 @@ figure.card blockquote{flex:1}
 /* «Почему выбирают нас»: пункты разделены оранжевыми линиями */
 .why .r{border-top:1px solid var(--orange)}
 .why .r:first-of-type{border-top:0}
-.why .r .n{-webkit-text-stroke-color:var(--orange)}
+.why .r .n{color:var(--orange);-webkit-text-stroke:0}
 .why .r .t{color:var(--ink)}
 .why .r .d{color:var(--ink2)}
 
@@ -661,3 +655,8 @@ figure.card blockquote{flex:1}
 .pill{background:var(--tile);color:var(--orange);border:1px solid var(--orange)}
 .teaser-out .pill{background:var(--tile);color:var(--orange)}
 .tile-fill .pill{background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.5)}
+
+/* светлый подвал: кнопки Telegram и MAX — белые с контуром */
+footer.site .soc a{background:var(--tile);color:var(--ink);border:1px solid var(--line)}
+footer.site .soc a:hover{background:var(--orange);color:#fff;border-color:var(--orange)}
+footer.site h4{color:var(--orange)}

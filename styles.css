@@ -434,8 +434,7 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
   .case{padding:26px 22px}
   .case-title{font-size:20px}
   .case-metric{font-size:30px}
-
-}
+  /* на телефоне наклон плиток отключаем, иначе они цепляют края экрана */
   .tilt-l,.tilt-r,.bento .dark,.statement{transform:none}
 }
 

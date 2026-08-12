@@ -656,3 +656,11 @@ a.post:not(.dark):hover,.pick:hover,.rel:hover{background:#fff;color:var(--ink);
 .btn-s svg{stroke:currentColor}
 .stats .card:nth-child(1){background:#fff!important;color:var(--ink)}
 .why .r .n{-webkit-text-stroke-color:var(--orange)}
+
+/* Отзывы: нейтрально-серые карточки, никаких тёплых подложек.
+   Кружок с инициалами тоже серый, оценка — белая с оранжевой обводкой. */
+.tile figure.card,figure.card{background:var(--inset)!important;border:1px solid var(--line)}
+.rev-ava{background:var(--inset);color:var(--ink2);border:1px solid var(--line)}
+.rate{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 2px var(--orange)}
+.rate .num{color:var(--orange)}
+.rate .cardtext{color:var(--ink2)}

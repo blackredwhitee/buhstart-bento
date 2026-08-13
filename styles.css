@@ -662,3 +662,6 @@ footer.site h4{color:var(--orange)}
 
 /* кейсы: обводка появляется при наведении */
 .case-teaser:hover{box-shadow:inset 0 0 0 2px var(--orange)}
+
+/* фото руководителя снято горизонтально — кадрируем по лицу */
+.person img[src*="gorelkina"],.person .p-photo img[src*="gorelkina"]{object-position:26% 25%}

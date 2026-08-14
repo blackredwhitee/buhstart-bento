@@ -674,3 +674,8 @@ footer.site h4{color:var(--orange)}
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 .soc a.soc-tg::before{-webkit-mask-image:url(uploads/icon-telegram.svg);mask-image:url(uploads/icon-telegram.svg)}
 .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);mask-image:url(uploads/icon-max.svg)}
+
+/* иконка и название услуги в одной строке, описание — ниже */
+.post-head{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.post-head h3{margin:0}
+@media(max-width:600px){.post-head{gap:12px}}

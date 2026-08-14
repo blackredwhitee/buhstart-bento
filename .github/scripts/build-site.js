@@ -170,8 +170,8 @@ function caseHtml(c, i) {
 ${c.tag ? `<span class="pill case-tag">${esc(c.tag)}</span>` : ''}
 <h3 class="case-title">${esc(c.title || '')}</h3>
 ${metric}
-${row('Что было', c.was)}
-${row('Что сделали', c.did)}
+${row('Проблема', c.was)}
+${row('Решение', c.did)}
 ${row('Результат', c.result)}
 </article>`;
 }

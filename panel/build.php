@@ -231,8 +231,8 @@ function case_html(array $c, int $i): string
         . (!empty($c['tag']) ? '<span class="pill case-tag">' . e($c['tag']) . '</span>' : '') . "\n"
         . '<h3 class="case-title">' . e($c['title'] ?? '') . '</h3>' . "\n"
         . $metric . "\n"
-        . $row('Что было', $c['was'] ?? null) . "\n"
-        . $row('Что сделали', $c['did'] ?? null) . "\n"
+        . $row('Проблема', $c['was'] ?? null) . "\n"
+        . $row('Решение', $c['did'] ?? null) . "\n"
         . $row('Результат', $c['result'] ?? null) . "\n"
         . '</article>';
 }

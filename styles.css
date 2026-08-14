@@ -178,7 +178,7 @@ form .btn{height:52px}
 
 .person{background:var(--tile);border-radius:var(--r-card);overflow:hidden;
   box-shadow:0 1px 2px rgba(26,22,20,.04),0 8px 22px rgba(26,22,20,.05)}
-.person img{width:100%;height:280px;object-fit:cover;object-position:50% 15%;display:block;background:var(--line)}
+.person img{width:100%;height:320px;object-fit:cover;object-position:50% 15%;display:block;background:var(--line)}
 .person .b{padding:16px 18px 18px}
 .person .n{font:600 16px/1.3 Onest,sans-serif}
 
@@ -360,8 +360,8 @@ a.post.dark:hover{transform:rotate(0deg) translateY(-3px)}
 /* Карточки равняются по высоте за счёт ФОТО, а не за счёт растягивания текста —
    иначе под текстом появлялись большие пустоты. */
 .person{display:flex;flex-direction:column}
-.person .p-photo{position:relative;flex:none;height:280px;display:flex;overflow:hidden}
-.person .p-photo img{width:100%;height:280px;flex:1;object-fit:cover;object-position:50% 15%}
+.person .p-photo{position:relative;flex:none;height:320px;display:flex;overflow:hidden}
+.person .p-photo img{width:100%;height:320px;flex:1;object-fit:cover;object-position:50% 15%}
 .person .b{flex:none;display:flex;flex-direction:column}
 /* «Также в команде» — компактные строки без фото */
 .tm-list{margin-top:18px;display:flex;flex-direction:column}
@@ -662,3 +662,6 @@ footer.site h4{color:var(--orange)}
 
 /* кейсы: обводка появляется при наведении */
 .case-teaser:hover{box-shadow:inset 0 0 0 2px var(--orange)}
+
+/* фото руководителя: кадр ниже, чтобы руки не обрезались */
+.person img[src*="gorelkina"]{object-position:50% 30%}

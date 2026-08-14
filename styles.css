@@ -285,7 +285,7 @@ a.post.dark:hover{background:#000}
 .iconbox-or{background:var(--orange)}
 
 /* оранжевая полоса-заявление */
-.statement{background:var(--orange);border-radius:var(--r-tile);padding:52px 44px;display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:end;color:#fff;overflow:hidden;position:relative}
+.statement{background:var(--orange);border-radius:var(--r-tile);padding:52px 44px;display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:start;color:#fff;overflow:hidden;position:relative}
 .statement::after{content:"";position:absolute;right:-90px;top:-90px;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.10)}
 .st-big{font:800 46px/1.02 Onest,sans-serif;letter-spacing:-.04em}
 .st-note{font-size:17px;line-height:1.6;color:rgba(255,255,255,.85)}
@@ -668,12 +668,12 @@ footer.site h4{color:var(--orange)}
 
 /* значки мессенджеров в подвале: маска красится в цвет текста, поэтому при
    наведении значок белеет вместе с надписью */
-.soc a{gap:0;width:46px;padding:0;color:var(--ink2)}
-.soc a::before{content:"";width:20px;height:20px;flex:none;background:currentColor;
+footer.site .soc a{gap:0;width:46px;padding:0}
+footer.site .soc a::before{content:"";width:20px;height:20px;flex:none;background:currentColor;
   -webkit-mask-position:center;mask-position:center;-webkit-mask-size:contain;mask-size:contain;
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
-.soc a.soc-tg::before{-webkit-mask-image:url(uploads/icon-telegram.svg);mask-image:url(uploads/icon-telegram.svg)}
-.soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);mask-image:url(uploads/icon-max.svg)}
+footer.site .soc a.soc-tg::before{-webkit-mask-image:url(uploads/icon-telegram.svg);mask-image:url(uploads/icon-telegram.svg)}
+footer.site .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);mask-image:url(uploads/icon-max.svg)}
 
 /* иконка и название услуги в одной строке, описание — ниже */
 .post-head{display:flex;align-items:center;gap:14px;margin-bottom:12px}
@@ -687,10 +687,10 @@ footer.site h4{color:var(--orange)}
   border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg)}
 
 /* блок о руководителе на странице «Команда» */
-.boss{display:grid;grid-template-columns:.8fr 1.2fr;gap:36px;align-items:start}
-.boss-photo img{width:100%;border-radius:var(--r-card);display:block;object-fit:cover;aspect-ratio:3/4}
+.boss{display:grid;grid-template-columns:.8fr 1.2fr;gap:36px;align-items:stretch}
+.boss-photo img{width:100%;height:100%;min-height:420px;border-radius:var(--r-card);display:block;object-fit:cover;object-position:50% 20%}
 .boss-facts{display:flex;flex-wrap:wrap;gap:28px;margin:24px 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .boss-facts b{display:block;font:800 30px/1 Onest,sans-serif;color:var(--orange);letter-spacing:-.03em}
 .boss-facts span{display:block;font-size:13px;color:var(--ink3);margin-top:6px;max-width:150px}
 .boss-reg p{font-size:15px;line-height:1.55;color:var(--ink2);margin:6px 0}
-@media(max-width:860px){.boss{grid-template-columns:1fr;gap:24px}.boss-photo img{max-width:360px}}
+@media(max-width:860px){.boss{grid-template-columns:1fr;gap:24px}.boss-photo img{max-width:360px;min-height:0}}

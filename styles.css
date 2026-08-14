@@ -665,3 +665,12 @@ footer.site h4{color:var(--orange)}
 
 /* фото руководителя: кадр ниже, чтобы руки не обрезались */
 .person img[src*="gorelkina"]{object-position:50% 30%}
+
+/* значки мессенджеров в подвале: маска красится в цвет текста, поэтому при
+   наведении значок белеет вместе с надписью */
+.soc a{gap:8px}
+.soc a::before{content:"";width:18px;height:18px;flex:none;background:currentColor;
+  -webkit-mask-position:center;mask-position:center;-webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.soc a.soc-tg::before{-webkit-mask-image:url(uploads/icon-telegram.svg);mask-image:url(uploads/icon-telegram.svg)}
+.soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);mask-image:url(uploads/icon-max.svg)}

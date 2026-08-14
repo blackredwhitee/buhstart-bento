@@ -122,6 +122,8 @@ document.addEventListener('DOMContentLoaded', function(){
       var data = {type: form.dataset.form || 'lead'};
       var fileEl = null;
       form.querySelectorAll('input,textarea,select').forEach(function(el){
+        // согласие на рассылку — необязательная галочка, её значение нужно передать
+        if(el.type === 'checkbox' && el.name === 'subscribe'){ data.subscribe = el.checked ? 'да' : 'нет'; return; }
         if(el.type === 'checkbox' || !el.name) return;
         if(el.type === 'file'){ fileEl = el; return; }
         data[el.name] = el.value;

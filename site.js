@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function(){
     modal.querySelector('.m-kicker').textContent = isAsk ? 'Вопрос бухгалтеру' : (isPersonal ? 'Руководителю лично' : 'Заявка');
     modal.querySelector('.m-title').textContent = isAsk ? 'Спросите — ответим'
       : isPersonal ? 'Написать руководителю'
-      : (situation ? 'Уточнить цену' : 'Записаться на консультацию');
+      : 'Записаться на консультацию';
     modal.querySelector('.m-sub').textContent = isPersonal
       ? 'Обращение читает лично Горелкина Галина Викторовна, руководитель компании.'
       : situation ? ('Ситуация: ' + situation)
@@ -91,13 +91,12 @@ document.addEventListener('DOMContentLoaded', function(){
     var isRisk = situation === 'Тест на риск проверки';
     modal.dataset.source = isPersonal ? 'Личное обращение к руководителю'
       : isRisk ? 'Тест на риск проверки'
-      : situation ? ('Уточнить цену: ' + situation)
+      : situation ? ('Консультация: ' + situation)
       : (isAsk ? 'Вопрос бухгалтеру' : 'Записаться на консультацию');
     // тип обращения — отдельным столбцом в таблице, чтобы не разбирать комментарий глазами
     modal.dataset.kind = isPersonal ? 'Руководителю лично'
       : isRisk ? 'Риск проверки'
       : isAsk ? 'Вопрос бухгалтеру'
-      : situation ? 'Уточнить цену'
       : 'Консультация';
     modal.dataset.extra = (isRisk && modal.dataset.riskResult) ? modal.dataset.riskResult : '';
   }

@@ -205,8 +205,9 @@ form .btn{height:52px}
 .linkinline{background:none;border:0;padding:0;font:inherit;color:var(--orange);cursor:pointer;text-decoration:none}
 .linkinline:hover{color:var(--orange-h)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border-radius:var(--r-btn);padding:9px 14px;font:600 13px/1 Onest,sans-serif;background:var(--bg);color:var(--ink);cursor:pointer;border:0}
-.chip.on{background:var(--orange);color:#fff}
+.chip{border-radius:var(--r-btn);padding:9px 14px;font:600 13px/1 Onest,sans-serif;background:var(--tile);color:var(--ink);cursor:pointer;border:1px solid var(--line);transition:border-color .15s,background .15s}
+.chip:hover{border-color:var(--orange)}
+.chip.on{background:var(--orange);color:#fff;border-color:var(--orange)}
 
 /* плитка статьи узкая и по центру страницы */
 .article{max-width:820px;margin-left:auto;margin-right:auto}

@@ -685,3 +685,12 @@ footer.site h4{color:var(--orange)}
 .st-list li{position:relative;padding-left:26px;color:#fff}
 .st-list li::before{content:"";position:absolute;left:0;top:8px;width:14px;height:9px;
   border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg)}
+
+/* блок о руководителе на странице «Команда» */
+.boss{display:grid;grid-template-columns:.8fr 1.2fr;gap:36px;align-items:start}
+.boss-photo img{width:100%;border-radius:var(--r-card);display:block;object-fit:cover;aspect-ratio:3/4}
+.boss-facts{display:flex;flex-wrap:wrap;gap:28px;margin:24px 0;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.boss-facts b{display:block;font:800 30px/1 Onest,sans-serif;color:var(--orange);letter-spacing:-.03em}
+.boss-facts span{display:block;font-size:13px;color:var(--ink3);margin-top:6px;max-width:150px}
+.boss-reg p{font-size:15px;line-height:1.55;color:var(--ink2);margin:6px 0}
+@media(max-width:860px){.boss{grid-template-columns:1fr;gap:24px}.boss-photo img{max-width:360px}}

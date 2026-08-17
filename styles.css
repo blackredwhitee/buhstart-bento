@@ -707,10 +707,9 @@ footer.site .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);
 .cur-strip img{width:76px;height:76px;flex:none;border-radius:50%;object-fit:cover;object-position:50% 18%;background:var(--inset)}
 @media(max-width:600px){.cur-strip img{width:64px;height:64px}}
 
-/* «Ищете работу?» — последняя карточка в сетке команды: акцентная, без фото */
-.person-job{background:var(--orange);color:#fff;box-shadow:none;display:flex;transition:background .2s}
-.person-job:hover{background:var(--orange-h)}
-.pj-in{display:flex;flex-direction:column;justify-content:center;gap:10px;padding:32px 26px}
-.pj-t{font:700 22px/1.2 Onest,sans-serif;letter-spacing:-.02em}
-.pj-x{font-size:14px;line-height:1.5;color:rgba(255,255,255,.9)}
-.pj-go{font:600 15px/1 Onest,sans-serif;margin-top:6px}
+/* «Ищете работу?» — последняя карточка в сетке команды: как у сотрудников, но с рисунком */
+.person-job{display:flex;flex-direction:column;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow .2s}
+.person-job:hover{box-shadow:inset 0 0 0 2px var(--orange)}
+.person-job img{object-fit:cover}
+.pj-x{font-size:14px;line-height:1.5;color:var(--ink2);margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.pj-go{font:600 15px/1 Onest,sans-serif;color:var(--orange);margin-top:14px}

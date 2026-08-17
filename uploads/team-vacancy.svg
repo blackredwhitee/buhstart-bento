@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 320" width="340" height="320" role="img" aria-label="Вакансии">
+<rect width="340" height="320" fill="#F4F4F5"/>
+<rect x="104" y="60" width="132" height="176" rx="10" fill="#fff"/>
+<circle cx="170" cy="106" r="22" fill="#F07828"/>
+<path d="M148 146c4-11 12-17 22-17s18 6 22 17z" fill="#F07828"/>
+<rect x="126" y="168" width="88" height="7" rx="3.5" fill="#E4E4E7"/>
+<rect x="126" y="184" width="66" height="7" rx="3.5" fill="#E4E4E7"/>
+<rect x="126" y="200" width="78" height="7" rx="3.5" fill="#E4E4E7"/>
+<rect x="126" y="216" width="48" height="7" rx="3.5" fill="#F07828" opacity=".45"/>
+<path d="M243 176l10 10 18-20" stroke="#F07828" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+<rect x="66" y="96" width="20" height="20" rx="5" fill="#E4E4E7"/>
+<rect x="60" y="196" width="14" height="14" rx="4" fill="#F07828" opacity=".35"/>
+</svg>

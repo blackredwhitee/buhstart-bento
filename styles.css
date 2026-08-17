@@ -715,21 +715,21 @@ footer.site .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);
 .pj-go{font:600 15px/1 Onest,sans-serif;color:var(--orange);margin-top:14px}
 
 /* первый экран: лица команды рядом с кнопкой — «людей не хватает» */
-.crowd{display:flex;align-items:center;gap:16px;margin-top:26px;padding-top:22px;border-top:1px solid var(--line);color:var(--ink)}
+.crowd{display:flex;align-items:center;gap:14px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink)}
 .crowd-faces{display:flex;flex:none}
-.crowd-faces img,.crowd-more{width:44px;height:44px;border-radius:50%;border:2px solid #fff;object-fit:cover;object-position:50% 18%;background:var(--inset);margin-left:-12px}
+.crowd-faces img,.crowd-more{width:36px;height:36px;border-radius:50%;border:2px solid #fff;object-fit:cover;object-position:50% 18%;background:var(--inset);margin-left:-12px}
 .crowd-faces img:first-child{margin-left:0}
 .crowd-more{display:flex;align-items:center;justify-content:center;background:var(--orange);color:#fff;font:700 13px/1 Onest,sans-serif}
-.crowd-t{font-size:14px;line-height:1.45;color:var(--ink2)}
-.crowd-t b{display:block;margin-top:4px;color:var(--orange);font:600 14px/1 Onest,sans-serif}
+.crowd-t{font-size:13px;line-height:1.4;color:var(--ink2)}
+.crowd-t b{display:inline;margin-left:6px;color:var(--orange);font:600 13px/1 Onest,sans-serif}
 .crowd:hover .crowd-t b{color:var(--orange-h)}
 @media(max-width:600px){.crowd-faces img,.crowd-more{width:38px;height:38px}}
 
 /* первый экран: фото команды вместо оранжевой плитки, цифры поверх снимка */
-.hero-photo{position:relative;padding:0;overflow:hidden;min-height:440px}
+.hero-photo{position:relative;padding:0;overflow:hidden;min-height:380px}
 .hero-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 35%}
-.hero-facts{position:absolute;left:0;right:0;bottom:0;display:flex;gap:20px;padding:26px 22px 20px;
+.hero-facts{position:absolute;left:0;right:0;bottom:0;display:flex;gap:18px;padding:22px 18px 16px;
   background:linear-gradient(rgba(26,22,20,0),rgba(26,22,20,.78));color:#fff}
-.hero-facts .num{font:800 26px/1 Onest,sans-serif;letter-spacing:-.03em;color:#fff}
+.hero-facts .num{font:800 22px/1 Onest,sans-serif;letter-spacing:-.03em;color:#fff}
 .hero-facts .fl{font-size:12px;line-height:1.3;color:rgba(255,255,255,.85);margin-top:4px}
 @media(max-width:900px){.hero-photo{min-height:320px}}

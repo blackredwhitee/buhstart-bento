@@ -255,11 +255,11 @@ h2{font-size:38px}
 .tile-dark .field{background:#fff;border-color:transparent}
 .tile-dark .agree{color:rgba(255,255,255,.7)}
 .tile-dark .agree a{color:var(--orange)}
-.facts{background:var(--orange)!important;display:flex;flex-direction:column;justify-content:center;gap:30px;padding:40px 36px}
-.facts .f{padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,.32)}
+.facts{background:var(--tile)!important;display:flex;flex-direction:column;justify-content:center;gap:30px;padding:40px 36px}
+.facts .f{padding-bottom:28px;border-bottom:1px solid var(--line)}
 .facts .f:last-child{padding-bottom:0;border-bottom:0}
 .facts .num{font-size:46px}
-.facts .fl{font-size:14px;color:rgba(255,255,255,.9);margin-top:8px}
+.facts .fl{font-size:14px;color:var(--ink3);margin-top:8px}
 /* цифры на страницах-разделах: чередование тёмных и оранжевых плиток */
 .stats .card:nth-child(1){background:var(--dark)!important;color:#fff}
 .stats .card:nth-child(2){background:var(--orange)!important;color:#fff}
@@ -758,3 +758,6 @@ footer.site .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);
 @media(max-width:1100px){.face img{width:54px;height:54px}.face.big img{width:70px;height:70px}}
 @media(max-width:600px){.face img{width:46px;height:46px}.face.big img{width:60px;height:60px}.r-row{gap:5px}}
 @media(prefers-reduced-motion:reduce){.face{opacity:1;animation:none}.face img{animation:none;transition:none}}
+
+/* цифры на первом экране: белая плитка, оранжевые числа */
+.facts .num{color:var(--orange)}

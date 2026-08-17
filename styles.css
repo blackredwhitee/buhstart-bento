@@ -727,7 +727,7 @@ footer.site .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);
 
 /* первый экран: фото команды вместо оранжевой плитки, цифры поверх снимка */
 .hero-photo{position:relative;padding:0;overflow:hidden;min-height:0}
-.hero-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 35%}
+.hero-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 62%}
 .hero-facts{position:absolute;left:0;right:0;bottom:0;display:flex;gap:26px;padding:18px 22px;
   background:#fff;border-top:1px solid var(--line)}
 .hero-facts .num{font:800 32px/1 Onest,sans-serif;letter-spacing:-.03em;color:var(--orange)}

@@ -13,7 +13,7 @@
 <link rel="icon" href="uploads/favicon-32.png?v=4" sizes="32x32" type="image/png">
 <link rel="icon" href="uploads/favicon.png?v=4" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="uploads/favicon-180.png?v=4">
-<link rel="stylesheet" href="styles.css?v=149">
+<link rel="stylesheet" href="styles.css?v=151">
 
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Главная", "item": "https://buhstart.ru/index.html"}, {"@type": "ListItem", "position": 2, "name": "Калькулятор", "item": "https://buhstart.ru/calculator.html"}]}</script>
 <meta property="og:image" content="https://buhstart.ru/uploads/og-calc.png">
@@ -618,7 +618,7 @@ a{color:#F07828}
 <div class="fab"><button class="top" aria-label="Наверх"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button><button class="ask" data-ask><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5Z"/></svg>Задать вопрос</button></div><div class="mobile-bar"><button class="btn btn-p" data-lead>Записаться</button><a class="call" href="tel:+74957788168" aria-label="Позвонить"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L15 12l5 2v3a2 2 0 0 1-2.2 2A16 16 0 0 1 4 5.2 2 2 0 0 1 6 3Z"/></svg></a></div>
 <div class="modal"><div class="box"><form data-form="lead" style="display:flex;flex-direction:column;gap:12px"><div class="kicker m-kicker">Вопрос бухгалтеру</div><h3 class="m-title" style="font-size:24px;font-weight:700;letter-spacing:-0.02em">Спросите — ответим</h3><p class="cardtext m-sub"></p><textarea class="field m-question" name="comment" placeholder="Ваш вопрос"></textarea><input class="field" name="name" placeholder="Имя" required><input class="field" name="phone" placeholder="Телефон или Telegram" required><label class="agree"><input type="checkbox" name="agree"> Я даю <a href="soglasie.html" target="_blank">согласие на обработку персональных данных</a> и принимаю <a href="privacy.html" target="_blank">политику конфиденциальности</a></label><label class="agree agree-news"><input type="checkbox" name="subscribe" value="да"> Хочу получать полезные материалы и новости для бизнеса</label><div class="formerr">Без согласия на обработку данных отправить нельзя</div><button class="btn btn-p btn-block" type="submit">Отправить</button></form><div class="done"><div class="ok">✓</div><div style="font-size:17px;font-weight:600;margin-top:16px">Отправлено</div><p class="cardtext" style="margin-top:8px">Ответим в рабочее время.</p><button class="btn btn-s" style="margin-top:20px" data-close>Закрыть</button></div></div></div>
 <script src="vendor-jszip.min.js"></script>
-<script src="site.js?v=149"></script>
+<script src="site.js?v=151"></script>
 <script>
 const BITRIX_WEBHOOK = '';
 const SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzTep7vEAUp2TdSNvvbpWTDGcAyswlh9GUszIcMUTs0naEwNfH-724KCPBC6lLCcp0ziw/exec';
@@ -1254,95 +1254,105 @@ async function generatePdf(r, num){
     doc.addFont('Onest.ttf','Onest','normal');
     doc.setFont('Onest','normal');
 
-    var L=18, R=192, W=R-L, y=14;
-    var INK=[34,33,32], INK2=[110,110,110], ORANGE=[240,120,40],
-        LINE=[224,224,224], ZEBRA=[250,250,250], HEAD=[245,245,245];
+    var L=18, R=192, W=R-L, y=16;
+    var INK=[34,33,32], INK2=[120,120,120], ORANGE=[230,113,32], GREEN=[46,125,50],
+        LINE=[190,190,190], HEADBG=[230,113,32];
 
-    function put(t,x,yy,size,color,align){
+    // жирный шрифт делаем обводкой: у нас один файл шрифта, отдельного Bold нет
+    function put(t,x,yy,size,color,align,bold){
       doc.setFontSize(size); doc.setTextColor.apply(doc,color||INK);
-      doc.text(t,x,yy,align?{align:align}:undefined);
+      var o=align?{align:align}:{};
+      if(bold){ doc.setDrawColor.apply(doc,color||INK); doc.setLineWidth(0.22); o.renderingMode='fillThenStroke'; }
+      doc.text(t,x,yy,o);
+      if(bold){ doc.setLineWidth(0.2); }
     }
     function para(t,yy,size,color,lead){
       doc.setFontSize(size||9.5);
       var lines=doc.splitTextToSize(t,W);
-      put(lines,L,yy,size||9.5,color||INK2);
-      return yy + lines.length*(lead||4.5);
+      put(lines,L,yy,size||9.5,color||INK);
+      return yy + lines.length*(lead||4.6);
     }
-    function page(need){ if(y+need>280){ doc.addPage(); y=20; } }
-    function check(cx,cy){                       // галочку рисуем линиями: шрифт её не содержит
-      doc.setDrawColor.apply(doc,ORANGE); doc.setLineWidth(0.5);
-      doc.line(cx-1.6,cy,cx-0.4,cy+1.4); doc.line(cx-0.4,cy+1.4,cx+1.8,cy-1.6);
+    function page(need){ if(y+need>282){ doc.addPage(); y=20; } }
+    function tick(cx,cy){
+      doc.setDrawColor.apply(doc,GREEN); doc.setLineWidth(0.7);
+      doc.line(cx-1.7,cy-0.1,cx-0.5,cy+1.5); doc.line(cx-0.5,cy+1.5,cx+1.9,cy-1.7);
       doc.setLineWidth(0.2);
     }
 
-    // ---------- шапка: логотип и контакты ----------
-    if(window.KP_LOGO){ try{ doc.addImage(window.KP_LOGO,'PNG',L,y,44,13.9); }catch(e){} }
-    put('Бухгалтерское сопровождение ИП и ООО с 2003 года',R,y+3,8.5,INK2,'right');
-    put('+7 (495) 778-81-68',R,y+7.6,8.5,INK2,'right');
-    put('info@buhstart.ru · buhstart.ru',R,y+12.2,8.5,INK2,'right');
-    y+=18;
-    doc.setDrawColor.apply(doc,ORANGE); doc.setLineWidth(0.8); doc.line(L,y,R,y); doc.setLineWidth(0.2);
-    y+=8;
+    /* ---------- шапка в рамке: логотип и реквизиты ---------- */
+    var hH=20;
+    doc.setDrawColor.apply(doc,LINE); doc.rect(L,y,W,hH);
+    if(window.KP_LOGO){ try{ doc.addImage(window.KP_LOGO,'PNG',L+2,y+3.4,38,12); }catch(e){} }
+    put('Доверительная Бухгалтерия',R-2,y+5,10.5,INK,'right',true);
+    put('Бухгалтерское сопровождение ИП и ООО с 2003 года',R-2,y+9.4,8.5,INK,'right');
+    put('+7 (495) 778-81-68',R-2,y+13.2,8.5,INK,'right');
+    put('info@buhstart.ru · buhstart.ru',R-2,y+17,8.5,INK,'right');
+    y+=hH+12;
 
-    // ---------- кому и когда ----------
-    put('Коммерческое предложение № '+num,L,y,14,INK); y+=6;
-    put('от '+toDay(),L,y,9.5,INK2); y+=6;
-    put('Кому: '+clientFull(),L,y,10.5,INK); y+=8;
+    /* ---------- заголовок по центру ---------- */
+    var mid=L+W/2;
+    put('Коммерческое предложение № '+num,mid,y,16,INK,'center',true); y+=6.4;
+    put('от '+toDay(),mid,y,9.5,INK2,'center'); y+=9;
 
+    put('Кому: '+clientFull(),L,y,9.5,INK); y+=5;
     y=para('На основании данных, введённых вами в калькуляторе на сайте buhstart.ru, сформировано настоящее '
           +'предварительное коммерческое предложение. Стоимость услуг носит ознакомительный характер — после '
           +'изучения вашей заявки менеджер свяжется с вами, при необходимости уточнит состав услуг и подготовит '
-          +'окончательный вариант.', y, 9.5, INK2)+6;
+          +'окончательный вариант.', y, 9.5, INK)+7;
 
-    // ---------- таблица услуг ----------
-    var cW=[W-3*24,24,24,24];
-    function row(cells,bg,bold,ticks,size){
-      var name=doc.splitTextToSize(cells[0],cW[0]-6);
-      var h=Math.max(8, name.length*4.4+4.4);
+    /* ---------- таблица услуг ---------- */
+    var cW=[W-3*28,28,28,28];
+    function row(cells,opt){
+      opt=opt||{};
+      var name=doc.splitTextToSize(cells[0],cW[0]-5);
+      var desc=[];
+      if(opt.desc){ doc.setFontSize(7.6); desc=doc.splitTextToSize(opt.desc,cW[0]-5); }
+      var h=opt.h || Math.max(7.4, name.length*4.3 + desc.length*3.4 + 3.6);
       page(h+6);
-      if(bg){ doc.setFillColor.apply(doc,bg); doc.rect(L,y,W,h,'F'); }
+      if(opt.fill){ doc.setFillColor.apply(doc,opt.fill); doc.rect(L,y,W,h,'F'); }
       doc.setDrawColor.apply(doc,LINE);
       var x=L; for(var i=0;i<4;i++){ doc.rect(x,y,cW[i],h); x+=cW[i]; }
-      put(name,L+3,y+h/2-(name.length-1)*2.2+1.2,9,INK);
-      if(ticks){
-        x=L+cW[0];
-        for(var j=0;j<3;j++){ if(ticks[j]) check(x+cW[j+1]/2,y+h/2); x+=cW[j+1]; }
-      } else {
-        x=L+cW[0];
-        for(var k=1;k<4;k++){ put(cells[k],x+cW[k]/2,y+h/2+1.2,size||9,INK,'center'); x+=cW[k]; }
+      var block=name.length*4.3 + desc.length*3.4;
+      var base=y+(h-block)/2+3.2;
+      put(name,L+2.5,base,opt.size||9,opt.color||INK,null,opt.bold);
+      if(desc.length) put(desc,L+2.5,base+name.length*4.3+0.4,7.6,INK2);
+      x=L+cW[0];
+      for(var k=1;k<4;k++){
+        if(opt.ticks){ if(opt.ticks[k-1]) tick(x+cW[k]/2,y+h/2); }
+        else if(cells[k]) put(cells[k],x+cW[k]/2,y+h/2+1.1,opt.size||9,opt.color||INK,'center',opt.bold);
+        x+=cW[k];
       }
       y+=h;
     }
-    row(['Наименование услуги','Базовая','Стандарт','Оптима'],HEAD,true);
-    var i=0;
-    r.lines.forEach(function(l){ row([l.name],(i%2?ZEBRA:null),false,[1,1,1]); i++; });
-    r.stdLines.forEach(function(l){ row([l.name],(i%2?ZEBRA:null),false,[0,1,1]); i++; });
-    r.optLines.forEach(function(l){ row([l.name],(i%2?ZEBRA:null),false,[0,0,1]); i++; });
-    y+=7;
-
-    // ---------- стоимость ----------
-    page(24);
-    cW=[W-3*32,32,32,32];                       // под суммы нужны столбцы пошире
-    row(['','Базовая','Стандарт','Оптима'],HEAD,true);
-    row(['Предварительная стоимость',fmt(r.baseTotal)+' ₽/мес.',fmt(r.stdTotal)+' ₽/мес.',fmt(r.optTotal)+' ₽/мес.'],null,false,null,8.5);
+    row(['Наименование услуги','Базовая','Стандарт','Оптима'],{fill:HEADBG,color:[255,255,255],bold:true,h:8.4});
+    r.lines.forEach(function(l){ row([l.name],{ticks:[1,1,1],desc:getDesc(l.name)}); });
+    r.stdLines.forEach(function(l){ row([l.name],{ticks:[0,1,1],desc:getDesc(l.name)}); });
+    r.optLines.forEach(function(l){ row([l.name],{ticks:[0,0,1],desc:getDesc(l.name)}); });
     y+=6;
-    put('Предварительный расчёт действителен до '+kpValid(),L,y,9.5,INK2); y+=9;
 
-    // ---------- о компании ----------
-    page(34);
-    put('О компании',L,y,12,INK); y+=6;
+    /* ---------- стоимость ---------- */
+    page(22);
+    cW=[W-3*30,30,30,30];
+    row(['','Базовая','Стандарт','Оптима'],{color:ORANGE,bold:true,h:7.8});
+    row(['Предварительная стоимость',fmt(r.baseTotal)+' ₽/мес.',fmt(r.stdTotal)+' ₽/мес.',fmt(r.optTotal)+' ₽/мес.'],{bold:true,size:8.6,h:7.8});
+    y+=8;
+    put('Предварительный расчёт действителен до '+kpValid(),L,y,10,INK,null,true); y+=10;
+
+    /* ---------- о компании ---------- */
+    page(30);
+    put('О компании',L,y,13,INK,null,true); y+=6;
     y=para('Доверительная Бухгалтерия успешно работает с 2003 года. За более 20 лет мы накопили экспертизу '
           +'в налоговом и бухгалтерском сопровождении ИП и ООО. Работаем удалённо по всей России на любых '
-          +'системах налогообложения.', y, 9.5, INK2)+7;
+          +'системах налогообложения.', y, 9.5, INK)+7;
 
-    page(40);
-    put('Что происходит дальше',L,y,12,INK); y+=6;
+    page(34);
+    put('Что происходит дальше',L,y,13,INK,null,true); y+=6;
     y=para('Ваша заявка уже отправлена менеджеру Доверительной Бухгалтерии. Специалист изучит результаты '
           +'расчёта, при необходимости уточнит особенности деятельности вашей компании и подготовит '
-          +'окончательное коммерческое предложение.', y, 9.5, INK2)+4;
+          +'окончательное коммерческое предложение.', y, 9.5, INK)+4;
     y=para('Если у вас есть вопросы или вы хотите уточнить детали — свяжитесь с нами: +7 (495) 778-81-68 '
-          +'или info@buhstart.ru. Мы работаем удалённо по всей России.', y, 9.5, INK2)+4;
-    put('Подробнее на сайте: buhstart.ru',L,y,9.5,ORANGE);
+          +'или info@buhstart.ru. Мы работаем удалённо по всей России.', y, 9.5, INK)+4;
+    put('Подробнее на сайте: buhstart.ru',L,y,9.5,INK);
 
     var blob=doc.output('blob');
     lastDocx={blob:blob, name:'КП_'+num+'_'+(A.name||'').replace(/[^а-яёА-ЯЁa-zA-Z0-9]/g,'_')+'.pdf'};

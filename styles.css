@@ -733,3 +733,15 @@ footer.site .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);
 .hero-facts .num{font:800 32px/1 Onest,sans-serif;letter-spacing:-.03em;color:var(--orange)}
 .hero-facts .fl{font-size:13px;line-height:1.3;color:var(--ink3);margin-top:5px;white-space:nowrap}
 @media(max-width:900px){.hero-photo{min-height:320px}}
+
+/* первый экран: «ромашка» из лиц команды */
+.hero-people{display:flex;flex-direction:column;justify-content:center;gap:22px;padding:32px 26px}
+.rosette{display:flex;flex-direction:column;align-items:center;gap:10px}
+.r-row{display:flex;gap:10px}
+.r-row.r-off{margin-left:-46px}
+.rosette img{width:84px;height:84px;border-radius:50%;object-fit:cover;object-position:50% 18%;
+  border:3px solid #fff;box-shadow:0 6px 18px rgba(26,22,20,.10);background:var(--inset)}
+.rosette img.big{width:104px;height:104px;box-shadow:0 0 0 3px var(--orange),0 8px 22px rgba(26,22,20,.14)}
+.hero-people .hero-facts{position:static;border-top:1px solid var(--line);padding:18px 0 0;background:none}
+@media(max-width:1100px){.rosette img{width:70px;height:70px}.rosette img.big{width:88px;height:88px}.r-row.r-off{margin-left:-40px}}
+@media(max-width:600px){.rosette img{width:58px;height:58px}.rosette img.big{width:74px;height:74px}.r-row.r-off{margin-left:-34px}}

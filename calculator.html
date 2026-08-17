@@ -13,7 +13,7 @@
 <link rel="icon" href="uploads/favicon-32.png?v=4" sizes="32x32" type="image/png">
 <link rel="icon" href="uploads/favicon.png?v=4" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="uploads/favicon-180.png?v=4">
-<link rel="stylesheet" href="styles.css?v=154">
+<link rel="stylesheet" href="styles.css?v=155">
 
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Главная", "item": "https://buhstart.ru/index.html"}, {"@type": "ListItem", "position": 2, "name": "Калькулятор", "item": "https://buhstart.ru/calculator.html"}]}</script>
 <meta property="og:image" content="https://buhstart.ru/uploads/og-calc.png">
@@ -618,7 +618,7 @@ a{color:#F07828}
 <div class="fab"><button class="top" aria-label="Наверх"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button><button class="ask" data-ask><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5Z"/></svg>Задать вопрос</button></div><div class="mobile-bar"><button class="btn btn-p" data-lead>Записаться</button><a class="call" href="tel:+74957788168" aria-label="Позвонить"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L15 12l5 2v3a2 2 0 0 1-2.2 2A16 16 0 0 1 4 5.2 2 2 0 0 1 6 3Z"/></svg></a></div>
 <div class="modal"><div class="box"><form data-form="lead" style="display:flex;flex-direction:column;gap:12px"><div class="kicker m-kicker">Вопрос бухгалтеру</div><h3 class="m-title" style="font-size:24px;font-weight:700;letter-spacing:-0.02em">Спросите — ответим</h3><p class="cardtext m-sub"></p><textarea class="field m-question" name="comment" placeholder="Ваш вопрос"></textarea><input class="field" name="name" placeholder="Имя" required><input class="field" name="phone" placeholder="Телефон или Telegram" required><label class="agree"><input type="checkbox" name="agree"> Я даю <a href="soglasie.html" target="_blank">согласие на обработку персональных данных</a> и принимаю <a href="privacy.html" target="_blank">политику конфиденциальности</a></label><label class="agree agree-news"><input type="checkbox" name="subscribe" value="да"> Хочу получать полезные материалы и новости для бизнеса</label><div class="formerr">Без согласия на обработку данных отправить нельзя</div><button class="btn btn-p btn-block" type="submit">Отправить</button></form><div class="done"><div class="ok">✓</div><div style="font-size:17px;font-weight:600;margin-top:16px">Отправлено</div><p class="cardtext" style="margin-top:8px">Ответим в рабочее время.</p><button class="btn btn-s" style="margin-top:20px" data-close>Закрыть</button></div></div></div>
 <script src="vendor-jszip.min.js"></script>
-<script src="site.js?v=154"></script>
+<script src="site.js?v=155"></script>
 <script>
 const BITRIX_WEBHOOK = '';
 const SHEETS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzTep7vEAUp2TdSNvvbpWTDGcAyswlh9GUszIcMUTs0naEwNfH-724KCPBC6lLCcp0ziw/exec';
@@ -654,12 +654,10 @@ const DESC = {
   'Общепит':'Калькуляционный учёт (рецепты, техкарты), работа с ЕГАИС, «Меркурий» и «Честный ЗНАК»',
   'Медицина':'Учёт МПЗ и медоборудования, учёт расчётов с фондами ДМС, ОМС и пациентами',
   'Производство':'Расчёт себестоимости, учёт сырья и НЗП, распределение прямых и косвенных расходов',
-  'Работа с расчётным счётом':'Загрузка выписок, обработка и разноска банковских операций, подготовка платёжных поручений',
+  'Ведение расчётного счёта':'Загрузка выписок, разноска банковских операций, подготовка платёжных поручений',
   'Приоритетный ответ менеджера':'Индивидуальный бухгалтер, отвечающий руководителю в течение рабочего дня',
   'Налоговый менеджмент':'Проведение консультаций по налогообложению, оптимизация налоговой нагрузки',
-  'Расширенное сопровождение р/с':'Обработка и разноска банковских операций, подготовка платёжных поручений',
   'Управленческий учёт':'Построение ОДДС и ОПиУ, расчёт и анализ ключевых показателей прибыльности компании',
-  'Полное сопровождение р/с и платёжного поручения':'Загрузка выписок, обработка операций, подготовка и отправка платёжных поручений',
   'Сотрудники РФ':'Расчёт зарплаты, налогов и взносов, кадровые документы, отчётность в ФНС и СФР',
   'Иностранные сотрудники':'Расчёт зарплаты и отчётность по иностранным работникам, уведомления в МВД',
   'Воинский учёт':'Ведение воинского учёта: карточки, сверки и отчётность в военкомат',
@@ -992,7 +990,7 @@ function calcTotal(){
     if(A.licenses)add('Лицензионная отчётность ('+(A.licenseCount||1)+' лиц.)',P.licenses*(A.licenseCount||1));
     if(A.spot)add('СПОТ ('+(A.spotCount||1)+' шт.)',P.spot*(A.spotCount||1));
   }
-  lines.push({name:'Работа с расчётным счётом',price:P.invoice.base});
+  lines.push({name:'Ведение расчётного счёта',price:P.invoice.base});
   const baseTotal=lines.reduce((s,l)=>s+(l.price||0),0);
 
   const vis=A.officeBuhPresence?Math.max(1,A.officeBuhVisits||4):1;
@@ -1007,11 +1005,11 @@ function calcTotal(){
     {name:'Приоритетный ответ менеджера',price:mPriority},
     ...(taxQ()&&A.taxMgmt?[{name:'Налоговый менеджмент',price:mTaxMgmt}]:[]),
     {name:'Присутствие бухгалтера в офисе ('+vis+' визит'+(vis===1?'':'а')+'/мес.)',price:mOfficeBuh},
-    {name:'Расширенное сопровождение р/с',price:mInvStdExtra},
+    {name:'Ведение расчётного счёта',price:mInvStdExtra,hide:true},
   ];
   const optLines=[
     {name:'Управленческий учёт',price:mOptima},
-    {name:'Полное сопровождение р/с и платёжного поручения',price:mInvOptExtra},
+    {name:'Ведение расчётного счёта',price:mInvOptExtra,hide:true},
   ];
   const stdTotal=baseTotal+stdLines.reduce((s,l)=>s+l.price,0);
   const optTotal=stdTotal+optLines.reduce((s,l)=>s+l.price,0);
@@ -1086,8 +1084,8 @@ function generateKP(){
   }).join('');
   G('kp-tariffs').innerHTML=
     '<div class="kp-tariff"><div class="kp-tariff-name">Базовая</div><div class="kp-tariff-price">'+fmt(r.baseTotal)+'<span>/мес</span></div><div class="kp-tariff-extras">Бухгалтерский учёт, налоговая отчётность, р/с</div></div>'+
-    '<div class="kp-tariff featured"><div class="kp-tariff-badge">рекомендуем</div><div class="kp-tariff-name">Стандарт</div><div class="kp-tariff-price">'+fmt(r.stdTotal)+'<span>/мес</span></div><div class="kp-tariff-extras">Всё из Базовой +<br>'+r.stdLines.map(l=>'• '+esc(l.name)).join('<br>')+'</div></div>'+
-    '<div class="kp-tariff"><div class="kp-tariff-name">Оптима</div><div class="kp-tariff-price">'+fmt(r.optTotal)+'<span>/мес</span></div><div class="kp-tariff-extras">Всё из Стандарт +<br>'+r.optLines.map(l=>'• '+esc(l.name)).join('<br>')+'</div></div>';
+    '<div class="kp-tariff featured"><div class="kp-tariff-badge">рекомендуем</div><div class="kp-tariff-name">Стандарт</div><div class="kp-tariff-price">'+fmt(r.stdTotal)+'<span>/мес</span></div><div class="kp-tariff-extras">Всё из Базовой +<br>'+r.stdLines.filter(l=>!l.hide).map(l=>'• '+esc(l.name)).join('<br>')+'</div></div>'+
+    '<div class="kp-tariff"><div class="kp-tariff-name">Оптима</div><div class="kp-tariff-price">'+fmt(r.optTotal)+'<span>/мес</span></div><div class="kp-tariff-extras">Всё из Стандарт +<br>'+r.optLines.filter(l=>!l.hide).map(l=>'• '+esc(l.name)).join('<br>')+'</div></div>';
   G('kp-breakdown').innerHTML='';
 
   // --- Версия для печати в новом окне ---
@@ -1098,8 +1096,8 @@ function generateKP(){
       +'<td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td>'
       +'<td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td></tr>';
   }).join('')
-  +r.stdLines.map(l=>'<tr><td style="padding:6px 10px 6px 0;border-bottom:1px solid #f0f0f0;font-size:11pt">'+esc(l.name)+'</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#ccc">—</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td></tr>').join('')
-  +r.optLines.map(l=>'<tr><td style="padding:6px 10px 6px 0;border-bottom:1px solid #f0f0f0;font-size:11pt">'+esc(l.name)+'</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#ccc">—</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#ccc">—</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td></tr>').join('');
+  +r.stdLines.filter(l=>!l.hide).map(l=>'<tr><td style="padding:6px 10px 6px 0;border-bottom:1px solid #f0f0f0;font-size:11pt">'+esc(l.name)+'</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#ccc">—</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td></tr>').join('')
+  +r.optLines.filter(l=>!l.hide).map(l=>'<tr><td style="padding:6px 10px 6px 0;border-bottom:1px solid #f0f0f0;font-size:11pt">'+esc(l.name)+'</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#ccc">—</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#ccc">—</td><td style="padding:6px 8px;border-bottom:1px solid #f0f0f0;text-align:center;color:#F07828;font-weight:700">✓</td></tr>').join('');
   const printHtml='<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><title>КП '+num+' — Доверительная Бухгалтерия</title>'
     +'<style>*{box-sizing:border-box}body{font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#18181B;margin:0;padding:56px 32px 32px}table{border-collapse:collapse;width:100%}.print-bar{position:fixed;top:0;left:0;right:0;background:#fff;border-bottom:1px solid #eee;padding:10px 24px;display:flex;gap:10px;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.08);z-index:9}.btn{padding:7px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;border:none}.btn-or{background:#F07828;color:#fff}.btn-wh{background:#fff;color:#444;border:1px solid #ddd!important}.hint{font-size:12px;color:#aaa;margin-left:4px}@media print{.print-bar{display:none!important}body{padding:0}}</style>'
     +'</head><body>'
@@ -1335,8 +1333,8 @@ async function generatePdf(r, num){
     }
     row(['Наименование услуги','Базовая','Стандарт','Оптима'],{fill:HEADBG,color:[255,255,255],bold:true,h:8.4});
     r.lines.forEach(function(l){ row([l.name],{ticks:[1,1,1],desc:getDesc(l.name)}); });
-    r.stdLines.forEach(function(l){ row([l.name],{ticks:[0,1,1],desc:getDesc(l.name)}); });
-    r.optLines.forEach(function(l){ row([l.name],{ticks:[0,0,1],desc:getDesc(l.name)}); });
+    r.stdLines.filter(function(l){return !l.hide}).forEach(function(l){ row([l.name],{ticks:[0,1,1],desc:getDesc(l.name)}); });
+    r.optLines.filter(function(l){return !l.hide}).forEach(function(l){ row([l.name],{ticks:[0,0,1],desc:getDesc(l.name)}); });
     y+=6;
 
     /* ---------- стоимость ---------- */
@@ -1421,8 +1419,8 @@ async function generateDocx(r, num){
     var rows='';
     var idx=0;
     r.lines.forEach(function(l){rows+=svcRow(l.name,true,true,true,idx%2===1);idx++;});
-    r.stdLines.forEach(function(l){rows+=svcRow(l.name,false,true,true,idx%2===1);idx++;});
-    r.optLines.forEach(function(l){rows+=svcRow(l.name,false,false,true,idx%2===1);idx++;});
+    r.stdLines.filter(function(l){return !l.hide}).forEach(function(l){rows+=svcRow(l.name,false,true,true,idx%2===1);idx++;});
+    r.optLines.filter(function(l){return !l.hide}).forEach(function(l){rows+=svcRow(l.name,false,false,true,idx%2===1);idx++;});
     docXml=docXml.replace('{{SERVICE_ROWS}}',rows);
 
     zip.file('word/document.xml',docXml);

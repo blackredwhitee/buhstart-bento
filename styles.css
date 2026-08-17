@@ -725,10 +725,14 @@ footer.site .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);
 @media(max-width:900px){.hero-photo{min-height:320px}}
 
 /* первый экран: лица команды ровной сеткой, все одинаковые */
-.hero-people{display:grid;grid-template-rows:2fr 1fr;gap:18px;padding:26px 24px}
-.faces-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-content:center}
+.hero-people{display:grid;grid-template-rows:auto 1fr;gap:18px;padding:28px 26px}
+.faces-stack{display:flex;flex-direction:column;align-items:center;gap:0}
+.fs-row{display:flex}
+.fs-row .face{margin-left:-14px}
+.fs-row .face:first-child{margin-left:0}
+.fs-row:last-child{margin-top:-14px}
 .face{opacity:0;animation:faceIn .45s cubic-bezier(.22,.61,.36,1) forwards}
-.face img{display:block;width:100%;aspect-ratio:1/1;border-radius:50%;object-fit:cover;object-position:50% 18%;
+.face img{display:block;width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:50% 18%;border:3px solid #fff;
   background:var(--inset);box-shadow:0 0 0 1px var(--line);
   transition:transform .25s cubic-bezier(.22,.61,.36,1),box-shadow .25s;
   animation:floatFace 6s ease-in-out infinite}
@@ -740,7 +744,15 @@ footer.site .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);
 .face:hover img{transform:scale(1.08);box-shadow:0 10px 24px rgba(26,22,20,.18);animation-play-state:paused}
 @keyframes faceIn{from{opacity:0}to{opacity:1}}
 @keyframes floatFace{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-.hero-people .hero-facts{position:static;background:none;border-top:1px solid var(--line);padding:16px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-content:center}
+.hero-people .hero-facts.big-facts{position:static;background:none;border-top:1px solid var(--line);
+  padding:18px 0 0;display:flex;flex-direction:column;justify-content:center;gap:16px}
+.big-facts .f{padding-bottom:14px;border-bottom:1px solid var(--line)}
+.big-facts .f:last-child{padding-bottom:0;border-bottom:0}
+.big-facts .num{font:800 40px/1 Onest,sans-serif;color:var(--orange);letter-spacing:-.035em}
+.big-facts .fl{font-size:14px;color:var(--ink3);margin-top:6px;white-space:normal}
 .hero-people .hero-facts .num{font:800 30px/1 Onest,sans-serif;color:var(--orange);letter-spacing:-.03em}
 .hero-people .hero-facts .fl{font-size:13px;color:var(--ink3);margin-top:5px;white-space:nowrap}
 @media(prefers-reduced-motion:reduce){.face{opacity:1;animation:none}.face img{animation:none;transition:none}}
+
+@media(max-width:1100px){.face img{width:54px;height:54px}}
+@media(max-width:600px){.face img{width:48px;height:48px}.big-facts .num{font-size:34px}}

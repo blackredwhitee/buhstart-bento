@@ -744,8 +744,8 @@ footer.site .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);
 .big-facts .f:last-child{padding-bottom:0;border-bottom:0}
 .big-facts .num{font:800 40px/1 Onest,sans-serif;color:#fff;letter-spacing:-.035em}
 .big-facts .fl{font-size:14px;color:rgba(255,255,255,.88);margin-top:6px;white-space:normal}
-.hero-people .hero-facts .num{font:800 30px/1 Onest,sans-serif;color:var(--orange);letter-spacing:-.03em}
-.hero-people .hero-facts .fl{font-size:13px;color:var(--ink3);margin-top:5px;white-space:nowrap}
+.hero-people .hero-facts .num{font:800 40px/1 Onest,sans-serif;color:#fff;letter-spacing:-.035em}
+.hero-people .hero-facts .fl{font-size:14px;color:rgba(255,255,255,.88);margin-top:6px;white-space:normal}
 @media(prefers-reduced-motion:reduce){.face{opacity:1;animation:none}.face img{animation:none;transition:none}}
 
 @media(max-width:1100px){.face img{width:54px;height:54px}}

@@ -750,3 +750,11 @@ footer.site .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);
 
 @media(max-width:1100px){.face img{width:54px;height:54px}}
 @media(max-width:600px){.face img{width:48px;height:48px}.big-facts .num{font-size:34px}}
+
+/* значки мессенджеров не только в подвале, но и в контактах */
+.soc a.soc-tg,.soc a.soc-max{gap:9px}
+.soc a.soc-tg::before,.soc a.soc-max::before{content:"";width:17px;height:17px;flex:none;background:currentColor;
+  -webkit-mask-position:center;mask-position:center;-webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.soc a.soc-tg::before{-webkit-mask-image:url(uploads/icon-telegram.svg);mask-image:url(uploads/icon-telegram.svg)}
+.soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);mask-image:url(uploads/icon-max.svg)}

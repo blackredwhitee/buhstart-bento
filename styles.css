@@ -739,26 +739,24 @@ footer.site .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);
 .rosette{display:flex;flex-direction:column;align-items:center;gap:10px}
 .r-row{display:flex;gap:10px}
 .r-row.r-off{margin-left:-46px}
-.rosette img{width:84px;height:84px;border-radius:50%;object-fit:cover;object-position:50% 18%;
-  border:3px solid #fff;box-shadow:0 6px 18px rgba(26,22,20,.10);background:var(--inset)}
-.rosette img.big{width:104px;height:104px;box-shadow:0 0 0 3px var(--orange),0 8px 22px rgba(26,22,20,.14)}
-.hero-people .hero-facts{position:static;border-top:1px solid var(--line);padding:18px 0 0;background:none}
-@media(max-width:1100px){.rosette img{width:70px;height:70px}.rosette img.big{width:88px;height:88px}.r-row.r-off{margin-left:-40px}}
-@media(max-width:600px){.rosette img{width:58px;height:58px}.rosette img.big{width:74px;height:74px}.r-row.r-off{margin-left:-34px}}
-
-/* ромашка: лица появляются по очереди и чуть покачиваются; при наведении выходят вперёд */
-.rosette img{opacity:0;transform:scale(.86);animation:faceIn .5s cubic-bezier(.22,.61,.36,1) forwards;
+/* обёртка отвечает за появление, картинка — за наведение: иначе анимация перебивает hover */
+.face{display:block;opacity:0;transform:scale(.86);animation:faceIn .5s cubic-bezier(.22,.61,.36,1) forwards}
+.face img{display:block;width:84px;height:84px;border-radius:50%;object-fit:cover;object-position:50% 18%;
+  border:3px solid #fff;box-shadow:0 6px 18px rgba(26,22,20,.10);background:var(--inset);
   transition:transform .25s cubic-bezier(.22,.61,.36,1),box-shadow .25s}
-.r-row:nth-child(1) img:nth-child(1){animation-delay:.05s}
-.r-row:nth-child(1) img:nth-child(2){animation-delay:.11s}
-.r-row:nth-child(1) img:nth-child(3){animation-delay:.17s}
-.r-row:nth-child(2) img:nth-child(1){animation-delay:.23s}
-.r-row:nth-child(2) img:nth-child(2){animation-delay:0s}
-.r-row:nth-child(2) img:nth-child(3){animation-delay:.29s}
-.r-row:nth-child(3) img:nth-child(1){animation-delay:.35s}
-.r-row:nth-child(3) img:nth-child(2){animation-delay:.41s}
-.r-row:nth-child(3) img:nth-child(3){animation-delay:.47s}
+.face.big img{width:104px;height:104px;box-shadow:0 0 0 3px var(--orange),0 8px 22px rgba(26,22,20,.14)}
+.face:hover{z-index:3;position:relative}
+.face:hover img{transform:scale(1.09);box-shadow:0 12px 28px rgba(26,22,20,.20)}
+.face.big:hover img{box-shadow:0 0 0 3px var(--orange),0 14px 30px rgba(26,22,20,.22)}
+.r-row .face:nth-child(1){animation-delay:.06s}
+.r-row .face:nth-child(2){animation-delay:.12s}
+.r-row .face:nth-child(3){animation-delay:.18s}
+.r-row:nth-child(2) .face:nth-child(2){animation-delay:0s}
+.r-row:nth-child(3) .face:nth-child(1){animation-delay:.30s}
+.r-row:nth-child(3) .face:nth-child(2){animation-delay:.36s}
+.r-row:nth-child(3) .face:nth-child(3){animation-delay:.42s}
 @keyframes faceIn{to{opacity:1;transform:scale(1)}}
-.rosette img:hover{transform:scale(1.08);box-shadow:0 10px 26px rgba(26,22,20,.18);z-index:2;position:relative}
-.rosette img.big:hover{box-shadow:0 0 0 3px var(--orange),0 12px 28px rgba(26,22,20,.2)}
-@media(prefers-reduced-motion:reduce){.rosette img{opacity:1;transform:none;animation:none}}
+.hero-people .hero-facts{position:static;border-top:1px solid var(--line);padding:18px 0 0;background:none}
+@media(max-width:1100px){.face img{width:70px;height:70px}.face.big img{width:88px;height:88px}.r-row.r-off{margin-left:-40px}}
+@media(max-width:600px){.face img{width:58px;height:58px}.face.big img{width:74px;height:74px}.r-row.r-off{margin-left:-34px}}
+@media(prefers-reduced-motion:reduce){.face{opacity:1;transform:none;animation:none}.face img{transition:none}}

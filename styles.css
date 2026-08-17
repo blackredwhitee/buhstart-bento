@@ -725,8 +725,8 @@ footer.site .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);
 @media(max-width:900px){.hero-photo{min-height:320px}}
 
 /* первый экран: лица команды ровной сеткой, все одинаковые */
-.hero-people{display:flex;flex-direction:column;justify-content:center;gap:20px;padding:28px 26px}
-.faces-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.hero-people{display:grid;grid-template-rows:2fr 1fr;gap:18px;padding:26px 24px}
+.faces-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-content:center}
 .face{opacity:0;animation:faceIn .45s cubic-bezier(.22,.61,.36,1) forwards}
 .face img{display:block;width:100%;aspect-ratio:1/1;border-radius:50%;object-fit:cover;object-position:50% 18%;
   background:var(--inset);box-shadow:0 0 0 1px var(--line);
@@ -740,7 +740,7 @@ footer.site .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);
 .face:hover img{transform:scale(1.08);box-shadow:0 10px 24px rgba(26,22,20,.18);animation-play-state:paused}
 @keyframes faceIn{from{opacity:0}to{opacity:1}}
 @keyframes floatFace{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-.hero-people .hero-facts{position:static;background:none;border-top:1px solid var(--line);padding:16px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.hero-people .hero-facts{position:static;background:none;border-top:1px solid var(--line);padding:16px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-content:center}
 .hero-people .hero-facts .num{font:800 30px/1 Onest,sans-serif;color:var(--orange);letter-spacing:-.03em}
 .hero-people .hero-facts .fl{font-size:13px;color:var(--ink3);margin-top:5px;white-space:nowrap}
 @media(prefers-reduced-motion:reduce){.face{opacity:1;animation:none}.face img{animation:none;transition:none}}

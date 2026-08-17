@@ -734,14 +734,9 @@ footer.site .soc a.soc-max::before{-webkit-mask-image:url(uploads/icon-max.svg);
 .face{opacity:0;animation:faceIn .45s cubic-bezier(.22,.61,.36,1) forwards}
 .face img{display:block;width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:50% 18%;border:3px solid #fff;
   background:var(--inset);box-shadow:0 0 0 1px var(--line);
-  transition:transform .25s cubic-bezier(.22,.61,.36,1),box-shadow .25s;
-  animation:floatFace 6s ease-in-out infinite}
-.face.d1 img{animation-duration:5.4s}
-.face.d2 img{animation-duration:6.2s;animation-delay:.4s}
-.face.d3 img{animation-duration:7s;animation-delay:.8s}
-.face.d4 img{animation-duration:5.8s;animation-delay:1.2s}
+  transition:transform .25s cubic-bezier(.22,.61,.36,1),box-shadow .25s}
 .face:hover{z-index:3;position:relative}
-.face:hover img{transform:scale(1.08);box-shadow:0 10px 24px rgba(26,22,20,.18);animation-play-state:paused}
+.face:hover img{transform:scale(1.08);box-shadow:0 10px 24px rgba(26,22,20,.18)}
 @keyframes faceIn{from{opacity:0}to{opacity:1}}
 @keyframes floatFace{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 .hero-people .hero-facts.big-facts{position:static;background:none;border-top:1px solid var(--line);

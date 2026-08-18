@@ -7,6 +7,8 @@ require __DIR__ . '/build.php';
 require_login();
 
 $page = $_GET['p'] ?? 'home';
+// «Команда» — это страница team.html в текстовом редакторе; уводим сразу, до вывода
+if ($page === 'team') { header('Location: texts?f=team.html'); exit; }
 $msg = $err = '';
 
 // пока пароль не сменён — дальше не пускаем
@@ -302,9 +304,25 @@ td[data-l="Месяцы"]{min-width:230px}
 <body>
 <header>
   <img src="../uploads/logo-transparent.png" alt="">
-  <?php if ($page !== 'home'): ?><a href="./">← Все разделы</a><?php endif; ?>
+<?php
+/* Кнопка «назад»: из карточки материала — к списку, из списка — ко всем разделам.
+   Раньше вернуться можно было только через «Все разделы» наверху. */
+$inItem = ($_GET['f'] ?? '') !== '' || ($_GET['new'] ?? '') !== '';
+$backMap = [
+  'texts'    => ['texts',    'К списку страниц'],
+  'articles' => ['articles', 'К списку статей'],
+  'news'     => ['news',     'К списку новостей'],
+  'cases'    => ['cases',    'К списку кейсов'],
+];
+if ($page !== 'home' && isset($backMap[$page]) && $inItem) {
+    [$bHref, $bText] = $backMap[$page];
+} else {
+    [$bHref, $bText] = ['./', 'Все разделы'];
+}
+?>
+  <?php if ($page !== 'home'): ?><a href="<?= h($bHref) ?>">← <?= h($bText) ?></a><?php endif; ?>
   <span class="sp"></span>
-  <a href="../index.html" target="_blank">Открыть сайт ↗</a>
+  <a href="../" target="_blank">Открыть сайт ↗</a>
   <a href="password">Пароль</a>
   <a href="index.php?do=logout">Выйти</a>
 </header>
@@ -391,10 +409,7 @@ td[data-l="Месяцы"]{min-width:230px}
   }
   </script>
 
-<?php elseif ($page === 'team'):
-  // отдельный раздел: сразу открываем страницу «Команда» в текстовом редакторе
-  header('Location: texts?f=team.html'); exit;
-elseif ($page === 'texts'):
+<?php elseif ($page === 'texts'):
   $file = (string)($_GET['f'] ?? '');
   $path = page_path($file);
   if (!$path): ?>

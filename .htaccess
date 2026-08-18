@@ -23,3 +23,17 @@ ErrorDocument 404 /404.html
 # Служебные заготовки страниц: отдаём вместо них настоящие разделы.
 Redirect 301 /usluga.html /uslugi.html
 Redirect 301 /article.html /blog.html
+
+# Адреса без .html: /uslugi вместо /uslugi.html
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # старые адреса с .html — постоянный редирект на чистые, чтобы не было дублей
+  RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+  RewriteRule ^ / [R=301,L]
+  RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+  RewriteRule ^ /%1 [R=301,L]
+  # внутри отдаём тот же файл .html
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}\.html -f
+  RewriteRule ^(.+)$ $1.html [L]
+</IfModule>

@@ -91,7 +91,7 @@ function articlePage(a, all) {
 
   const body = `<main>
 <section class="wrap" style="padding-top:14px"><div class="tile article">
-<nav class="crumbs"><a href="index.html">Главная</a> / <a href="${sectionUrl}">${section}</a></nav>
+<nav class="crumbs"><a href="index">Главная</a> / <a href="${sectionUrl}">${section}</a></nav>
 <span class="pill">${esc(a.tag || section)}</span>
 <h1 style="font-size:40px;margin-top:16px">${esc(a.title)}</h1>
 <div class="small" style="margin-top:14px">${esc(a.date || '')}</div>
@@ -184,7 +184,7 @@ function caseTeaser(c, i) {
   const metric = c.metric
     ? `<div class="ct-metric">${esc(c.metric)}</div><div class="ct-note">${esc(c.metricNote || '')}</div>`
     : '';
-  return `<a class="case-teaser" href="keysy.html">
+  return `<a class="case-teaser" href="keysy">
 ${c.tag ? `<span class="pill">${esc(c.tag)}</span>` : ''}
 ${metric}
 <div class="ct-title">${esc(c.title || '')}</div>

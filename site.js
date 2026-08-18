@@ -30,14 +30,14 @@ function send(payload){
 /* Человеческое название страницы для таблицы: «Главная», «Услуга: Аудит»,
    «Статья: ООО или ИП» — вместо index.html, которое менеджеру ни о чём не говорит. */
 function pageName(){
-  var file = (location.pathname.split('/').pop() || 'index.html').split('?')[0];
+  var file = (location.pathname.split('/').pop() || 'index').split('?')[0].replace(/\.html$/,'');
   var MAP = {
-    'index.html':'Главная', '':'Главная',
-    'uslugi.html':'Услуги — список', 'keysy.html':'Кейсы', 'calculator.html':'Калькулятор',
-    'blog.html':'Блог — список статей', 'novosti.html':'Новости — список',
-    'team.html':'Команда', 'contacts.html':'Контакты', 'vacancy.html':'Работа у нас',
-    'privacy.html':'Политика конфиденциальности', 'soglasie.html':'Согласие на обработку данных',
-    '404.html':'Страница не найдена'
+    'index':'Главная', '':'Главная',
+    'uslugi':'Услуги — список', 'keysy':'Кейсы', 'calculator':'Калькулятор',
+    'blog':'Блог — список статей', 'novosti':'Новости — список',
+    'team':'Команда', 'contacts':'Контакты', 'vacancy':'Работа у нас',
+    'privacy':'Политика конфиденциальности', 'soglasie':'Согласие на обработку данных',
+    '404':'Страница не найдена'
   };
   if(MAP[file] !== undefined) return MAP[file];
   var t = document.title.replace(/\s*[—|]\s*Доверительная Бухгалтерия.*$/, '').trim();

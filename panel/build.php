@@ -150,7 +150,7 @@ function article_page(array $a, array $all): ?string
 
     $body = '<main>' . "\n"
         . '<section class="wrap" style="padding-top:14px"><div class="tile article">' . "\n"
-        . '<nav class="crumbs"><a href="index.html">Главная</a> / <a href="' . $secUrl . '">' . $section . '</a></nav>' . "\n"
+        . '<nav class="crumbs"><a href="index">Главная</a> / <a href="' . $secUrl . '">' . $section . '</a></nav>' . "\n"
         . '<span class="pill">' . e($a['tag'] ?? $section) . '</span>' . "\n"
         . '<h1 style="font-size:40px;margin-top:16px">' . e($title) . '</h1>' . "\n"
         . '<div class="small" style="margin-top:14px">' . e($a['date'] ?? '') . '</div>' . "\n"
@@ -241,7 +241,7 @@ function case_teaser(array $c, int $i): string
 {
     $metric = !empty($c['metric'])
         ? '<div class="ct-metric">' . e($c['metric']) . '</div><div class="ct-note">' . e($c['metricNote'] ?? '') . '</div>' : '';
-    return '<a class="case-teaser" href="keysy.html">' . "\n"
+    return '<a class="case-teaser" href="keysy">' . "\n"
         . (!empty($c['tag']) ? '<span class="pill">' . e($c['tag']) . '</span>' : '') . "\n"
         . $metric . "\n"
         . '<div class="ct-title">' . e($c['title'] ?? '') . '</div>' . "\n"

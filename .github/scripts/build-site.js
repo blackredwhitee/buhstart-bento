@@ -98,8 +98,8 @@ function articlePage(a, all) {
 <div class="hr"></div>
 ${blocksToHtml(a.blocks)}
 <div class="next-steps">
-<div class="ns-title">Что с этим делать</div>
-<p class="ns-text">Если вопрос про ваш бизнес, а не «вообще» — разберём вашу ситуацию и скажем, что делать. Без обязательств.</p>
+<div class="ns-title">Как это касается вашего бизнеса</div>
+<p class="ns-text">Если тема близка к вашей ситуации — разберём её на бесплатной консультации и скажем, что делать. Без обязательств.</p>
 <div class="row" style="margin-top:18px"><button class="btn btn-p" data-lead="Статья: ${esc(a.title)}">Разобрать мою ситуацию</button></div>
 </div>
 </div></section>

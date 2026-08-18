@@ -514,11 +514,17 @@ if ($page !== 'home' && isset($backMap[$page]) && $inItem) {
       <input type="hidden" name="orig" value="<?= h($edit['_file'] ?? '') ?>">
       <div class="fgrid">
         <label>Заголовок<input type="text" name="title" required value="<?= h($edit['title'] ?? '') ?>"></label>
-        <label>Раздел<select name="tag">
-          <?php foreach (TAGS as $t): ?>
-            <option<?= ($edit['tag'] ?? '') === $t ? ' selected' : '' ?>><?= h($t) ?></option>
-          <?php endforeach; ?>
-        </select></label>
+        <?php if ($isNewsPage): ?>
+          <!-- в разделе новостей выбирать нечего: раздел всегда «Новости законодательства» -->
+          <input type="hidden" name="tag" value="Новости законодательства">
+          <label>Раздел<input type="text" value="Новости законодательства" disabled></label>
+        <?php else: ?>
+          <label>Раздел<select name="tag">
+            <?php foreach (TAGS as $t): if ($t === 'Новости законодательства') continue; ?>
+              <option<?= ($edit['tag'] ?? '') === $t ? ' selected' : '' ?>><?= h($t) ?></option>
+            <?php endforeach; ?>
+          </select></label>
+        <?php endif; ?>
         <label>Дата<input type="date" name="isoDate" value="<?= h($edit['isoDate'] ?? date('Y-m-d')) ?>"></label>
         <label>Адрес страницы (латиницей, можно оставить пустым)
           <input type="text" name="slug" value="<?= h($edit['slug'] ?? '') ?>" placeholder="составится из заголовка"></label>

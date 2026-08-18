@@ -30,10 +30,13 @@ Redirect 301 /article /blog
 # Адреса без .html: /uslugi вместо /uslugi.html
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  # редактор трогать нельзя: у него .html встречается в параметрах ссылки
+  RewriteRule ^panel/ - [L]
   # старые адреса с .html — постоянный редирект на чистые, чтобы не было дублей
   RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
   RewriteRule ^ / [R=301,L]
-  RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+  # хвост .html ищем только в самом адресе, до знака вопроса
+  RewriteCond %{THE_REQUEST} \s/+([^?\s]+)\.html[\s?] [NC]
   RewriteRule ^ /%1 [R=301,L]
   # внутри отдаём тот же файл .html
   RewriteCond %{REQUEST_FILENAME} !-d

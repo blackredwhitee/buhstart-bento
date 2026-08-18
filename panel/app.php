@@ -184,6 +184,7 @@ $SECTIONS = [
     'news'     => ['Новости законодательства', 'Короткие заметки об изменениях'],
     'cases'    => ['Кейсы', 'Истории клиентов с цифрами'],
     'prices'   => ['Цены калькулятора', 'Стоимость услуг в расчёте'],
+    'team'     => ['Команда', 'Имена, должности, стаж и образование сотрудников'],
     'texts'    => ['Тексты страниц', 'Заголовки и абзацы на страницах сайта'],
     'calendar' => ['Календарь отчётности', 'Сроки, которые видны на главной'],
     'images'   => ['Фотографии и картинки', 'Заменить фото сотрудника, логотип, обложку'],
@@ -301,10 +302,10 @@ td[data-l="Месяцы"]{min-width:230px}
 <body>
 <header>
   <img src="../uploads/logo-transparent.png" alt="">
-  <?php if ($page !== 'home'): ?><a href="app.php">← Все разделы</a><?php endif; ?>
+  <?php if ($page !== 'home'): ?><a href="./">← Все разделы</a><?php endif; ?>
   <span class="sp"></span>
   <a href="../index.html" target="_blank">Открыть сайт ↗</a>
-  <a href="app.php?p=password">Пароль</a>
+  <a href="password">Пароль</a>
   <a href="index.php?do=logout">Выйти</a>
 </header>
 <div class="wrap">
@@ -390,15 +391,17 @@ td[data-l="Месяцы"]{min-width:230px}
   }
   </script>
 
-<?php elseif ($page === 'texts'):
+elseif ($page === 'team'):
+  // отдельный раздел: сразу открываем страницу «Команда» в текстовом редакторе
+  header('Location: texts?f=team.html'); exit;
+elseif ($page === 'texts'):
   $file = (string)($_GET['f'] ?? '');
   $path = page_path($file);
   if (!$path): ?>
     <h1>Тексты страниц</h1>
     <p class="lead">Выберите страницу или найдите нужную фразу по всему сайту.
        Правится только текст — вёрстку и оформление изменить нельзя.</p>
-    <form class="panel" method="get" style="margin-bottom:18px">
-      <input type="hidden" name="p" value="texts">
+    <form class="panel" method="get" action="texts" style="margin-bottom:18px">
       <div class="row" style="margin:0">
         <input type="text" name="q" value="<?= h((string)($_GET['q'] ?? '')) ?>"
                placeholder="Например: 15 минут" style="flex:1;min-width:220px">
@@ -412,7 +415,7 @@ td[data-l="Месяцы"]{min-width:230px}
         <b>Нашли совпадений: <?= count($found) ?></b>
         <?php foreach ($found as $r): ?>
           <div class="lrow">
-            <div><a href="app.php?p=texts&amp;f=<?= h(rawurlencode($r['file'])) ?>&amp;q=<?= h(rawurlencode($q)) ?>#b<?= (int)$r['i'] ?>"><?= h($r['name']) ?></a>
+            <div><a href="texts?f=<?= h(rawurlencode($r['file'])) ?>&amp;q=<?= h(rawurlencode($q)) ?>#b<?= (int)$r['i'] ?>"><?= h($r['name']) ?></a>
               <div class="lmeta"><?= h($r['section']) ?></div>
               <div style="font-size:13.5px;margin-top:4px"><?= $r['snippet'] ?></div></div>
           </div>
@@ -422,7 +425,7 @@ td[data-l="Месяцы"]{min-width:230px}
     <?php endif; ?>
     <div class="cards">
       <?php foreach (editable_pages() as $f => $name): ?>
-        <a class="card" href="app.php?p=texts&amp;f=<?= h($f) ?>"><b><?= h($name) ?></b><span><?= h($f) ?></span></a>
+        <a class="card" href="texts?f=<?= h($f) ?>"><b><?= h($name) ?></b><span><?= h($f) ?></span></a>
       <?php endforeach; ?>
     </div>
     <p class="hint" style="margin-top:20px">Статьи, новости и кейсы правятся в своих разделах — они собираются из данных,
@@ -465,7 +468,7 @@ td[data-l="Месяцы"]{min-width:230px}
         </div>
       <?php endforeach; ?>
       <div class="row"><button class="btn" type="submit">Сохранить страницу</button>
-        <a class="btn btn-g" href="app.php?p=texts" style="display:inline-flex;align-items:center;text-decoration:none">К списку страниц</a></div>
+        <a class="btn btn-g" href="texts" style="display:inline-flex;align-items:center;text-decoration:none">К списку страниц</a></div>
     </form>
     <script>
     // подсвечиваем найденный фрагмент, если пришли из поиска
@@ -530,7 +533,7 @@ td[data-l="Месяцы"]{min-width:230px}
       </script>
       <div class="row">
         <button class="btn" type="submit">Сохранить и опубликовать</button>
-        <a class="btn btn-g" href="app.php?p=<?= $page ?>" style="display:inline-flex;align-items:center;text-decoration:none">Отмена</a>
+        <a class="btn btn-g" href="<?= $page ?>" style="display:inline-flex;align-items:center;text-decoration:none">Отмена</a>
         <?php if ($edit): ?>
           <button class="btn btn-g" type="submit" name="act" value="delete" style="margin-left:auto;color:#B3261E"
             onclick="return confirm('Снять статью с публикации? Копия останется в архиве.')">Снять с публикации</button>
@@ -541,7 +544,7 @@ td[data-l="Месяцы"]{min-width:230px}
     <h1><?= $isNewsPage ? 'Новости законодательства' : 'Статьи' ?></h1>
     <p class="lead">Всего материалов: <?= count($items) ?>. Страница, списки и карта сайта обновляются сами при сохранении.</p>
     <div class="row" style="margin:0 0 18px">
-      <a class="btn" href="app.php?p=<?= $page ?>&amp;new=1" style="display:inline-flex;align-items:center;text-decoration:none;color:#fff"><?= $isNewsPage ? "Добавить новость" : "Добавить статью" ?></a>
+      <a class="btn" href="<?= $page ?>?new=1" style="display:inline-flex;align-items:center;text-decoration:none;color:#fff"><?= $isNewsPage ? "Добавить новость" : "Добавить статью" ?></a>
       <form method="post" style="display:inline">
         <input type="hidden" name="form" value="rebuild">
         <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
@@ -551,7 +554,7 @@ td[data-l="Месяцы"]{min-width:230px}
     <div class="panel">
       <?php foreach ($items as $it): ?>
         <div class="lrow">
-          <div><a href="app.php?p=<?= $page ?>&amp;f=<?= h(rawurlencode($it['_file'])) ?>"><?= h($it['title'] ?? '') ?></a>
+          <div><a href="<?= $page ?>?f=<?= h(rawurlencode($it['_file'])) ?>"><?= h($it['title'] ?? '') ?></a>
             <div class="lmeta"><?= h($it['tag'] ?? '') ?> · <?= h($it['date'] ?? '') ?></div></div>
           <a class="lopen" href="../article-<?= h($it['slug'] ?? '') ?>.html" target="_blank">на сайте ↗</a>
         </div>
@@ -586,7 +589,7 @@ td[data-l="Месяцы"]{min-width:230px}
       <label class="full">Результат<textarea name="result" rows="3"><?= h($edit['result'] ?? '') ?></textarea></label>
       <div class="row">
         <button class="btn" type="submit">Сохранить и опубликовать</button>
-        <a class="btn btn-g" href="app.php?p=cases" style="display:inline-flex;align-items:center;text-decoration:none">Отмена</a>
+        <a class="btn btn-g" href="cases" style="display:inline-flex;align-items:center;text-decoration:none">Отмена</a>
         <?php if ($edit): ?>
           <button class="btn btn-g" type="submit" name="act" value="delete" style="margin-left:auto;color:#B3261E"
             onclick="return confirm('Убрать кейс с сайта? Копия останется в архиве.')">Убрать с сайта</button>
@@ -597,12 +600,12 @@ td[data-l="Месяцы"]{min-width:230px}
     <h1>Кейсы</h1>
     <p class="lead">Всего кейсов: <?= count($items) ?>. Первые три показываются на главной, все — на странице «Кейсы».</p>
     <div class="row" style="margin:0 0 18px">
-      <a class="btn" href="app.php?p=cases&amp;new=1" style="display:inline-flex;align-items:center;text-decoration:none;color:#fff">Добавить кейс</a>
+      <a class="btn" href="cases?new=1" style="display:inline-flex;align-items:center;text-decoration:none;color:#fff">Добавить кейс</a>
     </div>
     <div class="panel">
       <?php foreach ($items as $it): ?>
         <div class="lrow">
-          <div><a href="app.php?p=cases&amp;f=<?= h(rawurlencode($it['_file'])) ?>"><?= h($it['title'] ?? '') ?></a>
+          <div><a href="cases?f=<?= h(rawurlencode($it['_file'])) ?>"><?= h($it['title'] ?? '') ?></a>
             <div class="lmeta"><?= h($it['tag'] ?? '') ?><?= !empty($it['metric']) ? ' · ' . h($it['metric']) : '' ?></div></div>
         </div>
       <?php endforeach; ?>
@@ -722,7 +725,7 @@ td[data-l="Месяцы"]{min-width:230px}
   <p class="lead">Что нужно изменить?</p>
   <div class="cards">
     <?php foreach ($SECTIONS as $key => [$title, $sub]): ?>
-      <a class="card" href="app.php?p=<?= h($key) ?>"><b><?= h($title) ?></b><span><?= h($sub) ?></span></a>
+      <a class="card" href="<?= h($key) ?>"><b><?= h($title) ?></b><span><?= h($sub) ?></span></a>
     <?php endforeach; ?>
   </div>
 <?php endif; ?>

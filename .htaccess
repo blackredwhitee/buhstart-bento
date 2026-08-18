@@ -30,7 +30,11 @@ Redirect 301 /article /blog
 # Адреса без .html: /uslugi вместо /uslugi.html
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  # редактор трогать нельзя: у него .html встречается в параметрах ссылки
+  # редактор: короткие адреса вида /panel/texts вместо /panel/app.php?p=texts
+  RewriteRule ^panel/[a-z-]+\.php$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^panel/([a-z]+)/?$ /panel/app.php?p=$1 [QSA,L]
+  RewriteRule ^panel/?$ /panel/app.php [L]
   RewriteRule ^panel/ - [L]
   # старые адреса с .html — постоянный редирект на чистые, чтобы не было дублей
   RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]

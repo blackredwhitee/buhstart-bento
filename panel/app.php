@@ -376,10 +376,10 @@ if ($page !== 'home' && isset($backMap[$page]) && $inItem) {
       <?php $i++; endforeach; ?>
       </tbody>
     </table>
-    <p class="hint">Отметьте месяцы, в которых наступает срок. Чтобы удалить строку — очистите поле «Что сдавать».</p>
+    <p class="hint">Отметьте месяцы, в которых наступает срок. Чтобы удалить строку — очистите поле «Что сдавать».<br>На главной календарь показывает только ближайшие сроки: те, что наступают в течение указанного числа дней от сегодняшнего дня, и не больше заданного количества строк. Например, 60 дней и 5 сроков — значит, посетитель увидит до пяти ближайших дат за два месяца вперёд, остальные появятся позже сами.</p>
     <div class="row">
-      <label>Показывать на <input class="small" type="number" name="horizon" min="7" max="365" value="<?= (int)$cal['horizonDays'] ?>"> дней вперёд</label>
-      <label>не больше <input class="small" type="number" name="maxrows" min="1" max="20" value="<?= (int)$cal['maxRows'] ?>"> строк</label>
+      <label>Заглядывать вперёд на <input class="small" type="number" name="horizon" min="7" max="365" value="<?= (int)$cal['horizonDays'] ?>"> дней</label>
+      <label>Показывать не больше <input class="small" type="number" name="maxrows" min="1" max="20" value="<?= (int)$cal['maxRows'] ?>"> сроков</label>
     </div>
     <div class="row">
       <button class="btn" type="submit">Сохранить</button>

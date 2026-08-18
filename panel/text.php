@@ -10,7 +10,9 @@
 declare(strict_types=1);
 
 // какие теги считаем текстовыми
-const EDIT_TAGS = ['h1', 'h2', 'h3', 'h4', 'p', 'li', 'blockquote', 'summary'];
+const EDIT_TAGS = ['h1', 'h2', 'h3', 'h4', 'p', 'li', 'blockquote', 'summary', 'div'];
+// div берём только если внутри нет другой разметки: так в редактор попадают
+// имена и должности сотрудников, цифры и подписи — они лежат в div, а не в p
 
 // внутри текста разрешаем только оформление, не блоки
 const KEEP_TAGS = ['a', 'b', 'strong', 'i', 'em', 'br', 'span', 'sup', 'sub', 'small', 'u'];

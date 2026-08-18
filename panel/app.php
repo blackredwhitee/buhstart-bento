@@ -180,10 +180,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 /* ------------------------------------------------------------------ вывод */
 
 $SECTIONS = [
-    'calendar' => ['Календарь отчётности', 'Сроки, которые видны на главной'],
-    'texts'    => ['Тексты страниц', 'Заголовки и абзацы на страницах сайта'],
-    'articles' => ['Статьи и новости', 'Добавить, изменить, снять с публикации'],
+    'articles' => ['Статьи', 'Полезные материалы для клиентов'],
+    'news'     => ['Новости законодательства', 'Короткие заметки об изменениях'],
     'cases'    => ['Кейсы', 'Истории клиентов с цифрами'],
+    'texts'    => ['Тексты страниц', 'Заголовки и абзацы на страницах сайта'],
+    'calendar' => ['Календарь отчётности', 'Сроки, которые видны на главной'],
     'images'   => ['Фотографии и картинки', 'Заменить фото сотрудника, логотип, обложку'],
     'prices'   => ['Цены калькулятора', 'Стоимость услуг в расчёте'],
     'history'  => ['История правок', 'Вернуть страницу к прежней версии'],
@@ -277,10 +278,11 @@ input[type=date]{width:100%;height:42px;padding:0 12px;border:1px solid var(--g2
 .lrow a:hover{text-decoration:underline}
 .lmeta{font-size:12.5px;color:var(--g400);margin-top:2px}
 .lopen{font-size:13px;white-space:nowrap}
-.months{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-top:6px}
-.mchk{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:400;color:var(--g500);cursor:pointer}
-.mchk input{width:14px;height:14px;accent-color:var(--orange);margin:0}
-.mevery{font-weight:600;color:var(--ink)}
+.months{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px 10px;margin-top:8px}
+.mchk{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:400;color:var(--g600);cursor:pointer;white-space:nowrap}
+.mchk input{width:15px;height:15px;flex:none;accent-color:var(--orange);margin:0}
+.mevery{font-weight:600;color:var(--ink);margin-bottom:2px}
+td[data-l="Месяцы"]{min-width:230px}
 .tools{display:flex;gap:8px;align-items:center;margin:6px 0 8px;flex-wrap:wrap}
 .tools button{height:32px;padding:0 12px;border:1px solid var(--g200);border-radius:9px;background:#fff;
   font:600 13px/1 inherit;color:var(--ink);cursor:pointer}
@@ -472,15 +474,20 @@ input[type=date]{width:100%;height:42px;padding:0 12px;border:1px solid var(--g2
     </script>
   <?php endif; ?>
 
-<?php elseif ($page === 'articles'):
-  $items = articles_all();
+<?php elseif ($page === 'articles' || $page === 'news'):
+  $isNewsPage = ($page === 'news');
+  // новость узнаём по разделу или по адресу — так же, как это делает сборщик сайта
+  $isNewsItem = function (array $a): bool {
+      return ($a['tag'] ?? '') === 'Новости законодательства' || str_starts_with((string)($a['slug'] ?? ''), 'novosti-');
+  };
+  $items = array_values(array_filter(articles_all(), fn($a) => $isNewsItem($a) === $isNewsPage));
   $edit = null;
   if (($_GET['f'] ?? '') !== '') {
     foreach ($items as $it) { if ($it['_file'] === basename((string)$_GET['f'])) { $edit = $it; break; } }
   }
   $isNew = ($_GET['new'] ?? '') !== '';
   if ($edit || $isNew): ?>
-    <h1><?= $edit ? 'Правка статьи' : 'Новая статья или новость' ?></h1>
+    <h1><?= $edit ? ($isNewsPage ? 'Правка новости' : 'Правка статьи') : ($isNewsPage ? 'Новая новость' : 'Новая статья') ?></h1>
     <p class="lead">Абзацы разделяются пустой строкой. Заголовок внутри текста — строка,
        начинающаяся с <b>##</b>. Пункт списка — с <b>-</b>. Цитата — с <b>&gt;</b>.</p>
     <form class="panel" method="post">
@@ -523,7 +530,7 @@ input[type=date]{width:100%;height:42px;padding:0 12px;border:1px solid var(--g2
       </script>
       <div class="row">
         <button class="btn" type="submit">Сохранить и опубликовать</button>
-        <a class="btn btn-g" href="app.php?p=articles" style="display:inline-flex;align-items:center;text-decoration:none">Отмена</a>
+        <a class="btn btn-g" href="app.php?p=<?= $page ?>" style="display:inline-flex;align-items:center;text-decoration:none">Отмена</a>
         <?php if ($edit): ?>
           <button class="btn btn-g" type="submit" name="act" value="delete" style="margin-left:auto;color:#B3261E"
             onclick="return confirm('Снять статью с публикации? Копия останется в архиве.')">Снять с публикации</button>
@@ -531,10 +538,10 @@ input[type=date]{width:100%;height:42px;padding:0 12px;border:1px solid var(--g2
       </div>
     </form>
   <?php else: ?>
-    <h1>Статьи и новости</h1>
+    <h1><?= $isNewsPage ? 'Новости законодательства' : 'Статьи' ?></h1>
     <p class="lead">Всего материалов: <?= count($items) ?>. Страница, списки и карта сайта обновляются сами при сохранении.</p>
     <div class="row" style="margin:0 0 18px">
-      <a class="btn" href="app.php?p=articles&amp;new=1" style="display:inline-flex;align-items:center;text-decoration:none;color:#fff">Добавить материал</a>
+      <a class="btn" href="app.php?p=<?= $page ?>&amp;new=1" style="display:inline-flex;align-items:center;text-decoration:none;color:#fff"><?= $isNewsPage ? "Добавить новость" : "Добавить статью" ?></a>
       <form method="post" style="display:inline">
         <input type="hidden" name="form" value="rebuild">
         <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
@@ -544,7 +551,7 @@ input[type=date]{width:100%;height:42px;padding:0 12px;border:1px solid var(--g2
     <div class="panel">
       <?php foreach ($items as $it): ?>
         <div class="lrow">
-          <div><a href="app.php?p=articles&amp;f=<?= h(rawurlencode($it['_file'])) ?>"><?= h($it['title'] ?? '') ?></a>
+          <div><a href="app.php?p=<?= $page ?>&amp;f=<?= h(rawurlencode($it['_file'])) ?>"><?= h($it['title'] ?? '') ?></a>
             <div class="lmeta"><?= h($it['tag'] ?? '') ?> · <?= h($it['date'] ?? '') ?></div></div>
           <a class="lopen" href="../article-<?= h($it['slug'] ?? '') ?>.html" target="_blank">на сайте ↗</a>
         </div>

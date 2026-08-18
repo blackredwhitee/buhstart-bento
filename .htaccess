@@ -1,6 +1,7 @@
 # Страница услуги переименована: старый адрес ведёт на новый, чтобы ссылки
 # и поисковая выдача не упирались в «страница не найдена».
-Redirect 301 /usluga-strahovka.html /usluga-nadzor.html
+Redirect 301 /usluga-strahovka.html /usluga-nadzor
+Redirect 301 /usluga-strahovka /usluga-nadzor
 
 ErrorDocument 404 /404.html
 
@@ -21,8 +22,10 @@ ErrorDocument 404 /404.html
 </IfModule>
 
 # Служебные заготовки страниц: отдаём вместо них настоящие разделы.
-Redirect 301 /usluga.html /uslugi.html
-Redirect 301 /article.html /blog.html
+Redirect 301 /usluga.html /uslugi
+Redirect 301 /usluga /uslugi
+Redirect 301 /article.html /blog
+Redirect 301 /article /blog
 
 # Адреса без .html: /uslugi вместо /uslugi.html
 <IfModule mod_rewrite.c>

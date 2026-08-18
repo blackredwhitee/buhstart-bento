@@ -391,7 +391,7 @@ td[data-l="Месяцы"]{min-width:230px}
   }
   </script>
 
-elseif ($page === 'team'):
+<?php elseif ($page === 'team'):
   // отдельный раздел: сразу открываем страницу «Команда» в текстовом редакторе
   header('Location: texts?f=team.html'); exit;
 elseif ($page === 'texts'):

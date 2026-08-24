@@ -48,6 +48,15 @@ if (!is_array($data)) { out(['ok' => false, 'error' => 'Ждём JSON'], 400); }
 
 if (!rate_ok()) { out(['ok' => false, 'error' => 'Слишком много заявок с одного адреса'], 429); }
 
+// клиент вернулся к уже отправленной заявке — дописываем в ту же карточку
+$leadId = (int)($data['leadId'] ?? 0);
+if ($leadId > 0) {
+    $note = trim((string)($data['message'] ?? ''));
+    $head = trim((string)($data['kind'] ?? 'Ответ клиента'));
+    [$okC, $resC] = bitrix_comment($leadId, $head . ':' . "\n" . $note);
+    out($okC ? ['ok' => true, 'id' => $leadId, 'comment' => true] : ['ok' => false, 'error' => $resC]);
+}
+
 [$ok, $res] = bx($hook, 'crm.lead.add', [
     'fields' => lead_fields($data),
     'params' => ['REGISTER_SONET_EVENT' => 'Y'],

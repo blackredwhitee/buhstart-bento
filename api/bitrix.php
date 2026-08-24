@@ -56,20 +56,59 @@ function lead_fields(array $data): array
     $source = trim((string)($data['source'] ?? ''));
     $text   = trim((string)($data['message'] ?? $data['comment'] ?? ''));
 
-    $comment = array_filter([
-        $text !== ''   ? $text : null,
-        $source !== '' ? 'Форма: ' . $source : null,
-        $page !== ''   ? 'Страница: ' . $page : null,
-        !empty($data['extra'])     ? (string)$data['extra'] : null,
-        !empty($data['subscribe']) ? 'Согласие на рассылку: ' . $data['subscribe'] : null,
-    ]);
+    // откуда пришла заявка — человеческой фразой, а не набором полей
+    $where = $source !== '' && $page !== '' ? 'форма «' . $source . '», страница «' . $page . '»'
+           : ($source !== '' ? 'форма «' . $source . '»' : ($page !== '' ? 'страница «' . $page . '»' : ''));
+
+    // описание собираем подробно: менеджер должен понять заявку, не открывая сайт
+    $lines = [];
+    $lines[] = 'ЗАЯВКА С САЙТА buhstart.ru';
+    $lines[] = 'Получена: ' . date('d.m.Y H:i');
+    $lines[] = '';
+    $lines[] = 'Что нужно: ' . ($kind !== '' ? $kind : 'заявка с сайта');
+    if ($where !== '') { $lines[] = 'Откуда: ' . $where; }
+    $lines[] = '';
+    $lines[] = 'Контакты';
+    $lines[] = '  Имя: ' . ($name !== '' ? $name : 'не указано');
+    $lines[] = '  Телефон: ' . ($phone !== '' ? $phone : 'не указан');
+    if ($email !== '') { $lines[] = '  Почта: ' . $email; }
+    if ($text !== '') {
+        $lines[] = '';
+        $lines[] = 'Сообщение клиента:';
+        $lines[] = $text;
+    }
+    if (!empty($data['extra'])) {
+        $lines[] = '';
+        $lines[] = 'Дополнительно:';
+        $lines[] = (string)$data['extra'];
+    }
+    // расчёт из калькулятора: тарифы и номер КП
+    if (!empty($data['tariff']) || !empty($data['kpNum'])) {
+        $lines[] = '';
+        $lines[] = 'Расчёт из калькулятора';
+        if (!empty($data['kpNum']))    { $lines[] = '  Коммерческое предложение: ' . $data['kpNum']; }
+        if (!empty($data['system']))   { $lines[] = '  Налогообложение: ' . $data['system']; }
+        if (!empty($data['company']))  { $lines[] = '  Форма бизнеса: ' . $data['company']; }
+        if (!empty($data['employees'])){ $lines[] = '  Сотрудники: ' . $data['employees']; }
+        if (!empty($data['priceBase'])){ $lines[] = '  Базовая: ' . number_format((int)$data['priceBase'], 0, ',', ' ') . ' ₽/мес'; }
+        if (!empty($data['priceStd'])) { $lines[] = '  Стандарт: ' . number_format((int)$data['priceStd'], 0, ',', ' ') . ' ₽/мес'; }
+        if (!empty($data['priceOpt'])) { $lines[] = '  Оптима: ' . number_format((int)$data['priceOpt'], 0, ',', ' ') . ' ₽/мес'; }
+        $lines[] = '  Файл КП лежит в Google-таблице заявок';
+    }
+    if (!empty($data['subscribe'])) {
+        $lines[] = '';
+        $lines[] = 'Согласие на рассылку: ' . $data['subscribe'];
+    }
+
+    // имя выносим в заголовок: в списке лидов видно только его
+    $title = ($name !== '' ? $name : 'Без имени') . ' — ' . ($kind !== '' ? $kind : 'заявка с сайта');
 
     $fields = [
-        'TITLE'              => 'Сайт: ' . ($kind !== '' ? $kind : 'заявка'),
+        'TITLE'              => $title,
         'NAME'               => $name !== '' ? $name : 'С сайта',
         'SOURCE_ID'          => 'WEB',
-        'SOURCE_DESCRIPTION' => $source !== '' ? $source : 'Сайт buhstart.ru',
-        'COMMENTS'           => implode("\n", $comment),
+        'SOURCE_DESCRIPTION' => $where !== '' ? ucfirst($where) : 'Сайт buhstart.ru',
+        'COMMENTS'           => implode("\n", $lines),
         'OPENED'             => 'Y',
     ];
     if (bitrix_assigned() > 0) { $fields['ASSIGNED_BY_ID'] = bitrix_assigned(); }
@@ -109,4 +148,19 @@ function bitrix_selftest(bool $keep = false): array
 
     $user = trim((string)(($who['NAME'] ?? '') . ' ' . ($who['LAST_NAME'] ?? '')));
     return [true, 'Связь есть. Работаем от имени: ' . ($user !== '' ? $user : 'пользователь #' . ($who['ID'] ?? '?')) . '. ' . $tail];
+}
+
+/**
+ * Дописать событие в уже созданный лид: клиент вернулся, передумал, уточнил.
+ * Так вся история заявки лежит в одной карточке, а не расползается по копиям.
+ */
+function bitrix_comment(int $leadId, string $text): array
+{
+    $hook = bitrix_hook();
+    if ($hook === '' || $leadId <= 0 || trim($text) === '') { return [false, 'Нечего добавлять']; }
+    return bx($hook, 'crm.timeline.comment.add', ['fields' => [
+        'ENTITY_ID'   => $leadId,
+        'ENTITY_TYPE' => 'lead',
+        'COMMENT'     => $text,
+    ]]);
 }

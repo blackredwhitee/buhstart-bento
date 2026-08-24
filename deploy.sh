@@ -30,6 +30,7 @@ rsync "${FLAGS[@]}" \
   --exclude 'admin/' --exclude 'README.md' --exclude 'deploy.sh' \
   --exclude '.DS_Store' --exclude '.nojekyll' \
   --exclude 'uploads/' --exclude 'content/' \
+  --exclude 'calc/' --filter 'protect calc/***' \
   --filter 'protect uploads/***' --filter 'protect content/***' \
   --filter 'protect _old_wp/***' --filter 'protect .well-known/***' --filter 'protect .ftpquota' \
   ./ "$HOST:$DEST/"

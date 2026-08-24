@@ -78,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     $cfg = config();
                     $cfg['bitrix_hook'] = $hook;
+                    $cfg['bitrix_assigned'] = max(0, (int)($_POST['assigned'] ?? 0));
                     config_save($cfg);
                     log_action($hook === '' ? 'битрикс отключён' : 'битрикс подключён');
                     $msg = $hook === '' ? 'Отправка в Битрикс выключена.' : 'Ссылка сохранена.';
@@ -722,6 +723,11 @@ if ($page !== 'home' && isset($backMap[$page]) && $inItem) {
     <label>Ссылка-вебхук из Битрикса
       <input type="text" name="hook" value="<?= h($hook) ?>"
              placeholder="https://портал.bitrix24.ru/rest/123/ключ/"></label>
+    <label>Ответственный за заявки — номер сотрудника
+      <input type="text" name="assigned" value="<?= h((string)(config()['bitrix_assigned'] ?? '')) ?>"
+             placeholder="например 1363"></label>
+    <p class="hint">Номер виден в адресе профиля сотрудника: <b>/company/personal/user/<u>1363</u>/</b>.
+       Оставите пустым — ответственным станет владелец ссылки-вебхука.</p>
     <p class="hint">Где взять: Битрикс24 → «Приложения» → «Разработчикам» → «Другое» → «Входящий вебхук» →
        в правах отметить <b>CRM</b> → «Создать» → скопировать строку «Вебхук для вызова rest api».
        Ссылка равна паролю: кто её знает, тот может работать с CRM. Чтобы отключить отправку — очистите поле.</p>

@@ -7,6 +7,12 @@
 declare(strict_types=1);
 require_once __DIR__ . '/../panel/lib.php';
 
+/** Кто становится ответственным за заявку. Пусто — Битрикс поставит владельца вебхука. */
+function bitrix_assigned(): int
+{
+    return (int)(config()['bitrix_assigned'] ?? 0);
+}
+
 /** Ссылка-вебхук из настроек редактора. Пусто — значит CRM не подключена. */
 function bitrix_hook(): string
 {
@@ -66,6 +72,7 @@ function lead_fields(array $data): array
         'COMMENTS'           => implode("\n", $comment),
         'OPENED'             => 'Y',
     ];
+    if (bitrix_assigned() > 0) { $fields['ASSIGNED_BY_ID'] = bitrix_assigned(); }
     if ($phone !== '') { $fields['PHONE'] = [['VALUE' => $phone, 'VALUE_TYPE' => 'WORK']]; }
     if ($email !== '') { $fields['EMAIL'] = [['VALUE' => $email, 'VALUE_TYPE' => 'WORK']]; }
     return $fields;

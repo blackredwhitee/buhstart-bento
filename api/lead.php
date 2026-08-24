@@ -25,14 +25,15 @@ function out(array $d, int $code = 200): void
     exit;
 }
 
-/** Не больше 20 заявок в час с одного адреса — от простого спама этого хватает. */
+/** Ограничение от спама. Считаем только новые заявки: ответы в блоке обратной
+    связи — это несколько нажатий подряд, и упираться в лимит из-за них нельзя. */
 function rate_ok(): bool
 {
     ensure_dirs();
     $f = data_path('throttle/lead_' . sha1($_SERVER['REMOTE_ADDR'] ?? 'unknown') . '.json');
     $d = is_file($f) ? (json_decode((string)file_get_contents($f), true) ?: []) : [];
     $hits = array_values(array_filter((array)($d['hits'] ?? []), fn($t) => $t > time() - 3600));
-    if (count($hits) >= 20) { return false; }
+    if (count($hits) >= 60) { return false; }
     $hits[] = time();
     write_atomic($f, json_encode(['hits' => $hits]));
     return true;
@@ -45,8 +46,6 @@ $raw = file_get_contents('php://input');
 if ($raw === false || $raw === '' || strlen($raw) > 8000000) { out(['ok' => false, 'error' => 'Пустой запрос'], 400); }
 $data = json_decode((string)$raw, true);
 if (!is_array($data)) { out(['ok' => false, 'error' => 'Ждём JSON'], 400); }
-
-if (!rate_ok()) { out(['ok' => false, 'error' => 'Слишком много заявок с одного адреса'], 429); }
 
 // клиент вернулся к уже отправленной заявке — дописываем в ту же карточку
 $leadId = (int)($data['leadId'] ?? 0);
@@ -69,6 +68,8 @@ if ($recent > 0) {
     if ($kpNew !== '') { bitrix_attach($recent, (string)($data['kpName'] ?? 'КП.pdf'), $kpNew); }
     out(['ok' => true, 'id' => $recent, 'comment' => true]);
 }
+
+if (!rate_ok()) { out(['ok' => false, 'error' => 'Слишком много заявок с одного адреса'], 429); }
 
 [$ok, $res] = bx($hook, 'crm.lead.add', [
     'fields' => lead_fields($data),

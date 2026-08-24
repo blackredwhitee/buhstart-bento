@@ -22,9 +22,23 @@ var ENDPOINT = 'https://script.google.com/macros/s/AKfycbzTep7vEAUp2TdSNvvbpWTDG
    пропадала. Скрипт отвечает с Access-Control-Allow-Origin: *, поэтому читаем ответ
    и умеем показать честную ошибку. */
 function send(payload){
+  // заявка уходит в таблицу; параллельно — дубль в Битрикс через наш обработчик.
+  // ключ вебхука лежит на сервере, в браузер он не попадает
+  toCrm(payload);
   return fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
     .then(function(r){ return r.text(); })
     .then(function(t){ if(!/ok/i.test(t)) throw new Error(t.slice(0,120)); return true; });
+}
+
+/* Дубль заявки в CRM. Ошибку не показываем человеку: заявка уже сохранена
+   в таблице, а разбираться с Битриксом — наша забота, не его. */
+function toCrm(payload){
+  try{
+    fetch('/api/lead.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if(!d.ok) console.warn('Битрикс:', d.error); })
+      .catch(function(e){ console.warn('Битрикс недоступен:', e.message); });
+  }catch(e){ /* молча: заявка уже ушла в таблицу */ }
 }
 
 /* Человеческое название страницы для таблицы: «Главная», «Услуга: Аудит»,

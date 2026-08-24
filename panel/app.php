@@ -71,6 +71,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $page = 'images';
                 break;
 
+            case 'crm':
+                $hook = trim((string)($_POST['hook'] ?? ''));
+                if ($hook !== '' && !preg_match('~^https://[a-z0-9.-]+/rest/\d+/[a-z0-9]+/?$~i', $hook)) {
+                    $err = 'Ссылка не похожа на вебхук. Она должна выглядеть так: https://портал.bitrix24.ru/rest/123/ключ/';
+                } else {
+                    $cfg = config();
+                    $cfg['bitrix_hook'] = $hook;
+                    config_save($cfg);
+                    log_action($hook === '' ? 'битрикс отключён' : 'битрикс подключён');
+                    $msg = $hook === '' ? 'Отправка в Битрикс выключена.' : 'Ссылка сохранена.';
+                }
+                $page = 'crm';
+                break;
+
+            case 'crm_test':
+                require_once __DIR__ . '/../api/bitrix.php';
+                [$okT, $resT] = bitrix_selftest();
+                if ($okT) { $msg = $resT; } else { $err = $resT; }
+                $page = 'crm';
+                break;
+
             case 'prices':
                 $file = SITE_DIR . '/content/prices.json';
                 $cur = is_file($file) ? (json_decode((string)file_get_contents($file), true) ?: []) : [];
@@ -186,6 +207,7 @@ $SECTIONS = [
     'news'     => ['Новости законодательства', 'Короткие заметки об изменениях'],
     'cases'    => ['Кейсы', 'Истории клиентов с цифрами'],
     'prices'   => ['Цены калькулятора', 'Стоимость услуг в расчёте'],
+    'crm'      => ['Заявки в Битрикс', 'Подключить CRM и проверить связь'],
     'team'     => ['Команда', 'Имена, должности, стаж и образование сотрудников'],
     'texts'    => ['Тексты страниц', 'Заголовки и абзацы на страницах сайта'],
     'calendar' => ['Календарь отчётности', 'Сроки, которые видны на главной'],
@@ -685,6 +707,36 @@ if ($page !== 'home' && isset($backMap[$page]) && $inItem) {
       </form>
     <?php endforeach; ?>
   </div>
+
+<?php elseif ($page === 'crm'):
+  $hook = trim((string)(config()['bitrix_hook'] ?? '')); ?>
+  <h1>Заявки в Битрикс</h1>
+  <p class="lead">Пока ссылка не сохранена, заявки идут только в таблицу и на почту.
+     С ссылкой они дополнительно попадают в CRM как лиды. Таблица работает в любом случае —
+     если Битрикс недоступен, заявка не потеряется.</p>
+
+  <form class="panel" method="post">
+    <input type="hidden" name="form" value="crm">
+    <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+    <label>Ссылка-вебхук из Битрикса
+      <input type="text" name="hook" value="<?= h($hook) ?>"
+             placeholder="https://портал.bitrix24.ru/rest/123/ключ/"></label>
+    <p class="hint">Где взять: Битрикс24 → «Приложения» → «Разработчикам» → «Другое» → «Входящий вебхук» →
+       в правах отметить <b>CRM</b> → «Создать» → скопировать строку «Вебхук для вызова rest api».
+       Ссылка равна паролю: кто её знает, тот может работать с CRM. Чтобы отключить отправку — очистите поле.</p>
+    <div class="row">
+      <button class="btn" type="submit">Сохранить</button>
+    </div>
+  </form>
+
+  <form class="panel" method="post" style="margin-top:18px">
+    <input type="hidden" name="form" value="crm_test">
+    <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+    <b>Проверка связи</b>
+    <p class="hint">Создаём тестовый лид и сразу удаляем его — в CRM ничего не остаётся.
+       Так видно, работает ли ссылка и хватает ли ей прав.</p>
+    <div class="row"><button class="btn btn-g" type="submit"<?= $hook === '' ? ' disabled' : '' ?>>Проверить подключение</button></div>
+  </form>
 
 <?php elseif ($page === 'prices'):
   $pf = SITE_DIR . '/content/prices.json';

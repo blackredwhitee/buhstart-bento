@@ -164,3 +164,20 @@ function bitrix_comment(int $leadId, string $text): array
         'COMMENT'     => $text,
     ]]);
 }
+
+/**
+ * Прикладываем файл к карточке: КП попадает в ленту лида, менеджеру
+ * не нужно искать его в Google-таблице. Настройки CRM при этом не меняем —
+ * файл живёт в комментарии, а не в отдельном поле.
+ */
+function bitrix_attach(int $leadId, string $name, string $base64, string $note = ''): array
+{
+    $hook = bitrix_hook();
+    if ($hook === '' || $leadId <= 0 || $base64 === '') { return [false, 'Нечего прикладывать']; }
+    return bx($hook, 'crm.timeline.comment.add', ['fields' => [
+        'ENTITY_ID'   => $leadId,
+        'ENTITY_TYPE' => 'lead',
+        'COMMENT'     => $note !== '' ? $note : 'Коммерческое предложение по расчёту',
+        'FILES'       => [[$name !== '' ? $name : 'КП.pdf', $base64]],
+    ]]);
+}

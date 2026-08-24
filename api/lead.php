@@ -42,7 +42,7 @@ $hook = bitrix_hook();
 if ($hook === '') { out(['ok' => false, 'error' => 'Битрикс не подключён']); }
 
 $raw = file_get_contents('php://input');
-if ($raw === false || $raw === '' || strlen($raw) > 100000) { out(['ok' => false, 'error' => 'Пустой запрос'], 400); }
+if ($raw === false || $raw === '' || strlen($raw) > 8000000) { out(['ok' => false, 'error' => 'Пустой запрос'], 400); }
 $data = json_decode((string)$raw, true);
 if (!is_array($data)) { out(['ok' => false, 'error' => 'Ждём JSON'], 400); }
 
@@ -68,4 +68,16 @@ if (!$ok) {
         date('Y-m-d H:i:s') . "\t" . $res . "\t" . substr($raw, 0, 500) . "\n", FILE_APPEND);
     out(['ok' => false, 'error' => $res]);
 }
-out(['ok' => true, 'id' => (int)$res]);
+$leadId = (int)$res;
+
+// КП из калькулятора кладём прямо в карточку — файлом в ленте
+$kp = (string)($data['kpBase64'] ?? '');
+if ($kp !== '') {
+    [$okF, $errF] = bitrix_attach($leadId, (string)($data['kpName'] ?? 'КП.pdf'), $kp);
+    if (!$okF) {
+        @file_put_contents(data_path('bitrix-errors.log'),
+            date('Y-m-d H:i:s') . "\tфайл КП не прикрепился: " . $errF . "\n", FILE_APPEND);
+    }
+}
+
+out(['ok' => true, 'id' => $leadId]);

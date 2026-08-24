@@ -86,8 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
 
             case 'crm_test':
+            case 'crm_test_keep':
                 require_once __DIR__ . '/../api/bitrix.php';
-                [$okT, $resT] = bitrix_selftest();
+                [$okT, $resT] = bitrix_selftest(($_POST['form'] ?? '') === 'crm_test_keep');
                 if ($okT) { $msg = $resT; } else { $err = $resT; }
                 $page = 'crm';
                 break;
@@ -736,6 +737,18 @@ if ($page !== 'home' && isset($backMap[$page]) && $inItem) {
     <p class="hint">Создаём тестовый лид и сразу удаляем его — в CRM ничего не остаётся.
        Так видно, работает ли ссылка и хватает ли ей прав.</p>
     <div class="row"><button class="btn btn-g" type="submit"<?= $hook === '' ? ' disabled' : '' ?>>Проверить подключение</button></div>
+    <?php if ($msg): ?><div class="msg ok" style="margin-top:14px"><?= h($msg) ?></div><?php endif; ?>
+    <?php if ($err): ?><div class="msg bad" style="margin-top:14px"><?= h($err) ?></div><?php endif; ?>
+  </form>
+
+  <form class="panel" method="post" style="margin-top:18px">
+    <input type="hidden" name="form" value="crm_test_keep">
+    <input type="hidden" name="csrf" value="<?= h(csrf_token()) ?>">
+    <b>Посмотреть карточку в Битриксе</b>
+    <p class="hint">Создаём тестовый лид и <b>оставляем</b> его, чтобы вы открыли карточку и посмотрели,
+       как выглядит заявка: поля, источник, ответственный. Ссылку на карточку покажем здесь же.
+       Удалить лид потом нужно вручную.</p>
+    <div class="row"><button class="btn btn-g" type="submit"<?= $hook === '' ? ' disabled' : '' ?>>Создать тестовый лид и оставить</button></div>
   </form>
 
 <?php elseif ($page === 'prices'):

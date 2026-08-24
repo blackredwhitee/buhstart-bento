@@ -75,7 +75,7 @@ function lead_fields(array $data): array
  * Проверка связи: заводим тестовый лид и тут же удаляем его,
  * чтобы в чужой CRM не оставалось мусора.
  */
-function bitrix_selftest(): array
+function bitrix_selftest(bool $keep = false): array
 {
     $hook = bitrix_hook();
     if ($hook === '') { return [false, 'Сначала сохраните ссылку-вебхук.']; }
@@ -90,6 +90,11 @@ function bitrix_selftest(): array
     ])]);
     if (!$ok) { return [false, 'Лид не создался: ' . $id]; }
 
+    if ($keep) {
+        $portal = preg_replace('~/rest/.*$~', '', $hook);
+        return [true, 'Тестовый лид № ' . (int)$id . ' создан и оставлен в CRM. '
+            . 'Открыть карточку: ' . $portal . '/crm/lead/details/' . (int)$id . '/ — посмотрите и удалите её сами.'];
+    }
     [$okDel, $delErr] = bx($hook, 'crm.lead.delete', ['id' => (int)$id]);
     $tail = $okDel
         ? 'Тестовый лид № ' . (int)$id . ' создан и сразу удалён — в CRM чисто.'

@@ -101,7 +101,7 @@ function lead_fields(array $data): array
     }
 
     // имя выносим в заголовок: в списке лидов видно только его
-    $title = ($name !== '' ? $name : 'Без имени') . ' — ' . ($kind !== '' ? $kind : 'заявка с сайта');
+    $title = 'Сайт: ' . ($name !== '' ? $name : 'без имени') . ' — ' . ($kind !== '' ? $kind : 'заявка');
 
     $fields = [
         'TITLE'              => $title,
@@ -180,4 +180,31 @@ function bitrix_attach(int $leadId, string $name, string $base64, string $note =
         'COMMENT'     => $note !== '' ? $note : 'Коммерческое предложение по расчёту',
         'FILES'       => [[$name !== '' ? $name : 'КП.pdf', $base64]],
     ]]);
+}
+
+/**
+ * Ищем свежий лид с тем же телефоном: человек за один заход может нажать
+ * несколько кнопок, и на каждую заводить отдельную карточку не нужно.
+ * Возвращаем номер лида, созданного за последние полчаса, либо 0.
+ */
+function bitrix_recent_lead(string $phone): int
+{
+    $hook = bitrix_hook();
+    $digits = preg_replace('~\D~', '', $phone) ?? '';
+    if ($hook === '' || strlen($digits) < 10) { return 0; }
+
+    [$ok, $res] = bx($hook, 'crm.duplicate.findbycomm', [
+        'entity_type' => 'LEAD', 'type' => 'PHONE', 'values' => [$phone],
+    ]);
+    $ids = ($ok && !empty($res['LEAD'])) ? (array)$res['LEAD'] : [];
+    if (!$ids) { return 0; }
+
+    rsort($ids);
+    foreach (array_slice($ids, 0, 5) as $id) {
+        [$okG, $lead] = bx($hook, 'crm.lead.get', ['id' => (int)$id]);
+        if (!$okG || !is_array($lead)) { continue; }
+        $created = strtotime((string)($lead['DATE_CREATE'] ?? ''));
+        if ($created && time() - $created < 1800) { return (int)$id; }
+    }
+    return 0;
 }

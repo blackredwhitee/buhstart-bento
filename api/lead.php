@@ -57,6 +57,19 @@ if ($leadId > 0) {
     out($okC ? ['ok' => true, 'id' => $leadId, 'comment' => true] : ['ok' => false, 'error' => $resC]);
 }
 
+// тот же человек в том же заходе — дописываем в его карточку, а не создаём копию
+$phone = trim((string)($data['phone'] ?? $data['contact'] ?? ''));
+$recent = bitrix_recent_lead($phone);
+if ($recent > 0) {
+    $head = trim((string)($data['kind'] ?? 'Ещё одно обращение с сайта'));
+    $note = trim((string)($data['message'] ?? ''));
+    $extra = trim((string)($data['extra'] ?? ''));
+    bitrix_comment($recent, trim($head . "\n" . $note . ($extra !== '' ? "\n" . $extra : '')));
+    $kpNew = (string)($data['kpBase64'] ?? '');
+    if ($kpNew !== '') { bitrix_attach($recent, (string)($data['kpName'] ?? 'КП.pdf'), $kpNew); }
+    out(['ok' => true, 'id' => $recent, 'comment' => true]);
+}
+
 [$ok, $res] = bx($hook, 'crm.lead.add', [
     'fields' => lead_fields($data),
     'params' => ['REGISTER_SONET_EVENT' => 'Y'],

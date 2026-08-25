@@ -13,6 +13,17 @@ function bitrix_assigned(): int
     return (int)(config()['bitrix_assigned'] ?? 0);
 }
 
+/**
+ * Колонка (стадия лида) для анкет с вакансий. В портале клиента она называется
+ * «Соискатель» и имеет код 2; если стадию переименуют или заведут заново,
+ * достаточно вписать новый код в настройки редактора.
+ */
+function bitrix_job_status(): string
+{
+    $s = trim((string)(config()['bitrix_job_status'] ?? ''));
+    return $s !== '' ? $s : '2';
+}
+
 /** Ссылка-вебхук из настроек редактора. Пусто — значит CRM не подключена. */
 function bitrix_hook(): string
 {
@@ -56,6 +67,9 @@ function lead_fields(array $data): array
     $source = trim((string)($data['source'] ?? ''));
     $text   = trim((string)($data['message'] ?? $data['comment'] ?? ''));
 
+    // анкета с вакансий — это не клиент, а соискатель: у него своя колонка в CRM
+    $isJob  = ($data['type'] ?? '') === 'vacancy' || mb_stripos($kind, 'кандидат') !== false;
+
     // откуда пришла заявка — человеческой фразой, а не набором полей
     $where = $source !== '' && $page !== '' ? 'форма «' . $source . '», страница «' . $page . '»'
            : ($source !== '' ? 'форма «' . $source . '»' : ($page !== '' ? 'страница «' . $page . '»' : ''));
@@ -95,6 +109,17 @@ function lead_fields(array $data): array
         if (!empty($data['priceOpt'])) { $lines[] = '  Оптима: ' . number_format((int)$data['priceOpt'], 0, ',', ' ') . ' ₽/мес'; }
         $lines[] = '  Файл КП лежит в Google-таблице заявок';
     }
+    // анкета с вакансий: то, что нужно кадровику, — сразу в описании
+    if ($isJob) {
+        $lines[] = '';
+        $lines[] = 'Анкета кандидата';
+        if (!empty($data['role']))       { $lines[] = '  Направление: ' . $data['role']; }
+        if (!empty($data['exp']))        { $lines[] = '  Опыт работы: ' . $data['exp']; }
+        if (!empty($data['skills']))     { $lines[] = '  С чем работал: ' . $data['skills']; }
+        if (!empty($data['resumeLink'])) { $lines[] = '  Резюме по ссылке: ' . $data['resumeLink']; }
+        if (!empty($data['resumeName'])) { $lines[] = '  Резюме файлом: ' . $data['resumeName'] . ' — в ленте карточки'; }
+        if (!empty($data['about']))      { $lines[] = '  О себе: ' . $data['about']; }
+    }
     if (!empty($data['subscribe'])) {
         $lines[] = '';
         $lines[] = 'Согласие на рассылку: ' . $data['subscribe'];
@@ -112,6 +137,8 @@ function lead_fields(array $data): array
         'OPENED'             => 'Y',
     ];
     if (bitrix_assigned() > 0) { $fields['ASSIGNED_BY_ID'] = bitrix_assigned(); }
+    // соискатели сразу попадают в свою колонку, а не в общий поток заявок
+    if ($isJob) { $fields['STATUS_ID'] = bitrix_job_status(); }
     if ($phone !== '') { $fields['PHONE'] = [['VALUE' => $phone, 'VALUE_TYPE' => 'WORK']]; }
     if ($email !== '') { $fields['EMAIL'] = [['VALUE' => $email, 'VALUE_TYPE' => 'WORK']]; }
     return $fields;

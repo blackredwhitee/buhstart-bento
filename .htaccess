@@ -27,6 +27,19 @@ Redirect 301 /usluga /uslugi
 Redirect 301 /article.html /blog
 Redirect 301 /article /blog
 
+# calc.buhstart.ru — отдельный домен для прежнего калькулятора. Своим сайтом в панели
+# его не заводим (упирается в лимит тарифа): домен добавлен псевдонимом, а запросы
+# с него отдаём из папки calc.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^(www\.)?calc\.buhstart\.ru$ [NC]
+  RewriteCond %{REQUEST_URI} !^/calc/
+  # проверка Let's Encrypt кладёт файл в корень сайта — её в папку calc не уводим,
+  # иначе сертификат для этого домена не выпустится
+  RewriteCond %{REQUEST_URI} !^/\.well-known/
+  RewriteRule ^(.*)$ /calc/$1 [L]
+</IfModule>
+
 # Адреса без .html: /uslugi вместо /uslugi.html
 <IfModule mod_rewrite.c>
   RewriteEngine On

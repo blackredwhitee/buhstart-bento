@@ -43,7 +43,8 @@ $hook = bitrix_hook();
 if ($hook === '') { out(['ok' => false, 'error' => 'Битрикс не подключён']); }
 
 $raw = file_get_contents('php://input');
-if ($raw === false || $raw === '' || strlen($raw) > 8000000) { out(['ok' => false, 'error' => 'Пустой запрос'], 400); }
+// потолок с запасом: резюме до 10 МБ после кодирования весит около 13,5 МБ
+if ($raw === false || $raw === '' || strlen($raw) > 20000000) { out(['ok' => false, 'error' => 'Пустой запрос'], 400); }
 $data = json_decode((string)$raw, true);
 if (!is_array($data)) { out(['ok' => false, 'error' => 'Ждём JSON'], 400); }
 
@@ -66,6 +67,8 @@ if ($recent > 0) {
     bitrix_comment($recent, trim($head . "\n" . $note . ($extra !== '' ? "\n" . $extra : '')));
     $kpNew = (string)($data['kpBase64'] ?? '');
     if ($kpNew !== '') { bitrix_attach($recent, (string)($data['kpName'] ?? 'КП.pdf'), $kpNew); }
+    $cvNew = (string)($data['resumeBase64'] ?? '');
+    if ($cvNew !== '') { bitrix_attach($recent, (string)($data['resumeName'] ?? 'Резюме.pdf'), $cvNew, 'Резюме кандидата'); }
     out(['ok' => true, 'id' => $recent, 'comment' => true]);
 }
 
@@ -91,6 +94,16 @@ if ($kp !== '') {
     if (!$okF) {
         @file_put_contents(data_path('bitrix-errors.log'),
             date('Y-m-d H:i:s') . "\tфайл КП не прикрепился: " . $errF . "\n", FILE_APPEND);
+    }
+}
+
+// резюме кандидата — туда же, чтобы кадровик открывал его прямо из карточки
+$cv = (string)($data['resumeBase64'] ?? '');
+if ($cv !== '') {
+    [$okR, $errR] = bitrix_attach($leadId, (string)($data['resumeName'] ?? 'Резюме.pdf'), $cv, 'Резюме кандидата');
+    if (!$okR) {
+        @file_put_contents(data_path('bitrix-errors.log'),
+            date('Y-m-d H:i:s') . "\tрезюме не прикрепилось: " . $errR . "\n", FILE_APPEND);
     }
 }
 

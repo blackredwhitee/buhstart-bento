@@ -689,19 +689,22 @@ function getDesc(name){
   return '';
 }
 
+/* Цены здесь — те, что видит клиент: из прайса, столбец «Клиент». Наценку
+   калькулятор больше не считает, иначе одна и та же услуга стоит по-разному
+   в прайсе и на сайте. */
 const P = {
-  null_ip:2000,null_ooo:3000,entity_ooo:10000,
-  tax:{patent:1000,ausn_d:5000,ausn_dr:20000,usn6:5000,usn15:20000,osno:30000},
-  vat:{не_облагается:0,освобождение:5000,nds0:0,nds5:5000,nds7:5000,nds10:5000,nds22:10000},
-  niche:{marketplace:20000,wb:0,ozon:5000,ya:10000,mp_inventory:15000,wholesale:20000,wh_inventory:10000,retail:20000,rt_inventory:15000,production:60000,construction:40000,catering:30000,medicine:50000,services:20000},
-  staff:{rf_1_3:5000,rf_per:1500,foreign:20000},
-  cash:{kassa:15000,avans:10000},
-  ved:8000,reconcile:15000,tax_mgmt:20000,
-  military_per:2000,licenses:10000,spot:1000,
+  null_ip:2500,null_ooo:3800,entity_ooo:12500,
+  tax:{patent:1300,ausn_d:6300,ausn_dr:25000,usn6:6300,usn15:25000,osno:37500},
+  vat:{не_облагается:0,освобождение:6300,nds0:0,nds5:6300,nds7:6300,nds10:6300,nds22:12500},
+  niche:{marketplace:25000,wb:0,ozon:6300,ya:6300,mp_inventory:18800,wholesale:25000,wh_inventory:12500,retail:25000,rt_inventory:18800,production:75000,construction:50000,catering:37500,medicine:62500,services:25000},
+  staff:{rf_1_3:6300,rf_per:1900,foreign:25000},
+  cash:{kassa:18800,avans:12500},
+  ved:10000,reconcile:18800,tax_mgmt:25000,
+  military_per:2500,licenses:12500,spot:1300,
   invoice:{base:10000,std:12500,opt:18000},
 };
-let OPTIMA_BASE = 60000;
-let VISIT_PRICE = 7500;
+let OPTIMA_BASE = 75000;
+let VISIT_PRICE = 9400;
 
 /* Цены лежат в content/prices.json и правятся из редактора. Если файл недоступен,
    работают встроенные значения — калькулятор не должен ломаться из-за одного файла. */
@@ -735,7 +738,8 @@ const A={
 const G=id=>document.getElementById(id);
 const fmt=n=>new Intl.NumberFormat('ru-RU').format(Math.round(n))+' ₽';
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const mu=n=>Math.round(n/0.8/100)*100;
+const mu=n=>n;                        // цены уже конечные, наценка заложена в прайс
+const r100=n=>Math.round(n/100)*100;   // проценты округляем до сотен
 const toDay=()=>new Date().toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'});
 const toDayLong=()=>new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
 const kpValid=()=>{const d=new Date();d.setDate(d.getDate()+10);return d.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})};
@@ -986,7 +990,7 @@ function calcTotal(){
       if(nic==='wholesale'&&A.whInventory)add('Товарный учёт (опт)',P.niche.wh_inventory);
       if(nic==='retail'&&A.rtInventory)add('Товарный учёт (розница)',P.niche.rt_inventory);
     });
-    if(A.niches.includes('marketplace')){A.mp.forEach((m,i)=>{if(i>0)add(mpN[m]||m,5000)});if(A.mpInventory)add('Товарный учёт (маркетплейс)',P.niche.mp_inventory)}
+    if(A.niches.includes('marketplace')){A.mp.forEach((m,i)=>{if(i>0)add(mpN[m]||m,P.niche.ozon)});if(A.mpInventory)add('Товарный учёт (маркетплейс)',P.niche.mp_inventory)}
     if(A.entity==='ООО')add('ООО',P.entity_ooo);
     const taxN={patent:'Патент',ausn_d:'АУСН Доходы',ausn_dr:'АУСН Доходы-Расходы',usn6:'УСН 6%',usn15:'УСН 15%',osno:'ОСНО'};
     const tp=P.tax[A.tax]||0;if(tp)add(taxN[A.tax]||A.tax,tp);
@@ -1008,7 +1012,7 @@ function calcTotal(){
   const baseTotal=lines.reduce((s,l)=>s+(l.price||0),0);
 
   const vis=A.officeBuhPresence?Math.max(1,A.officeBuhVisits||4):1;
-  const mPriority=mu(Math.round(rawBase*0.2));
+  const mPriority=r100(rawBase*0.2);
   const mTaxMgmt=taxQ()&&A.taxMgmt?mu(P.tax_mgmt||P.reconcile):0;
   const mOfficeBuh=mu(vis*VISIT_PRICE);
   const mOptima=mu(OPTIMA_BASE);

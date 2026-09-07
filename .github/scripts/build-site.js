@@ -68,10 +68,10 @@ function articlePage(a, all) {
   let head = headTpl
     .replace(/<title>.*?<\/title>/s, `<title>${esc(a.title)} — Доверительная Бухгалтерия</title>`)
     .replace(/(name="description" content=")[^"]*(")/, `$1${esc(desc)}$2`)
-    .replace(/(rel="canonical" href=")[^"]*(")/, `$1${BASE}article-${a.slug}.html$2`)
+    .replace(/(rel="canonical" href=")[^"]*(")/, `$1${BASE}article-${a.slug}$2`)
     .replace(/(property="og:title" content=")[^"]*(")/, `$1${esc(a.title)} — Доверительная Бухгалтерия$2`)
     .replace(/(property="og:description" content=")[^"]*(")/, `$1${esc(desc)}$2`)
-    .replace(/(property="og:url" content=")[^"]*(")/, `$1${BASE}article-${a.slug}.html$2`);
+    .replace(/(property="og:url" content=")[^"]*(")/, `$1${BASE}article-${a.slug}$2`);
 
   // микроразметка статьи и крошек
   const ld = [

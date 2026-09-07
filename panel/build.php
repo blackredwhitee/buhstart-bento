@@ -122,10 +122,10 @@ function article_page(array $a, array $all): ?string
     $head = $headTpl;
     $head = preg_replace('~<title>.*?</title>~s', '<title>' . e($title) . ' — Доверительная Бухгалтерия</title>', $head, 1) ?? $head;
     $head = preg_replace('~(name="description" content=")[^"]*(")~', '${1}' . e($desc) . '${2}', $head, 1) ?? $head;
-    $head = preg_replace('~(rel="canonical" href=")[^"]*(")~', '${1}' . BASE_URL . 'article-' . $slug . '.html${2}', $head, 1) ?? $head;
+    $head = preg_replace('~(rel="canonical" href=")[^"]*(")~', '${1}' . BASE_URL . 'article-' . $slug . '${2}', $head, 1) ?? $head;
     $head = preg_replace('~(property="og:title" content=")[^"]*(")~', '${1}' . e($title) . ' — Доверительная Бухгалтерия${2}', $head, 1) ?? $head;
     $head = preg_replace('~(property="og:description" content=")[^"]*(")~', '${1}' . e($desc) . '${2}', $head, 1) ?? $head;
-    $head = preg_replace('~(property="og:url" content=")[^"]*(")~', '${1}' . BASE_URL . 'article-' . $slug . '.html${2}', $head, 1) ?? $head;
+    $head = preg_replace('~(property="og:url" content=")[^"]*(")~', '${1}' . BASE_URL . 'article-' . $slug . '${2}', $head, 1) ?? $head;
 
     $ld = [
         ['@context' => 'https://schema.org', '@type' => 'Article', 'headline' => $title,

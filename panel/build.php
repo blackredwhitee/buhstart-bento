@@ -300,13 +300,16 @@ function build_all(): array
         'calculator.html','blog.html','novosti.html','team.html','vacancy.html','contacts.html',
         'privacy.html','soglasie.html'];
     $urls = [];
+    // в карту сайта кладём те же адреса, что видит посетитель, — без .html:
+    // иначе поиск получает ссылку, которая тут же переадресуется
+    $clean = fn(string $p): string => $p === 'index.html' ? '' : preg_replace('~\.html$~', '', $p);
     foreach ($static as $p) {
         if (!is_file(SITE_DIR . '/' . $p)) { continue; }
-        $urls[] = '  <url><loc>' . BASE_URL . $p . '</loc><changefreq>weekly</changefreq><priority>'
+        $urls[] = '  <url><loc>' . BASE_URL . $clean($p) . '</loc><changefreq>weekly</changefreq><priority>'
                 . ($p === 'index.html' ? '1.0' : '0.8') . '</priority></url>';
     }
     foreach ($articles as $a) {
-        $urls[] = '  <url><loc>' . BASE_URL . 'article-' . $a['slug'] . '.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>';
+        $urls[] = '  <url><loc>' . BASE_URL . 'article-' . $a['slug'] . '</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>';
     }
     write_atomic(SITE_DIR . '/sitemap.xml',
         '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n"

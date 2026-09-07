@@ -289,10 +289,12 @@ textarea:focus{outline:2px solid var(--orange);outline-offset:-1px}
   border:1px dashed var(--g200);border-radius:10px;padding:7px}
 .img-btn:hover{background:#FFF3EE;border-color:var(--orange)}
 .img-btn input{display:none}
-.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:10px}
-.pitem{display:flex;align-items:center;gap:10px;justify-content:space-between}
-.pitem span{font-size:13.5px;color:var(--g500)}
-.pitem input{width:104px;text-align:right}
+/* подпись над полем: когда она стояла сбоку, название следующей колонки
+   прилипало к чужому полю и читалось как подпись к нему */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px 32px;margin-top:12px}
+.pitem{display:flex;flex-direction:column;align-items:stretch;gap:6px}
+.pitem span{font-size:13.5px;color:var(--g500);line-height:1.35}
+.pitem input{width:100%;max-width:170px;text-align:left}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:14px}
 .fgrid label,label.full{display:block;font-size:13px;font-weight:600}
 label.full{margin-bottom:14px}

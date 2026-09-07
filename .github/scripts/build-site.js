@@ -207,8 +207,10 @@ fs.writeFileSync('articles.js', lines.join('\n') + '\n');
 const staticPages = ['index.html','uslugi.html','usluga-bukhgalterskie-uslugi.html','usluga-nadzor.html',
   'usluga-audit.html','usluga-upravlencheskii-uchet.html','keysy.html','calculator.html','blog.html',
   'novosti.html','team.html','vacancy.html','contacts.html','privacy.html','soglasie.html'];
-const urls = staticPages.map(p => `  <url><loc>${BASE}${p}</loc><changefreq>weekly</changefreq><priority>${p === 'index.html' ? '1.0' : '0.8'}</priority></url>`)
-  .concat(articles.map(a => `  <url><loc>${BASE}article-${a.slug}.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>`));
+// адреса в карте сайта — те же, что видит посетитель, без .html
+const clean = p => (p === 'index.html' ? '' : p.replace(/\.html$/, ''));
+const urls = staticPages.map(p => `  <url><loc>${BASE}${clean(p)}</loc><changefreq>weekly</changefreq><priority>${p === 'index.html' ? '1.0' : '0.8'}</priority></url>`)
+  .concat(articles.map(a => `  <url><loc>${BASE}article-${a.slug}</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>`));
 fs.writeFileSync('sitemap.xml',
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join('\n')}\n</urlset>\n`);
 

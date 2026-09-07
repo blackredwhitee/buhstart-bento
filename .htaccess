@@ -27,6 +27,14 @@ Redirect 301 /usluga /uslugi
 Redirect 301 /article.html /blog
 Redirect 301 /article /blog
 
+# Один адрес вместо двух: www склеиваем с основным, иначе поиск считает их
+# разными сайтами и делит вес между ними.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^www\.buhstart\.ru$ [NC]
+  RewriteRule ^(.*)$ https://buhstart.ru/$1 [R=301,L]
+</IfModule>
+
 # calc.buhstart.ru — отдельный домен для прежнего калькулятора. Своим сайтом в панели
 # его не заводим (упирается в лимит тарифа): домен добавлен псевдонимом, а запросы
 # с него отдаём из папки calc.
@@ -49,6 +57,44 @@ Redirect 301 /article /blog
   RewriteRule ^panel/([a-z]+)/?$ /panel/app.php?p=$1 [QSA,L]
   RewriteRule ^panel/?$ /panel/app.php [L]
   RewriteRule ^panel/ - [L]
+  # адреса прежнего сайта на Tilda: имена вида pageNNNN.html ничего не говорят,
+  # карта составлена по заголовкам страниц. Стоят до правила «убрать .html»,
+  # иначе оно первым срежет хвост и увело бы на несуществующий адрес.
+  RewriteRule ^page61013227\.html$ / [R=301,L]
+  RewriteRule ^page75820046\.html$ / [R=301,L]
+  RewriteRule ^page78298646\.html$ / [R=301,L]
+  RewriteRule ^page86410516\.html$ / [R=301,L]
+  RewriteRule ^page87643176\.html$ / [R=301,L]
+  RewriteRule ^page97779796\.html$ / [R=301,L]
+  RewriteRule ^page97782426\.html$ / [R=301,L]
+  RewriteRule ^page134041896\.html$ / [R=301,L]
+  RewriteRule ^page142696556\.html$ / [R=301,L]
+  RewriteRule ^page65188657\.html$ /calculator [R=301,L]
+  RewriteRule ^page70628459\.html$ /calculator [R=301,L]
+  RewriteRule ^page64650403\.html$ /calculator [R=301,L]
+  RewriteRule ^page70628467\.html$ /calculator [R=301,L]
+  RewriteRule ^page65187769\.html$ /calculator [R=301,L]
+  RewriteRule ^page70628469\.html$ /calculator [R=301,L]
+  RewriteRule ^page65188195\.html$ /calculator [R=301,L]
+  RewriteRule ^page70628481\.html$ /calculator [R=301,L]
+  RewriteRule ^page77054256\.html$ /uslugi [R=301,L]
+  RewriteRule ^page88920556\.html$ /uslugi [R=301,L]
+  RewriteRule ^page97776546\.html$ /uslugi [R=301,L]
+  RewriteRule ^page113700196\.html$ /uslugi [R=301,L]
+  RewriteRule ^page174918109\.html$ /uslugi [R=301,L]
+  RewriteRule ^page86414316\.html$ /usluga-nadzor [R=301,L]
+  RewriteRule ^page87717446\.html$ /usluga-audit [R=301,L]
+  RewriteRule ^page87718086\.html$ /usluga-audit [R=301,L]
+  RewriteRule ^page89762256\.html$ /usluga-bukhgalterskie-uslugi [R=301,L]
+  RewriteRule ^page134004086\.html$ /usluga-marketplace [R=301,L]
+  RewriteRule ^page134042026\.html$ /usluga-marketplace [R=301,L]
+  RewriteRule ^page87647146\.html$ /team [R=301,L]
+  RewriteRule ^page87705646\.html$ /contacts [R=301,L]
+  RewriteRule ^page87726486\.html$ /novosti [R=301,L]
+  RewriteRule ^page97197296\.html$ /blog [R=301,L]
+  RewriteRule ^page151896956\.html$ /privacy [R=301,L]
+  RewriteRule ^page152846996\.html$ /soglasie [R=301,L]
+
   # старые адреса с .html — постоянный редирект на чистые, чтобы не было дублей
   RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
   RewriteRule ^ / [R=301,L]

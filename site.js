@@ -1,12 +1,20 @@
 // общий скрипт сайта «Доверительная Бухгалтерия»
 
-/* Аналитика. Когда появится номер счётчика Яндекс.Метрики:
-   1. вписать его в YM_ID ниже;
-   2. вставить код счётчика на страницы (одной строкой перед </body>).
-   Цели уже расставлены — заработают сразу, дополнительно настраивать в коде ничего не нужно.
-   Список целей: lead_open, lead_sent, question_sent, vacancy_sent, calc_start,
-   calc_done, calc_kp, risk_done, calendar_click, phone_click, messenger_click. */
-var YM_ID = null;
+/* Аналитика. Счётчик подключается отсюда: этот файл есть на всех страницах,
+   включая статьи, поэтому отдельный код в разметку вставлять не нужно.
+   Цели уже расставлены по сайту: lead_open, lead_sent, question_sent, vacancy_sent,
+   calc_start, calc_done, calc_kp, risk_done, calendar_click, phone_click, messenger_click. */
+var YM_ID = 112355733;
+
+(function(){
+  if(!YM_ID) return;
+  (function(m,e,t,r,i,k,a){
+    m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();
+    for(var j=0;j<e.scripts.length;j++){ if(e.scripts[j].src===r){ return; } }
+    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a);
+  })(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');
+  ym(YM_ID,'init',{webvisor:true,clickmap:true,trackLinks:true,accurateTrackBounce:true});
+})();
 
 function track(goal, params){
   try{
